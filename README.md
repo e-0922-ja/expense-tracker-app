@@ -14,7 +14,7 @@ brew install docker docker-compose
 git clone https://github.com/e-0922-ja/expense-tracker-app.git
 ```
 
-2. Build and run containers.
+2. Build and run backend containers. After executing this command, you can access the app at http://localhost:8000.
 
 ```bash
 docker-compose build
@@ -23,4 +23,11 @@ docker-compose up
 
 ```bash
 docker-compose run backend npx prisma migrate dev --name init
+```
+
+3. Run the frontend. After executing this command, you can access the app at http://localhost:3000.
+
+```bash
+cd frontend
+npm run start or yarn start
 ```
