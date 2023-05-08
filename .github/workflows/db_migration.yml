@@ -28,3 +28,5 @@ jobs:
 
       - name: Database migration ✅
         run: pnpx prisma generate && pnpx prisma migrate dev && pnpm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
