@@ -3,7 +3,7 @@ name: Database Migration
 on:
   push:
     paths:
-      - 'backend/**'
+      - 'backend/prisma/**'
 
 defaults:
   run:
