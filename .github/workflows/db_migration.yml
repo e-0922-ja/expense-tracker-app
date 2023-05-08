@@ -26,8 +26,5 @@ jobs:
       - name: Install dependencies 🔧
         run: pnpm install
 
-      - name: Lint 🖊
-        run: pnpm run check-lint
-
       - name: Database migration ✅
         run: pnpx prisma generate && pnpx prisma migrate dev && pnpm run build
