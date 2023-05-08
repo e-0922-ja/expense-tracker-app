@@ -17,6 +17,7 @@ model User {
   password      String
   registered_at DateTime
   registered_by String
+  gender        String
   updated_at    DateTime
   updated_by    String
 }
