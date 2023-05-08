@@ -18,6 +18,5 @@ model User {
   registered_at DateTime
   registered_by String
   updated_at    DateTime
-  gender        String
   updated_by    String
 }
