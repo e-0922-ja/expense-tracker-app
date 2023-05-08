@@ -1,8 +1,8 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./view/pages/HomePage";
-import { Header } from "./view/components/Header";
-import { Footer } from "./view/components/Footer";
+import { HomePage } from "./views/pages/HomePage";
+import { Header } from "./views/components/Header";
+import { Footer } from "./views/components/Footer";
 
 function App() {
   return (
