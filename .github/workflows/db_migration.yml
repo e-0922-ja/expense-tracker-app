@@ -1,0 +1,33 @@
+name: Database Migration
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: backend
+
+jobs:
+  migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17.x"
+
+      - name: Install pnpm
+        run: npm i -g pnpm
+
+      - name: Install dependencies 🔧
+        run: pnpm install
+
+      - name: Lint 🖊
+        run: pnpm run check-lint
+
+      - name: Database migration ✅
+        run: pnpx prisma generate && pnpx prisma migrate dev && pnpm run build
