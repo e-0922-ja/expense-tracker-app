@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Users {
-  userId            String        @id @default(uuid())
+  id                String        @id @default(uuid())
   firstName         String        @db.VarChar(50)
   lastName          String        @db.VarChar(50)
   email             String        @unique @db.VarChar(255)
@@ -23,20 +23,20 @@ model Users {
 }
 
 model Status {
-  statusId     Int           @id
+  id           Int           @id
   statusName   String        @unique
   registeredAt DateTime
   Friendships  Friendships[]
 }
 
 model Friendships {
-  friendshipId String   @id @default(uuid())
-  user         Users    @relation("UserFriendships", fields: [userId], references: [userId])
+  id           String   @id @default(uuid())
+  user         Users    @relation("UserFriendships", fields: [userId], references: [id])
   userId       String
-  friend       Users?   @relation("FriendFriendships", fields: [friendId], references: [userId])
+  friend       Users?   @relation("FriendFriendships", fields: [friendId], references: [id])
   friendId     String?
   friendEmail  String   @unique @db.VarChar(255)
-  status       Status   @relation(fields: [statusId], references: [statusId])
+  status       Status   @relation(fields: [statusId], references: [id])
   statusId     Int
   registeredAt DateTime
   updatedAt    DateTime
