@@ -16,9 +16,9 @@ export const Header = () => {
       <div>
         <IconButton onClick={() => dispatch(toggleTheme())}>
           {theme.palette.mode === "light" ? (
-            <LightModeButton />
-          ) : (
             <DarkModeButton />
+          ) : (
+            <LightModeButton />
           )}
         </IconButton>
       </div>

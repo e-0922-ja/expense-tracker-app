@@ -1,5 +1,6 @@
 export interface Order {
   main: string;
+  light: string;
 }
 
 export interface Palette {
