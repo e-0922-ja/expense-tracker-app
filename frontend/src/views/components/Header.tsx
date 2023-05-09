@@ -4,22 +4,43 @@ import { toggleTheme } from "../../reducer/colorModeSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
 import { selectTheme } from "../../reducer/colorModeSelectors";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  background: #263335;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Text = styled.div`
+  color: #fff;
+  padding: 0 20px;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: #f8f9f9;
+    padding-right: 10px;
+  }
+`;
 
 export const Header = () => {
   const dispatch = useDispatch();
   const theme = useSelector(selectTheme);
+
   return (
-    <div>
-      <div>Expense Tracker</div>
+    <Wrapper>
+      <Text>Expense Tracker</Text>
       <div>
-        <IconButton onClick={() => dispatch(toggleTheme())}>
+        <StyledIconButton size="large" onClick={() => dispatch(toggleTheme())}>
           {theme.palette.mode === "light" ? (
             <DarkModeButton />
           ) : (
             <LightModeButton />
           )}
-        </IconButton>
+        </StyledIconButton>
       </div>
-    </div>
+    </Wrapper>
   );
 };

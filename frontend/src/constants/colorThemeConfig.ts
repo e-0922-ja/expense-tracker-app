@@ -10,8 +10,8 @@ export const lightTheme = createTheme({
     },
     // Blue
     secondary: {
-      main: "#4277ca",
-      light: "#c9dce4",
+      main: "#001DAB",
+      light: "#0485A2",
     },
   },
 });
@@ -26,8 +26,8 @@ export const darkTheme = createTheme({
     },
     // Green
     secondary: {
-      main: "#3aaa5b",
-      light: "#D2ECAD",
+      main: "#8AB525",
+      light: "#B1D4B6",
     },
   },
 });

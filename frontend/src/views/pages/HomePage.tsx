@@ -1,13 +1,12 @@
-import React from "react";
 import styled from "styled-components";
 import { ColorTheme } from "../../types/colorType";
+import { Button } from "@mui/material";
 
 interface StyledProps {
   theme: ColorTheme;
 }
 
 const Wrapper = styled.div<StyledProps>`
-  height: 100vh;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
@@ -17,7 +16,7 @@ const TitleWrapper = styled.section<StyledProps>`
 `;
 
 const TitleH1 = styled.h1<StyledProps>`
-  padding: 5px;
+  margin: 0;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
@@ -37,6 +36,12 @@ export const HomePage = () => {
         labore iste eaque id, eligendi, doloribus consequatur! Eaque impedit sit
         velit?
       </Text>
+      <Button variant="contained" disableRipple>
+        LogIn
+      </Button>
+      <Button variant="contained" disableRipple>
+        SignUp
+      </Button>
     </Wrapper>
   );
 };
