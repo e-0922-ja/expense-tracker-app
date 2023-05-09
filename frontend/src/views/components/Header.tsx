@@ -1,15 +1,13 @@
 import { IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-
-import { RootState } from "../../store/store";
 import { toggleTheme } from "../../reducer/colorModeSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
+import { selectTheme } from "../../reducer/colorModeSelectors";
 
 export const Header = () => {
   const dispatch = useDispatch();
-  const theme = useSelector((state: RootState) => state.colorMode.value);
-
+  const theme = useSelector(selectTheme);
   return (
     <div>
       <div>Expense Tracker</div>

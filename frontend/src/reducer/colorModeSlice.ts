@@ -3,11 +3,11 @@ import { ColorTheme } from "../types/colorType";
 import { darkTheme, lightTheme } from "../constants/colorThemeConfig";
 
 interface ColorModeState {
-  value: ColorTheme;
+  value: string;
 }
 
 const initialState: ColorModeState = {
-  value: lightTheme,
+  value: "light",
 };
 
 export const colorModeSlice = createSlice({
@@ -15,8 +15,7 @@ export const colorModeSlice = createSlice({
   initialState,
   reducers: {
     toggleTheme: (state) => {
-      state.value =
-        state.value.palette.mode === "light" ? darkTheme : lightTheme;
+      state.value = state.value === "light" ? "dark" : "light";
     },
   },
 });
