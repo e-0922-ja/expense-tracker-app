@@ -4,7 +4,6 @@ import { HomePage } from "./views/pages/HomePage";
 import { Header } from "./views/components/Header";
 import { Footer } from "./views/components/Footer";
 import { useSelector } from "react-redux";
-import { RootState } from "./store/store";
 import { ThemeProvider } from "styled-components";
 import { selectTheme } from "./reducer/colorModeSelectors";
 

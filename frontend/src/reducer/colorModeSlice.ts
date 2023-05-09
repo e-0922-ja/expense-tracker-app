@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ColorTheme } from "../types/colorType";
-import { darkTheme, lightTheme } from "../constants/colorThemeConfig";
 
 interface ColorModeState {
   value: string;
