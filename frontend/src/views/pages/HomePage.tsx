@@ -1,26 +1,21 @@
 import styled from "styled-components";
-import { ColorTheme } from "../../types/colorType";
 import { Button } from "@mui/material";
 
-interface StyledProps {
-  theme: ColorTheme;
-}
-
-const Wrapper = styled.div<StyledProps>`
+const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const TitleWrapper = styled.section<StyledProps>`
+const TitleWrapper = styled.section`
   height: 200px;
   background: ${({ theme }) => theme.palette.primary.light};
 `;
 
-const TitleH1 = styled.h1<StyledProps>`
+const Title = styled.h1`
   margin: 0;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
-const Text = styled.p<StyledProps>`
+const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
 
@@ -28,7 +23,7 @@ export const HomePage = () => {
   return (
     <Wrapper>
       <TitleWrapper>
-        <TitleH1>HomePage</TitleH1>
+        <Title>HomePage</Title>
       </TitleWrapper>
       <Text>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
