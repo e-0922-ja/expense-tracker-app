@@ -5,7 +5,7 @@ import { Header } from "./views/components/Header";
 import { Footer } from "./views/components/Footer";
 import { useSelector } from "react-redux";
 import { ThemeProvider } from "styled-components";
-import { selectTheme } from "./reducer/colorModeSelectors";
+import { selectTheme } from "./reducer/colorModeSlice";
 
 function App() {
   const theme = useSelector(selectTheme);

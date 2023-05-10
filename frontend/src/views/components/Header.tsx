@@ -1,9 +1,9 @@
 import { IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "../../reducer/colorModeSlice";
+import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
-import { selectTheme } from "../../reducer/colorModeSelectors";
+
 import styled from "styled-components";
 
 const Wrapper = styled.div`
