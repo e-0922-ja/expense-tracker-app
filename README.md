@@ -31,3 +31,15 @@ docker-compose run backend npx prisma migrate dev --name init
 cd frontend
 npm run start or yarn start
 ```
+
+4. Run the edge functions
+
+```bash
+supabase functions serve --no-verify-jwt
+```
+
+For example, you can fetch users by the following command.
+
+```bash
+curl localhost:54321/functions/v1/users
+```
