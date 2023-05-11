@@ -1,37 +1,23 @@
-import React from "react";
 import "./App.css";
-import { createClient } from "@supabase/supabase-js";
+import { Route, Routes } from "react-router-dom";
+import { HomePage } from "./views/pages/HomePage";
+import { Header } from "./views/components/Header";
+import { Footer } from "./views/components/Footer";
+import { useSelector } from "react-redux";
+import { ThemeProvider } from "styled-components";
+import { selectTheme } from "./reducer/colorModeSlice";
 
-console.log(process.env.REACT_APP_SUPABASE_URL);
-// Initialize the JS client
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-// Make a request
 function App() {
-  const test = async () => {
-    const { data, error } = await supabase.from("User").select("*");
-    console.log(data, error);
-  };
-
+  const theme = useSelector(selectTheme);
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={test}>aaa</button>
-      </header>
+      <ThemeProvider theme={theme}>
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+        <Footer />
+      </ThemeProvider>
     </div>
   );
 }
