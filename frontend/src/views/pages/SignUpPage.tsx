@@ -14,7 +14,7 @@ const supabase = createClient(
 );
 
 export const SignUpPage = () => {
-  interface User {
+  interface NewUser {
     firstName: string;
     lastName: string;
     email: string;
@@ -26,10 +26,13 @@ export const SignUpPage = () => {
     register,
     handleSubmit,
     getValues,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm<User>({ mode: "onChange" });
+    formState: { errors },
+  } = useForm<NewUser>();
 
-  const onSubmit = async (data: User) => {
+  // formState: { errors, isValid, isSubmitting },
+  // } = useForm<NewUser>({ mode: "onChange" });
+
+  const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
     const { data: signUpData, error } = await supabase.auth.signUp({
       email,
@@ -45,22 +48,13 @@ export const SignUpPage = () => {
     console.log(error, "err");
   };
 
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    let metadata = user?.user_metadata;
-    console.log(user, "currentLoginUser");
-    console.log(metadata, "meta");
-  };
-
   return (
     <ComponentWrapper>
       <SignUpWrapper>
         <TitleWrapper>
           <Title>SignUp</Title>
           <Text>Already have an account? </Text>
-          <Link to="/">Login</Link>
+          <Link to="/login">Login</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
@@ -141,13 +135,12 @@ export const SignUpPage = () => {
             )}
           </InputWrapper>
 
-          {/* Later, I will remove this div because I do not need to get user button*/}
           <ButtonWrapper>
             <Button
               type="submit"
               variant="contained"
               disableRipple
-              disabled={!isValid || isSubmitting}
+              // disabled={!isValid || isSubmitting}
             >
               submit
             </Button>
@@ -166,6 +159,7 @@ const ComponentWrapper = styled.div`
 `;
 
 const SignUpWrapper = styled.div`
+  padding: 30px 0;
   width: 45%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
@@ -216,6 +210,7 @@ const ErrorText = styled.span`
 `;
 
 const ButtonWrapper = styled.div`
+  margin-top: 15px;
   display: flex;
   justify-content: center;
 `;
