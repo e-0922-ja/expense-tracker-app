@@ -1,5 +1,6 @@
 import { IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
@@ -21,17 +22,24 @@ const Text = styled.div`
 const StyledIconButton = styled(IconButton)`
   .MuiSvgIcon-root {
     color: #f8f9f9;
-    padding-right: 10px;
+  }
+  .MuiTouchRipple-root {
+    color: #f8f9f9;
   }
 `;
 
 export const Header = () => {
   const dispatch = useDispatch();
   const theme = useSelector(selectTheme);
+  const navigate = useNavigate();
+
+  const handleNavigateHome = () => {
+    navigate("/");
+  };
 
   return (
     <Wrapper>
-      <Text>Expense Tracker</Text>
+      <Text onClick={handleNavigateHome}>Expense Tracker</Text>
       <div>
         <StyledIconButton size="large" onClick={() => dispatch(toggleTheme())}>
           {theme.palette.mode === "light" ? (
