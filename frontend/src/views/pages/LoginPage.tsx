@@ -20,22 +20,26 @@ export const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    // formState: { errors, isValid, isSubmitting },
     formState: { errors },
   } = useForm<CurrentUser>();
   //   formState: { errors, isValid, isSubmitting },
   // } = useForm<CurrentUser>({ mode: "onChange" });
 
-  // Post
+  const signInWithEmail = async (currentUser: CurrentUser) => {
+    const { email, password } = currentUser;
+    const { data: LogInData, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  // Data in database === data in loginform
-  // Get user and boolean login
+    console.log(LogInData);
+    console.log(error);
 
-  const getUser = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
     let metadata = user?.user_metadata;
+
     console.log(user, "currentLoginUser");
     console.log(metadata, "meta");
   };
@@ -48,7 +52,7 @@ export const LoginPage = () => {
           <Text>New to Expense tracker? </Text>
           <Link to="/signup">Signup</Link>
         </TitleWrapper>
-        <FormWrapper onSubmit={handleSubmit(getUser)}>
+        <FormWrapper onSubmit={handleSubmit(signInWithEmail)}>
           <InputWrapper>
             <InputPaper>
               <InputAdornment position="start">
@@ -106,7 +110,7 @@ const ComponentWrapper = styled.div`
 `;
 
 const LoginWrapper = styled.div`
-  padding: 30px 0;
+  padding: 20px 0;
   width: 45%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
