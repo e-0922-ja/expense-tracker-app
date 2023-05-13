@@ -9,6 +9,9 @@ export const HomePage = () => {
     navigate("/signup");
   };
 
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
   return (
     <Wrapper>
       <TitleWrapper>
@@ -20,7 +23,7 @@ export const HomePage = () => {
         labore iste eaque id, eligendi, doloribus consequatur! Eaque impedit sit
         velit?
       </Text>
-      <Button variant="contained" disableRipple>
+      <Button variant="contained" disableRipple onClick={handleNavigateLogin}>
         LogIn
       </Button>
       <Button variant="contained" disableRipple onClick={handleNavigateSignUp}>
