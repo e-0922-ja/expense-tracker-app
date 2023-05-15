@@ -1,11 +1,53 @@
 import { IconButton } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
+import { AppDispatch } from "../../store/store";
+import { selectUser, toggleLogout } from "../../reducer/userSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
 
-import styled from "styled-components";
+export const Header = () => {
+  const theme = useSelector(selectTheme);
+  const isLoggedIn = useSelector(selectUser);
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+
+  const handleNavigateHome = () => {
+    navigate("/");
+  };
+
+  const handleLogInOut = () => {
+    if (isLoggedIn.isLogin) {
+      dispatch(toggleLogout());
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  return (
+    <Wrapper>
+      <Text onClick={handleNavigateHome}>Expense Tracker</Text>
+      <div>
+        <StyledIconButton size="large" onClick={() => dispatch(toggleTheme())}>
+          {theme.palette.mode === "light" ? (
+            <DarkModeButton />
+          ) : (
+            <LightModeButton />
+          )}
+        </StyledIconButton>
+      </div>
+      <Text>
+        <button onClick={handleLogInOut}>
+          {isLoggedIn.isLogin ? "Log0ut" : "LogIn"}
+        </button>
+      </Text>
+      <Text>{isLoggedIn.isLogin ? isLoggedIn.user?.firstName : "Person"}</Text>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.div`
   background: #263335;
@@ -27,28 +69,3 @@ const StyledIconButton = styled(IconButton)`
     color: #f8f9f9;
   }
 `;
-
-export const Header = () => {
-  const dispatch = useDispatch();
-  const theme = useSelector(selectTheme);
-  const navigate = useNavigate();
-
-  const handleNavigateHome = () => {
-    navigate("/");
-  };
-
-  return (
-    <Wrapper>
-      <Text onClick={handleNavigateHome}>Expense Tracker</Text>
-      <div>
-        <StyledIconButton size="large" onClick={() => dispatch(toggleTheme())}>
-          {theme.palette.mode === "light" ? (
-            <DarkModeButton />
-          ) : (
-            <LightModeButton />
-          )}
-        </StyledIconButton>
-      </div>
-    </Wrapper>
-  );
-};

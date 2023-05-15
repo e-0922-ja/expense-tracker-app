@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
@@ -6,21 +5,25 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
+interface NewUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export const SignUpPage = () => {
-  interface NewUser {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }
+  const [authError, setAuthError] = useState("");
 
   const {
     register,
@@ -29,12 +32,11 @@ export const SignUpPage = () => {
     formState: { errors },
   } = useForm<NewUser>();
 
-  // formState: { errors, isValid, isSubmitting },
-  // } = useForm<NewUser>({ mode: "onChange" });
+  const navigate = useNavigate();
 
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
-    const { data: signUpData, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -44,8 +46,11 @@ export const SignUpPage = () => {
         },
       },
     });
-    console.log(signUpData, "data");
-    console.log(error, "err");
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+    navigate("/login");
   };
 
   return (
@@ -136,12 +141,7 @@ export const SignUpPage = () => {
           </InputWrapper>
 
           <ButtonWrapper>
-            <Button
-              type="submit"
-              variant="contained"
-              disableRipple
-              // disabled={!isValid || isSubmitting}
-            >
+            <Button type="submit" variant="contained" disableRipple>
               submit
             </Button>
           </ButtonWrapper>
@@ -159,7 +159,7 @@ const ComponentWrapper = styled.div`
 `;
 
 const SignUpWrapper = styled.div`
-  padding: 30px 0;
+  padding: 20px 0;
   width: 45%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;

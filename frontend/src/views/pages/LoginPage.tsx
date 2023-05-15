@@ -1,47 +1,61 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { toggleLogin } from "../../reducer/userSlice";
+import { useState } from "react";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+interface CurrentUser {
+  email: string;
+  password: string;
+}
 
 export const LoginPage = () => {
-  interface CurrentUser {
-    email: string;
-    password: string;
-  }
-
+  const [authError, setAuthError] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CurrentUser>();
-  //   formState: { errors, isValid, isSubmitting },
-  // } = useForm<CurrentUser>({ mode: "onChange" });
 
-  const signInWithEmail = async (currentUser: CurrentUser) => {
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+
+  const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
-    const { data: LogInData, error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
-    console.log(LogInData);
-    console.log(error);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    let metadata = user?.user_metadata;
-
-    console.log(user, "currentLoginUser");
-    console.log(metadata, "meta");
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+    if (!data?.user) {
+      setAuthError("User not found.");
+      return;
+    } else {
+      let user = data.user;
+      let currentUser = {
+        firstName: user?.user_metadata.firstName,
+        lastName: user?.user_metadata.lastName,
+        email: user?.email,
+      };
+      dispatch(toggleLogin(currentUser));
+      // ================================================
+      // Will change the path to new page later
+      // ================================================
+      navigate("/");
+    }
   };
 
   return (
@@ -52,7 +66,7 @@ export const LoginPage = () => {
           <Text>New to Expense tracker? </Text>
           <Link to="/signup">Signup</Link>
         </TitleWrapper>
-        <FormWrapper onSubmit={handleSubmit(signInWithEmail)}>
+        <FormWrapper onSubmit={handleSubmit(handleloginWithEmail)}>
           <InputWrapper>
             <InputPaper>
               <InputAdornment position="start">
@@ -79,7 +93,10 @@ export const LoginPage = () => {
               <InputBase
                 placeholder="Password"
                 type="password"
-                {...register("password", { required: true, pattern: /\w{6,}/ })}
+                {...register("password", {
+                  required: true,
+                  pattern: /\w{6,}/,
+                })}
               />
             </InputPaper>
             {errors.password && (
@@ -96,6 +113,7 @@ export const LoginPage = () => {
               submit
             </Button>
           </ButtonWrapper>
+          {authError && <ErrorText>{authError}</ErrorText>}
         </FormWrapper>
       </LoginWrapper>
     </ComponentWrapper>
