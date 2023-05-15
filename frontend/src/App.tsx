@@ -11,6 +11,7 @@ import { LoginPage } from "./views/pages/LoginPage";
 
 function App() {
   const theme = useSelector(selectTheme);
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
