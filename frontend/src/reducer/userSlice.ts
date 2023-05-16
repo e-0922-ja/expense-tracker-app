@@ -21,7 +21,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    toggleLogin: (state, action) => {
+    login: (state, action) => {
       state.user = {
         firstName: action.payload.firstName,
         lastName: action.payload.lastName,
@@ -29,7 +29,7 @@ export const userSlice = createSlice({
       };
       state.isLogin = true;
     },
-    toggleLogout: (state) => {
+    logout: (state) => {
       state.user = null;
       state.isLogin = false;
     },
@@ -38,6 +38,6 @@ export const userSlice = createSlice({
 
 export const selectUser = (state: RootState) => state.user;
 
-export const { toggleLogin, toggleLogout } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
 import { AppDispatch } from "../../store/store";
-import { selectUser, toggleLogout } from "../../reducer/userSlice";
+import { selectUser, logout } from "../../reducer/userSlice";
 import { LightModeButton } from "./LightModeButton";
 import { DarkModeButton } from "./DarkModeButton";
 
 export const Header = () => {
   const theme = useSelector(selectTheme);
-  const isLoggedIn = useSelector(selectUser);
+  const account = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
@@ -18,9 +18,13 @@ export const Header = () => {
     navigate("/");
   };
 
+  const handleChangeMode = () => {
+    dispatch(toggleTheme());
+  };
+
   const handleLogInOut = () => {
-    if (isLoggedIn.isLogin) {
-      dispatch(toggleLogout());
+    if (account.isLogin) {
+      dispatch(logout());
       navigate("/");
     } else {
       navigate("/login");
@@ -31,7 +35,7 @@ export const Header = () => {
     <Wrapper>
       <Text onClick={handleNavigateHome}>Expense Tracker</Text>
       <div>
-        <StyledIconButton size="large" onClick={() => dispatch(toggleTheme())}>
+        <StyledIconButton size="large" onClick={handleChangeMode}>
           {theme.palette.mode === "light" ? (
             <DarkModeButton />
           ) : (
@@ -41,10 +45,10 @@ export const Header = () => {
       </div>
       <Text>
         <button onClick={handleLogInOut}>
-          {isLoggedIn.isLogin ? "Log0ut" : "LogIn"}
+          {account.isLogin ? "Log0ut" : "LogIn"}
         </button>
       </Text>
-      <Text>{isLoggedIn.isLogin ? isLoggedIn.user?.firstName : "Person"}</Text>
+      <Text>{account.isLogin ? account.user?.firstName : "Person"}</Text>
     </Wrapper>
   );
 };

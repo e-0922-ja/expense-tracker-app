@@ -7,7 +7,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { toggleLogin } from "../../reducer/userSlice";
+import { login } from "../../reducer/userSlice";
 import { useState } from "react";
 
 const supabase = createClient(
@@ -20,15 +20,15 @@ interface CurrentUser {
 }
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const [authError, setAuthError] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CurrentUser>();
-
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
@@ -43,19 +43,20 @@ export const LoginPage = () => {
     if (!data?.user) {
       setAuthError("User not found.");
       return;
-    } else {
-      let user = data.user;
-      let currentUser = {
-        firstName: user?.user_metadata.firstName,
-        lastName: user?.user_metadata.lastName,
-        email: user?.email,
-      };
-      dispatch(toggleLogin(currentUser));
-      // ================================================
-      // Will change the path to new page later
-      // ================================================
-      navigate("/");
     }
+
+    let user = data.user;
+    let userInfo = {
+      firstName: user?.user_metadata.firstName,
+      lastName: user?.user_metadata.lastName,
+      email: user?.email,
+    };
+
+    dispatch(login(userInfo));
+    // ================================================
+    // Will change the path to new page later
+    // ================================================
+    navigate("/");
   };
 
   return (
