@@ -1,15 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
-import { emailRegex, passwordRegex } from "../../constants/regexPattern";
+import {
+  emailRegex,
+  errEmail,
+  errPassword,
+  errUserNotFound,
+  passwordRegex,
+} from "../../constants/regexPattern";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -42,7 +48,7 @@ export const LoginPage = () => {
       return;
     }
     if (!data?.user) {
-      setAuthError("User not found.");
+      setAuthError(errUserNotFound);
       return;
     }
 
@@ -83,9 +89,7 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.email && (
-              <ErrorText>Please enter valid email format</ErrorText>
-            )}
+            {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper>
@@ -101,17 +105,10 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.password && (
-              <ErrorText>Password is more than 6 characteres</ErrorText>
-            )}
+            {errors.password && <ErrorText>{errPassword}</ErrorText>}
           </InputWrapper>
           <ButtonWrapper>
-            <Button
-              type="submit"
-              variant="contained"
-              disableRipple
-              // disabled={!isValid || isSubmitting}
-            >
+            <Button type="submit" variant="contained" disableRipple>
               submit
             </Button>
           </ButtonWrapper>
@@ -177,6 +174,7 @@ const Text = styled.p`
 `;
 
 const ErrorText = styled.span`
+  font-size: 0.7rem;
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
 

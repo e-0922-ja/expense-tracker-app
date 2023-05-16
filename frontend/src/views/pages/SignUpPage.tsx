@@ -8,7 +8,15 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { emailRegex, passwordRegex } from "../../constants/regexPattern";
+import {
+  emailRegex,
+  errEmail,
+  errFirstName,
+  errLastName,
+  errPassword,
+  errPasswordConf,
+  passwordRegex,
+} from "../../constants/regexPattern";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -74,7 +82,7 @@ export const SignUpPage = () => {
                 {...register("firstName", { required: true })}
               />
             </InputPaper>
-            {errors.firstName && <ErrorText>First name is required</ErrorText>}
+            {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper>
@@ -87,7 +95,7 @@ export const SignUpPage = () => {
                 {...register("lastName", { required: true })}
               />
             </InputPaper>
-            {errors.lastName && <ErrorText>Last name is required</ErrorText>}
+            {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper>
@@ -103,9 +111,7 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.email && (
-              <ErrorText>Entered value does not match email format</ErrorText>
-            )}
+            {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper>
@@ -121,9 +127,7 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.password && (
-              <ErrorText>Password is more than 6 characteres</ErrorText>
-            )}
+            {errors.password && <ErrorText>{errPassword}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper>
@@ -139,9 +143,7 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.confirmPassword && (
-              <ErrorText>Please confirm your password</ErrorText>
-            )}
+            {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
           </InputWrapper>
 
           <ButtonWrapper>
@@ -211,6 +213,7 @@ const Text = styled.p`
 `;
 
 const ErrorText = styled.span`
+  font-size: 0.7rem;
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
 
