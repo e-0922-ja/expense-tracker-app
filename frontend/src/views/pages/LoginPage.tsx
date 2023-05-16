@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
+import { emailRegex, passwordRegex } from "../../constants/regexPattern";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -78,12 +79,12 @@ export const LoginPage = () => {
                 type="email"
                 {...register("email", {
                   required: true,
-                  pattern: /^\S+@\S+\.\S+$/,
+                  pattern: emailRegex,
                 })}
               />
             </InputPaper>
             {errors.email && (
-              <ErrorText>Entered value does not match email format</ErrorText>
+              <ErrorText>Please enter valid email format</ErrorText>
             )}
           </InputWrapper>
           <InputWrapper>
@@ -96,7 +97,7 @@ export const LoginPage = () => {
                 type="password"
                 {...register("password", {
                   required: true,
-                  pattern: /\w{6,}/,
+                  pattern: passwordRegex,
                 })}
               />
             </InputPaper>

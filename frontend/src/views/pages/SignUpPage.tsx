@@ -8,6 +8,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { emailRegex, passwordRegex } from "../../constants/regexPattern";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -98,7 +99,7 @@ export const SignUpPage = () => {
                 type="email"
                 {...register("email", {
                   required: true,
-                  pattern: /^\S+@\S+\.\S+$/,
+                  pattern: emailRegex,
                 })}
               />
             </InputPaper>
@@ -114,7 +115,10 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="Password"
                 type="password"
-                {...register("password", { required: true, pattern: /\w{6,}/ })}
+                {...register("password", {
+                  required: true,
+                  pattern: passwordRegex,
+                })}
               />
             </InputPaper>
             {errors.password && (
@@ -145,6 +149,7 @@ export const SignUpPage = () => {
               submit
             </Button>
           </ButtonWrapper>
+          {authError && <ErrorText>{authError}</ErrorText>}
         </FormWrapper>
       </SignUpWrapper>
     </ComponentWrapper>
