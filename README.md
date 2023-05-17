@@ -14,26 +14,45 @@ brew install supabase/tap/supabase
 git clone https://github.com/e-0922-ja/expense-tracker-app.git
 ```
 
-2. Build and run backend containers. After executing this command, you can access the app at http://localhost:8000.
-
-```bash
-supabase start
-docker-compose build
-docker-compose up
-```
-
-```bash
-docker-compose exec backend npx prisma migrate dev
-```
-
-3. Run the frontend. After executing this command, you can access the app at http://localhost:3000.
+2. Install dependencies.
 
 ```bash
 cd frontend
-npm run start or yarn start
+npm i
+
+cd backend
+yarn install
 ```
 
-4. Run the edge functions
+# How to use
+
+## Run the application
+
+1. Use the following command to start the application.
+
+```bash
+pwd
+# /path/to/expense-tracker-app
+
+# Start supbase
+supbase start
+
+# Migrate database from backend
+cd backend
+npx prisma migrate dev
+cd ..
+
+# Start frontend
+cd frontend
+npm run start
+```
+
+2. Access the application at
+
+- [Frontend]http://localhost:3000
+- [Supabase]http://localhost:54321
+
+## Run the edge functions
 
 ```bash
 supabase functions serve --no-verify-jwt
@@ -43,4 +62,11 @@ For example, you can fetch users by the following command.
 
 ```bash
 curl localhost:54321/functions/v1/users
+```
+
+## Frontend Test
+
+```bash
+cd frontend
+npm test
 ```
