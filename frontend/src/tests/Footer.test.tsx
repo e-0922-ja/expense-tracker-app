@@ -12,7 +12,5 @@ test("Console Footer component element", () => {
   render(<Footer />);
 
   const element = screen.getByText("Footer");
-  // eslint-disable-next-line testing-library/no-debugging-utils
-  screen.debug(element);
   expect(element).toBeInTheDocument();
 });
