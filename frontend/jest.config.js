@@ -1,9 +1,10 @@
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  setupFilesAfterEnv: ['./src/setupTests.js'],
+module.exports = {
+  setupFilesAfterEnv: ['./src/setupTests.ts'],
   verbose: true,
-  testMatch: ['**/tests/**/*.+(ts|js)', '**/?(*.)+(spec|test).+(ts|js)'],
+  testMatch: ['./src/tests/**/*.+(ts|js)', '**/?(*.)+(spec|test).+(ts|js|tsx)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
+  testEnvironment: 'jsdom',
 }
