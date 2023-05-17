@@ -214,7 +214,7 @@ const Text = styled.p`
 
 const ErrorText = styled.span`
   font-size: 0.7rem;
-  color: ${({ theme }) => theme.palette.secondary.light};
+  color: #ff908d;
 `;
 
 const ButtonWrapper = styled.div`
