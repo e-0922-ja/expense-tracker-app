@@ -29,8 +29,11 @@ jobs:
         # with:
         #   node-version: ${{ matrix.node-version }}
 
-      - name: CI BUILD TEST ✅
-        run: |
-          npm ci
-          npm run build --if-present
-          npm test
+      - name: INSTALLATION ✅
+        run: npm i
+
+      - name: BUILD 🛠
+        run: npm run build  --if-present
+
+      - name: TEST 🧪
+        run: npm run test
