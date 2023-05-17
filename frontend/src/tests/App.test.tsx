@@ -6,7 +6,7 @@
 //    sum(1, 2) => 3
 //  Example2:
 //    sum(5, 5) => 10
-const sum = (a: number, b: number) => {
+export const sum = (a: number, b: number) => {
   return a + b;
 };
 
