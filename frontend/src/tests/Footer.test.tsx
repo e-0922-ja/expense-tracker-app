@@ -1,4 +1,4 @@
-import { render, screen, createRoot } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Footer } from "../views/components/Footer";
 
 test("Check a Footer component text", () => {
