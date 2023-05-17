@@ -1,5 +1,37 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+export const HomePage = () => {
+  const navigate = useNavigate();
+
+  const handleNavigateSignUp = () => {
+    navigate("/signup");
+  };
+
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
+  return (
+    <Wrapper>
+      <TitleWrapper>
+        <Title>HomePage</Title>
+      </TitleWrapper>
+      <Text>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
+        commodi reiciendis fuga! Odio quasi nemo nam sapiente laborum possimus
+        labore iste eaque id, eligendi, doloribus consequatur! Eaque impedit sit
+        velit?
+      </Text>
+      <Button variant="contained" disableRipple onClick={handleNavigateLogin}>
+        LogIn
+      </Button>
+      <Button variant="contained" disableRipple onClick={handleNavigateSignUp}>
+        SignUp
+      </Button>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
@@ -18,25 +50,3 @@ const Title = styled.h1`
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
-
-export const HomePage = () => {
-  return (
-    <Wrapper>
-      <TitleWrapper>
-        <Title>HomePage</Title>
-      </TitleWrapper>
-      <Text>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
-        commodi reiciendis fuga! Odio quasi nemo nam sapiente laborum possimus
-        labore iste eaque id, eligendi, doloribus consequatur! Eaque impedit sit
-        velit?
-      </Text>
-      <Button variant="contained" disableRipple>
-        LogIn
-      </Button>
-      <Button variant="contained" disableRipple>
-        SignUp
-      </Button>
-    </Wrapper>
-  );
-};
