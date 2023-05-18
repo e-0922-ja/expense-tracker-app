@@ -12,6 +12,7 @@ export const HomePage = () => {
   const handleNavigateLogin = () => {
     navigate("/login");
   };
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -34,6 +35,7 @@ export const HomePage = () => {
 };
 
 const Wrapper = styled.div`
+  width:100%
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 

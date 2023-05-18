@@ -13,6 +13,10 @@ export const lightTheme = createTheme({
       main: "#001DAB",
       light: "#0485A2",
     },
+    info: {
+      main: "#263335",
+      light: "#fff",
+    },
   },
 });
 
@@ -28,6 +32,10 @@ export const darkTheme = createTheme({
     secondary: {
       main: "#8AB525",
       light: "#B1D4B6",
+    },
+    info: {
+      main: "#263335",
+      light: "#fff",
     },
   },
 });
