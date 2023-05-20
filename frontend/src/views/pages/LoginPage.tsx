@@ -120,7 +120,7 @@ export const LoginPage = () => {
 };
 
 const ComponentWrapper = styled.div`
-  height: 100%;
+  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -129,7 +129,7 @@ const ComponentWrapper = styled.div`
 
 const LoginWrapper = styled.div`
   padding: 20px 0;
-  width: 45%;
+  width: 30%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;

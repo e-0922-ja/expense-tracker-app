@@ -47,7 +47,7 @@ export const Header = () => {
           theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar>
+      <Toolbar style={{ padding: "0 50px 0 66px" }}>
         <Typography sx={{ flexGrow: 1 }} onClick={handleNavigateHome}>
           Expense Tracker
         </Typography>

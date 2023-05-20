@@ -35,7 +35,8 @@ export const HomePage = () => {
 };
 
 const Wrapper = styled.div`
-  width:100%
+  height: calc(100% - 64px);
+  width: 100%;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
@@ -52,3 +53,4 @@ const Title = styled.h1`
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
+
