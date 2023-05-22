@@ -2,26 +2,49 @@ import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
-  Typography,
   Toolbar,
   Drawer,
   useMediaQuery,
   useTheme,
+  Modal,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-
-import { CreateButton } from "../components/CreateButton";
+import { MainButton } from "../components/MainButton";
 import FriendIcon from "../components/FriendIcon";
+import { TransactionCard } from "../components/TransactionCard";
+import { SecondaryButton } from "../components/SecondaryButton";
+import { FormNewExpense } from "../components/FormNewExpense";
+
+interface TransList {
+  category: string;
+  dispription: string;
+  amount: number;
+  date: string;
+}
 
 export const TransactionPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const [open, setOpen] = useState(false);
+  // const [date, setDate] = useState<Dayjs | null>(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const transactionHistory: TransList[] = [
+    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+  ];
 
   return (
     <Wrapper>
@@ -53,19 +76,46 @@ export const TransactionPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-        <CategoryTitle>People</CategoryTitle>
-        <FriendIcon />
-
-        <CategoryTitle>New Expense</CategoryTitle>
-        <CreateButton />
-        <CategoryTitle>Previous History</CategoryTitle>
-        <Typography>Previous History</Typography>
+        <Section>
+          <CategoryTitle>People</CategoryTitle>
+          <PeopleSectionContainer>
+            <FriendIcon />
+            <ButtonContainer>
+              <SecondaryButton title={"add"} />
+            </ButtonContainer>
+          </PeopleSectionContainer>
+        </Section>
+        <Section>
+          <CategoryTitle>Add Transaction</CategoryTitle>
+          <MainButton title={"create"} func={handleOpen} />
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <ModalContainer>
+              <FormNewExpense />
+            </ModalContainer>
+          </Modal>
+        </Section>
+        <Section>
+          <CategoryTitle>Previous History</CategoryTitle>
+          {transactionHistory.map((item, index) => {
+            return <TransactionCard item={item} key={index} />;
+          })}
+        </Section>
       </MainBox>
     </Wrapper>
   );
 };
 
-const drawerWidth = 300;
+const drawerWidth = 290;
+
+const Wrapper = styled.div`
+  display: flex;
+  height: calc(100% - 64px);
+`;
 
 const NavBox = styled.div`
   flex-shrink: 0;
@@ -101,7 +151,7 @@ const MobileDrawer = styled(Drawer)`
 
 const MainBox = styled.div`
   background: ${({ theme }) => theme.palette.primary.light};
-  padding: 50px 150px;
+  padding: 50px 200px 50px 120px;
   width: 100%;
   overflow: auto;
   @media (min-width: 600px) {
@@ -109,11 +159,33 @@ const MainBox = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
-  display: flex;
-  height: calc(100% - 64px);
+const Section = styled.div`
+  margin-bottom: 80px;
 `;
 
 const CategoryTitle = styled.h2`
-  margin: 0 0 20px 0;
+  margin-top: 0;
+`;
+
+const PeopleSectionContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-beteen;
+`;
+
+const ButtonContainer = styled.div`
+  width: 15%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const ModalContainer = styled(Box)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  background-color: #fff;
+  padding: 30px;
+  outline: none;
 `;

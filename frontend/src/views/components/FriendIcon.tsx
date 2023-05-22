@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import Chip from "@mui/material/Chip";
-import Paper from "@mui/material/Paper";
-import { ListItem } from "@mui/material";
 import { useState } from "react";
 
 interface NameList {
@@ -11,11 +9,11 @@ interface NameList {
 
 export default function FriendIcon() {
   const [nameListData, setNameListData] = useState<readonly NameList[]>([
-    { key: 0, label: "Angular" },
-    { key: 1, label: "jQuery" },
-    { key: 2, label: "Polymer" },
-    { key: 3, label: "React" },
-    { key: 4, label: "Vue.js" },
+    { key: 0, label: "Max" },
+    { key: 1, label: "Alex" },
+    { key: 2, label: "Anna" },
+    { key: 3, label: "John" },
+    { key: 4, label: "Taro" },
   ]);
 
   const handleDelete = (nameToDelete: NameList) => () => {
@@ -48,6 +46,7 @@ export default function FriendIcon() {
 }
 
 const ChipsWrapper = styled.div`
+  width: 85%;
   display: flex;
   flex-wrap: wrap;
 `;
