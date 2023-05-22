@@ -8,7 +8,6 @@ import {
 import HistoryIcon from "@mui/icons-material/History";
 import CreateIcon from "@mui/icons-material/Create";
 import PortraitIcon from "@mui/icons-material/Portrait";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 export const DrawerContents = () => {
@@ -35,7 +34,7 @@ export const DrawerContents = () => {
     <List style={{ paddingTop: "35px" }}>
       {toolbarItems.map((item, index) => (
         <ListItem key={index} disablePadding>
-          <ListItemButton style={{ padding: "15px 50px" }} onClick={item.func}>
+          <ListItemButton style={{ padding: "10px 45px" }} onClick={item.func}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItemButton>
@@ -44,7 +43,3 @@ export const DrawerContents = () => {
     </List>
   );
 };
-
-const DrawerContentsWrapper = styled.div`
-  padding: 0 100px !important;
-`;
