@@ -2,10 +2,15 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import React from "react";
 
-export const CreateButton = () => {
+interface ButtonProps {
+  title: string;
+  func: () => void;
+}
+
+export const MainButton: React.FC<ButtonProps> = ({ title, func }) => {
   return (
-    <MyButton variant="contained" disableRipple>
-      create
+    <MyButton variant="contained" disableRipple onClick={func}>
+      {title}
     </MyButton>
   );
 };
@@ -16,7 +21,8 @@ const MyButton = styled(Button)`
   border-radius: 24px !important;
   box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
   color: white;
-  height: 48px !important;
+  width: 120px !important;
+  height: 40px !important;
   fontsize: 1rem !important;
   padding: 0 30px !important;
 `;
