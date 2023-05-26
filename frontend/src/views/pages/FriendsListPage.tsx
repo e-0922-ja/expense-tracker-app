@@ -167,7 +167,11 @@ export const FriendsListPage = () => {
         <Box
           component="form"
           sx={{
-            "& > :not(style)": { m: 1, width: "25ch" },
+            display: "flex",
+            flexDirection: "column",
+            width: "50%",
+            marginTop: "2rem",
+            gap: "3rem",
           }}
           noValidate
           autoComplete="off"
@@ -189,13 +193,19 @@ export const FriendsListPage = () => {
             </InputPaper>
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
-          <Button type="submit" variant="contained">
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              width: "100%",
+            }}
+          >
             SEND
           </Button>
         </Box>
       </SubContainer>
       <SubContainer>
-        <TitleTwo>Friendslist</TitleTwo>
+        <Title>Friendslist</Title>
         <div>
           <UnorderedList>
             {friends!.map((friend: Friend, index) => {
@@ -232,18 +242,12 @@ const SubContainer = styled.div`
   align-items: center;
   height: 70vh;
   width: 600px;
-  border: 2px solid black;
+  border: 2px solid ${({ theme }) => theme.palette.secondary.main};
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
 const Title = styled.h1`
-  margin-top: 3rem;
-  margin-bottom: 5rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
-`;
-
-const TitleTwo = styled.h1`
   margin-top: 3rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
@@ -257,10 +261,11 @@ const UnorderedList = styled.ul`
 const List = styled.li`
   display: flex;
   justify-content: space-between;
-  border: 2px solid black;
+  border: 2px solid ${({ theme }) => theme.palette.secondary.main};
   border-radius: 0.25rem;
   padding: 0.5rem;
   margin-bottom: 0.75rem;
+  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const ListItem = styled.span`
@@ -277,7 +282,7 @@ const ErrorText = styled.div`
 // commonized later
 // ==============================================================
 const InputWrapper = styled.div`
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;
