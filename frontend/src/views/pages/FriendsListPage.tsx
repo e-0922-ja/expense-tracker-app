@@ -27,37 +27,25 @@ const supabase = createClient(
 );
 
 export const FriendsListPage = () => {
-  const [userId, setUserId] = useState<string>("");
   const [friends, setFriends] = useState<Friend[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FriendEmail>();
 
   const userState = useSelector((state: RootState) => state.user);
   const isLogin = userState.isLogin;
-  // ==============================================================
-  // use it when sending email that show
-  // ==============================================================
-  const firstName = userState.user?.firstName;
-  const lastName = userState.user?.lastName;
+  const userId = userState.user?.id;
+  const userEmail = userState.user?.email;
+  const userFirstName = userState.user?.firstName; // use it when sending an email
+  const userLastName = userState.user?.lastName; // use it when sending an email
   const navigate = useNavigate();
 
-  // ==============================================================
-  // change the operation to using userState to check the user is
-  // logged in or not later
-  // ==============================================================
   useEffect(() => {
-    signIn(); // remove it later
-    // isLogin ? getFriends() : navigate("/");
+    isLogin ? getUserFriends() : navigate("/");
   }, []);
-
-  useEffect(() => {
-    if (userId) {
-      getUserFriends();
-    }
-  }, [userId]);
 
   const onSubmit = (data: FriendEmail) => {
     const { email } = data;
@@ -65,21 +53,29 @@ export const FriendsListPage = () => {
   };
 
   const sendFriendRequest = async (email: string) => {
-    // need to check a user's email
-
-    const resultCheckFriendShip = await checkFriendShip(email);
-    if (resultCheckFriendShip > 0) {
-      console.error("You've already sent a friend request to this email.");
+    if (email === userEmail) {
+      console.error("You cannot send a friend request to your email address.");
     } else {
-      const resultGetFriendEmail = await getFriend(email);
-      if (resultGetFriendEmail) {
-        const resultInsertFriendship = await insertFriendship(
-          resultGetFriendEmail,
-          email
-        );
+      const resultCheckFriendShip = await checkFriendShip(email);
+      if (resultCheckFriendShip > 0) {
+        console.error("You've already sent a friend request to this email.");
+      } else {
+        const resultGetFriendEmail = await getFriend(email);
+        if (resultGetFriendEmail) {
+          const resultInsertFriendship = await insertFriendship(
+            resultGetFriendEmail,
+            email
+          );
 
-        if (resultInsertFriendship) {
-          // send email
+          if (resultInsertFriendship) {
+            // ==============================================================
+            // implement send email function later
+            // ==============================================================
+
+            // to retrieve the data to update the friend list
+            getUserFriends();
+            reset();
+          }
         }
       }
     }
@@ -162,24 +158,6 @@ export const FriendsListPage = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  // ==============================================================
-  // this function below will be executed when user logged in
-  // so remove it later
-  // ==============================================================
-  const signIn = async () => {
-    const { data: userData, error: userError } =
-      await supabase.auth.signInWithPassword({
-        email: "life.4.ism@icloud.com",
-        password: "Tr@ve1ing",
-      });
-
-    if (userError) {
-      console.log(userError);
-      return;
-    }
-    setUserId(userData.user?.id ?? "");
   };
 
   return (

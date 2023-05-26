@@ -54,16 +54,15 @@ export const LoginPage = () => {
 
     let user = data.user;
     let userInfo = {
+      id: user?.id,
       firstName: user?.user_metadata.firstName,
       lastName: user?.user_metadata.lastName,
       email: user?.email,
     };
 
     dispatch(login(userInfo));
-    // ================================================
-    // Will change the path to new page later
-    // ================================================
-    navigate("/");
+
+    navigate("/friendslist");
   };
 
   return (
