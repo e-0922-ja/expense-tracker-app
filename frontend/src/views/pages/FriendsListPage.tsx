@@ -31,6 +31,8 @@ const supabase = createClient(
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [selectedError, setSelectedError] = useState("");
+  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
@@ -57,11 +59,11 @@ export const FriendsListPage = () => {
 
   const sendFriendRequest = async (email: string) => {
     if (email === userEmail) {
-      console.error("You cannot send a friend request to your email address.");
+      setError("You cannot send a friend request to your email address.");
     } else {
       const resultCheckFriendShip = await checkFriendShip(email);
       if (resultCheckFriendShip > 0) {
-        console.error("You've already sent a friend request to this email.");
+        setError("You've already sent a friend request to this email.");
       } else {
         const resultGetFriendEmail = await getFriend(email);
         if (resultGetFriendEmail) {
@@ -78,6 +80,7 @@ export const FriendsListPage = () => {
             // to retrieve the data to update the friend list
             getUserFriends();
             reset();
+            setError("");
           }
         }
       }
@@ -121,12 +124,12 @@ export const FriendsListPage = () => {
         friend_email: email,
       });
       if (error) {
-        console.error(error);
+        setError(error.message);
       } else {
         return data;
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.message);
     }
   };
 
@@ -138,13 +141,13 @@ export const FriendsListPage = () => {
         .select("*")
         .eq("email", email);
       if (error) {
-        console.error(error);
+        setError(error.message);
         return false;
       } else {
         return data;
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.message);
       return false;
     }
   };
@@ -165,13 +168,13 @@ export const FriendsListPage = () => {
         .from("Friendships")
         .insert(friendshipsData);
       if (error) {
-        console.error(error);
+        setError(error.message);
         return false;
       } else {
         return true;
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.message);
       return false;
     }
   };
@@ -183,12 +186,20 @@ export const FriendsListPage = () => {
         user_id: userId,
       });
       if (error) {
-        console.error(error);
+        setError(error.message);
       } else {
         setFriends(data);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleClick = () => {
+    if (selectedFriends.length > 0) {
+      setSelectedError("");
+    } else {
+      setSelectedError("select friends from your friends list");
     }
   };
 
@@ -234,47 +245,57 @@ export const FriendsListPage = () => {
           >
             SEND
           </Button>
+          {error && <ErrorText>{error}</ErrorText>}
         </Box>
       </SubContainer>
       <SubContainer>
         <Title>Friendslist</Title>
-        <div>
-          <UnorderedList>
-            {friends!.map((friend: Friend, index) => {
-              return (
-                <List key={index}>
-                  <CheckBox
-                    type="checkbox"
-                    id={index.toString()}
-                    checked={
-                      !!selectedFriends.find(
-                        (selectedFriend) =>
-                          selectedFriend.email === friend.email
-                      )
-                    }
-                    onChange={(event) =>
-                      handleCheckedChange(
-                        friend.id,
-                        friend.email,
-                        friend.firstName,
-                        friend.lastName,
-                        event.target.checked
-                      )
-                    }
-                  />
-                  <Label htmlFor={index.toString()}>
-                    <ListItem>
-                      {friend.firstName
-                        ? friend.firstName + " " + friend.lastName
-                        : "-"}
-                    </ListItem>
-                    <ListItem>{friend.email}</ListItem>
-                  </Label>
-                </List>
-              );
-            })}
-          </UnorderedList>
-        </div>
+        <UnorderedList>
+          {friends!.map((friend: Friend, index) => {
+            return (
+              <List key={index}>
+                <CheckBox
+                  type="checkbox"
+                  id={index.toString()}
+                  checked={
+                    !!selectedFriends.find(
+                      (selectedFriend) => selectedFriend.email === friend.email
+                    )
+                  }
+                  onChange={(event) =>
+                    handleCheckedChange(
+                      friend.id,
+                      friend.email,
+                      friend.firstName,
+                      friend.lastName,
+                      event.target.checked
+                    )
+                  }
+                />
+                <Label htmlFor={index.toString()}>
+                  <ListItem>
+                    {friend.firstName
+                      ? friend.firstName + " " + friend.lastName
+                      : "-"}
+                  </ListItem>
+                  <ListItem>{friend.email}</ListItem>
+                </Label>
+              </List>
+            );
+          })}
+        </UnorderedList>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            width: "50%",
+            marginTop: "2rem",
+          }}
+          onClick={handleClick}
+        >
+          CREATE A TRANSACTION
+        </Button>
+        {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
       </SubContainer>
     </MainContainer>
   );
