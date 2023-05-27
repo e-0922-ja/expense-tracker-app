@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { UUID } from "crypto";
-import { Email } from "@mui/icons-material";
 
 interface Friend {
   id: UUID;
@@ -246,13 +245,12 @@ export const FriendsListPage = () => {
                 <List key={index}>
                   <CheckBox
                     type="checkbox"
+                    id={index.toString()}
                     checked={
-                      selectedFriends.find(
+                      !!selectedFriends.find(
                         (selectedFriend) =>
                           selectedFriend.email === friend.email
                       )
-                        ? true
-                        : false
                     }
                     onChange={(event) =>
                       handleCheckedChange(
@@ -264,7 +262,7 @@ export const FriendsListPage = () => {
                       )
                     }
                   />
-                  <Label>
+                  <Label htmlFor={index.toString()}>
                     <ListItem>
                       {friend.firstName
                         ? friend.firstName + " " + friend.lastName
@@ -317,7 +315,9 @@ const UnorderedList = styled.ul`
 
 const List = styled.li``;
 
-const CheckBox = styled.input``;
+const CheckBox = styled.input`
+  display: none;
+`;
 
 const Label = styled.label`
   display: flex;
@@ -328,6 +328,9 @@ const Label = styled.label`
   margin-bottom: 0.75rem;
   color: ${({ theme }) => theme.palette.secondary.main};
   cursor: pointer;
+  ${CheckBox}:checked + & {
+    background: gray;
+  }
 `;
 
 const ListItem = styled.span`
