@@ -21,7 +21,10 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
     "Users" uf ON f."userId" = uf.id
 WHERE
-    uu.id = user_id OR uf.id = user_id;
+    uu.id = user_id OR uf.id = user_id
+ORDER BY
+    f."registeredAt" DESC;
+
 END;
 $$ LANGUAGE plpgsql;
 
