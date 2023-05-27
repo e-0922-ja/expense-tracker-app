@@ -10,8 +10,10 @@ import { emailRegex, errEmail } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { UUID } from "crypto";
 
 interface Friend {
+  id: UUID;
   firstName: string;
   lastName: string;
   email: string;

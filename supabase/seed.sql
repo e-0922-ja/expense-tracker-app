@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION get_user_friends(user_id uuid)
 RETURNS TABLE (
+    "id" uuid,
     "firstName" varchar,
     "lastName" varchar,
     "email" varchar
@@ -7,6 +8,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
 SELECT
+CASE WHEN uu.id = user_id THEN uf.id ELSE uu.id END AS "id",
     CASE WHEN uu.id = user_id THEN uf."firstName" ELSE uu."firstName" END AS "firstName",
     CASE WHEN uu.id = user_id THEN uf."lastName" ELSE uu."lastName" END AS "lastName",
     CASE WHEN uu.id = user_id AND uf.email IS NOT NULL THEN uf.email
