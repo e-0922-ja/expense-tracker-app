@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { UUID } from "crypto";
+import { Email } from "@mui/icons-material";
 
 interface Friend {
   id: UUID;
@@ -29,6 +30,7 @@ const supabase = createClient(
 );
 
 export const FriendsListPage = () => {
+  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const {
     register,
@@ -81,6 +83,35 @@ export const FriendsListPage = () => {
         }
       }
     }
+  };
+
+  // Check friends to add or not
+  const handleCheckedChange = (
+    id: UUID,
+    email: string,
+    firstName: string,
+    lastName: string,
+    isChecked: boolean
+  ): void => {
+    if (isChecked) {
+      const addFriend: Friend = {
+        id: id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+      };
+      const updatedFriends = [...selectedFriends, addFriend];
+      setSelectedFriends(updatedFriends);
+    } else {
+      removeSelectedFriend(email);
+    }
+  };
+
+  const removeSelectedFriend = (email: string) => {
+    const updatedFriends = selectedFriends.filter(
+      (friend) => friend.email !== email
+    );
+    setSelectedFriends(updatedFriends);
   };
 
   // check if a user has already sent a friend request to the input email address
@@ -213,12 +244,34 @@ export const FriendsListPage = () => {
             {friends!.map((friend: Friend, index) => {
               return (
                 <List key={index}>
-                  <ListItem>
-                    {friend.firstName
-                      ? friend.firstName + " " + friend.lastName
-                      : "-"}
-                  </ListItem>
-                  <ListItem>{friend.email}</ListItem>
+                  <CheckBox
+                    type="checkbox"
+                    checked={
+                      selectedFriends.find(
+                        (selectedFriend) =>
+                          selectedFriend.email === friend.email
+                      )
+                        ? true
+                        : false
+                    }
+                    onChange={(event) =>
+                      handleCheckedChange(
+                        friend.id,
+                        friend.email,
+                        friend.firstName,
+                        friend.lastName,
+                        event.target.checked
+                      )
+                    }
+                  />
+                  <Label>
+                    <ListItem>
+                      {friend.firstName
+                        ? friend.firstName + " " + friend.lastName
+                        : "-"}
+                    </ListItem>
+                    <ListItem>{friend.email}</ListItem>
+                  </Label>
                 </List>
               );
             })}
@@ -257,10 +310,16 @@ const Title = styled.h1`
 
 const UnorderedList = styled.ul`
   padding: 0px;
+  height: 60%;
   width: 500px;
+  overflow: auto;
 `;
 
-const List = styled.li`
+const List = styled.li``;
+
+const CheckBox = styled.input``;
+
+const Label = styled.label`
   display: flex;
   justify-content: space-between;
   border: 2px solid ${({ theme }) => theme.palette.secondary.main};
@@ -268,6 +327,7 @@ const List = styled.li`
   padding: 0.5rem;
   margin-bottom: 0.75rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+  cursor: pointer;
 `;
 
 const ListItem = styled.span`
