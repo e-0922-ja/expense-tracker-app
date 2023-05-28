@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
@@ -17,6 +17,10 @@ import FriendIcon from "../components/FriendIcon";
 import { TransactionCard } from "../components/TransactionCard";
 import { SecondaryButton } from "../components/SecondaryButton";
 import { FormNewExpense } from "../components/FormNewExpense";
+import { createClient } from "@supabase/supabase-js";
+import { StringifyOptions } from "querystring";
+import { Database } from "../../../../supabase/schema";
+import { Category } from "../../types";
 
 interface TransList {
   category: string;
@@ -33,7 +37,14 @@ export const TransactionPage = () => {
   // const [date, setDate] = useState<Dayjs | null>(null);
   const location = useLocation();
   const selectedFriends = location.state?.selectedFriends || [];
+  const [error, setError] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
   console.log(selectedFriends);
+
+  const supabase = createClient<Database>(
+    process.env.REACT_APP_SUPABASE_URL as string,
+    process.env.REACT_APP_SUPABASE_ANON_KEY as string
+  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -49,6 +60,29 @@ export const TransactionPage = () => {
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
   ];
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  // get categories from a table
+  const getCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("Categories")
+        .select("*")
+        .order("sequence", { ascending: true });
+      if (error) {
+        setError(error.message);
+        return false;
+      } else {
+        setCategories(data);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      return false;
+    }
+  };
 
   return (
     <Wrapper>
@@ -99,7 +133,7 @@ export const TransactionPage = () => {
             aria-describedby="modal-modal-description"
           >
             <ModalContainer>
-              <FormNewExpense />
+              <FormNewExpense categories={categories} />
             </ModalContainer>
           </Modal>
         </Section>

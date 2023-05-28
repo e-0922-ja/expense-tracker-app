@@ -12,8 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import { SecondaryButton } from "./SecondaryButton";
+import { Category } from "../../types";
 
-export const FormNewExpense = () => {
+interface ExpenseProps {
+  categories: Category[];
+}
+
+export const FormNewExpense = ({ categories }: ExpenseProps) => {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [category, setCategory] = useState("");
   const [payer, setPayer] = useState("");
@@ -25,20 +30,6 @@ export const FormNewExpense = () => {
   const handleChangePayer = (event: SelectChangeEvent) => {
     setPayer(event.target.value);
   };
-
-  const cateListData = [
-    { label: "Food" },
-    { label: "Entertainment" },
-    { label: "Transportation" },
-    { label: "Cost of Living" },
-    { label: "Utility" },
-    { label: "Entertainment" },
-    { label: "Health" },
-    { label: "Beauty" },
-    { label: "Cloth" },
-    { label: "Beauty" },
-    { label: "Others" },
-  ];
 
   return (
     <form action="">
@@ -69,8 +60,8 @@ export const FormNewExpense = () => {
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {cateListData.map((item) => (
-            <MenuItem value={item.label}>{item.label}</MenuItem>
+          {categories.map((item) => (
+            <MenuItem value={item.id}>{item.name}</MenuItem>
           ))}
         </Select>
       </FormControl>
