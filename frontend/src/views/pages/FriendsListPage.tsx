@@ -33,6 +33,7 @@ export const FriendsListPage = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedError, setSelectedError] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const {
     register,
     handleSubmit,
@@ -82,6 +83,9 @@ export const FriendsListPage = () => {
               reset();
               setError("");
             }
+            setSuccess(
+              `You have successfully sent a friend request to ${email}!`
+            );
           }
         }
       }
@@ -251,7 +255,11 @@ export const FriendsListPage = () => {
           >
             SEND
           </Button>
-          {error && <ErrorText>{error}</ErrorText>}
+          {error ? (
+            <ErrorText>{error}</ErrorText>
+          ) : success ? (
+            <SuccessText>{success}</SuccessText>
+          ) : null}
         </Box>
       </SubContainer>
       <SubContainer>
@@ -312,6 +320,7 @@ const MainContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-top: 3rem;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
@@ -365,9 +374,13 @@ const ListItem = styled.span`
 `;
 
 const ErrorText = styled.div`
-  height: 0.75rem;
-  font-size: 0.7rem;
+  font-size: 1rem;
   color: #ff908d;
+`;
+
+const SuccessText = styled.div`
+  font-size: 1rem;
+  color: #4caf50;
 `;
 
 // ==============================================================
