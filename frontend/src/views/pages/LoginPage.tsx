@@ -21,6 +21,7 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+
 interface CurrentUser {
   email: string;
   password: string;
@@ -119,6 +120,7 @@ export const LoginPage = () => {
 };
 
 const ComponentWrapper = styled.div`
+  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,7 +129,7 @@ const ComponentWrapper = styled.div`
 
 const LoginWrapper = styled.div`
   padding: 20px 0;
-  width: 45%;
+  width: 30%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
