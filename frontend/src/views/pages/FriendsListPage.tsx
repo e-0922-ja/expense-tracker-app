@@ -71,16 +71,17 @@ export const FriendsListPage = () => {
             resultGetFriendEmail,
             email
           );
-
           if (resultInsertFriendship) {
             // ==============================================================
             // implement send email function later
             // ==============================================================
 
             // to retrieve the data to update the friend list
-            getUserFriends();
-            reset();
-            setError("");
+            const resultGetUserFriends = await getUserFriends();
+            if (resultGetUserFriends) {
+              reset();
+              setError("");
+            }
           }
         }
       }
@@ -187,17 +188,22 @@ export const FriendsListPage = () => {
       });
       if (error) {
         setError(error.message);
+        return false;
       } else {
         setFriends(data);
       }
     } catch (error: any) {
       setError(error.message);
+      return false;
     }
   };
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
       setSelectedError("");
+      navigate("/transaction", {
+        state: { selectedFriends },
+      });
     } else {
       setSelectedError("select friends from your friends list");
     }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
   IconButton,
@@ -30,6 +31,9 @@ export const TransactionPage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [open, setOpen] = useState(false);
   // const [date, setDate] = useState<Dayjs | null>(null);
+  const location = useLocation();
+  const selectedFriends = location.state?.selectedFriends || [];
+  console.log(selectedFriends);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
