@@ -3,21 +3,19 @@ import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updatedFriends,
+  removeSelectedFriend,
+} from "../../reducer/selectedFriendsSlice";
 import { RootState } from "../../store/store";
 import Button from "@mui/material/Button";
 import { emailRegex, errEmail } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { Friend } from "../../types";
 import { UUID } from "crypto";
-
-interface Friend {
-  id: UUID;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
 
 interface FriendEmail {
   email: string;
@@ -29,7 +27,7 @@ const supabase = createClient(
 );
 
 export const FriendsListPage = () => {
-  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
+  // const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedError, setSelectedError] = useState("");
   const [error, setError] = useState("");
@@ -41,12 +39,19 @@ export const FriendsListPage = () => {
     reset,
   } = useForm<FriendEmail>();
 
+  const selectedFriendsState = useSelector(
+    (state: RootState) => state.selectedFriends
+  );
+  const selectedFriends = selectedFriendsState.selectedFriends;
+
   const userState = useSelector((state: RootState) => state.user);
   const isLogin = userState.isLogin;
   const userId = userState.user?.id;
   const userEmail = userState.user?.email;
   const userFirstName = userState.user?.firstName; // use it when sending an email
   const userLastName = userState.user?.lastName; // use it when sending an email
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,18 +112,10 @@ export const FriendsListPage = () => {
         lastName: lastName,
         email: email,
       };
-      const updatedFriends = [...selectedFriends, addFriend];
-      setSelectedFriends(updatedFriends);
+      dispatch(updatedFriends(addFriend));
     } else {
-      removeSelectedFriend(email);
+      dispatch(removeSelectedFriend(email));
     }
-  };
-
-  const removeSelectedFriend = (email: string) => {
-    const updatedFriends = selectedFriends.filter(
-      (friend) => friend.email !== email
-    );
-    setSelectedFriends(updatedFriends);
   };
 
   // check if a user has already sent a friend request to the input email address

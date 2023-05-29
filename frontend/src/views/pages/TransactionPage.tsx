@@ -39,7 +39,6 @@ export const TransactionPage = () => {
   const selectedFriends = location.state?.selectedFriends || [];
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  console.log(selectedFriends);
 
   const supabase = createClient<Database>(
     process.env.REACT_APP_SUPABASE_URL as string,

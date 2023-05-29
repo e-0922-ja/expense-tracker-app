@@ -1,35 +1,34 @@
 import styled from "styled-components";
 import Chip from "@mui/material/Chip";
 import { useState } from "react";
-
-interface NameList {
-  key: number;
-  label: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { removeSelectedFriend } from "../../reducer/selectedFriendsSlice";
+import { Friend } from "../../types";
 
 export default function FriendIcon() {
-  const [nameListData, setNameListData] = useState<readonly NameList[]>([
-    { key: 0, label: "Max" },
-    { key: 1, label: "Alex" },
-    { key: 2, label: "Anna" },
-    { key: 3, label: "John" },
-    { key: 4, label: "Taro" },
-  ]);
+  const selectedFriendsState = useSelector(
+    (state: RootState) => state.selectedFriends
+  );
+  const selectedFriends = selectedFriendsState.selectedFriends;
+  const dispatch = useDispatch();
 
-  const handleDelete = (nameToDelete: NameList) => () => {
-    setNameListData((chips) =>
-      chips.filter((chip) => chip.key !== nameToDelete.key)
-    );
+  const handleDelete = (nameToDelete: Friend) => () => {
+    dispatch(removeSelectedFriend(nameToDelete.email));
   };
 
   return (
     <ChipsWrapper>
-      {nameListData.map((data) => {
+      {selectedFriends.map((item) => {
         return (
-          <div key={data.key}>
+          <div key={indexedDB.toString()}>
             <Chip
-              label={data.label}
-              onDelete={handleDelete(data)}
+              label={
+                item.lastName
+                  ? `${item.firstName} ${item.lastName}`
+                  : item.email
+              }
+              onDelete={handleDelete(item)}
               sx={{
                 height: "48px",
                 fontSize: "1rem",
