@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
   IconButton,
@@ -18,7 +17,6 @@ import { TransactionCard } from "../components/TransactionCard";
 import { SecondaryButton } from "../components/SecondaryButton";
 import { FormNewExpense } from "../components/FormNewExpense";
 import { createClient } from "@supabase/supabase-js";
-import { StringifyOptions } from "querystring";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 
@@ -35,8 +33,6 @@ export const TransactionPage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [open, setOpen] = useState(false);
   // const [date, setDate] = useState<Dayjs | null>(null);
-  const location = useLocation();
-  const selectedFriends = location.state?.selectedFriends || [];
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
 
