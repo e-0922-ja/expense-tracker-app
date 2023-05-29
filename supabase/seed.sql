@@ -9,7 +9,7 @@ create table
   ) tablespace pg_default;
 
 INSERT INTO "Categories" (sequence, name)
-VALUES (1, 'Food'), (2, 'Entertainment'), (3, 'Transportation'), (4, 'Cost of Living'), (5, 'Utility'), (6, 'Health'), (7, 'Beauty'), (8, 'Cloth'), (9, 'Others');
+VALUES (1, 'None'), (2, 'Food'), (3, 'Entertainment'), (4, 'Transportation'), (5, 'Cost of Living'), (6, 'Utility'), (7, 'Health'), (8, 'Beauty'), (9, 'Cloth'), (10, 'Others');
 
 CREATE OR REPLACE FUNCTION get_user_friends(user_id uuid)
 RETURNS TABLE (

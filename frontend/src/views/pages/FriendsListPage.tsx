@@ -286,7 +286,7 @@ export const FriendsListPage = () => {
                 <Label htmlFor={index.toString()}>
                   <ListItem>
                     {friend.firstName
-                      ? friend.firstName + " " + friend.lastName
+                      ? `${friend.firstName}  ${friend.lastName}`
                       : "-"}
                   </ListItem>
                   <ListItem>{friend.email}</ListItem>

@@ -24,9 +24,7 @@ export default function FriendIcon() {
           <div key={indexedDB.toString()}>
             <Chip
               label={
-                item.lastName
-                  ? `${item.firstName} ${item.lastName}`
-                  : item.email
+                item.id ? `${item.firstName} ${item.lastName}` : item.email
               }
               onDelete={handleDelete(item)}
               sx={{

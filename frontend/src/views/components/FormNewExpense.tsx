@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { SecondaryButton } from "./SecondaryButton";
 import { Category } from "../../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 interface ExpenseProps {
   categories: Category[];
@@ -22,6 +24,11 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [category, setCategory] = useState("");
   const [payer, setPayer] = useState("");
+
+  const selectedFriendsState = useSelector(
+    (state: RootState) => state.selectedFriends
+  );
+  const selectedFriends = selectedFriendsState.selectedFriends;
 
   const handleChangeCategory = (event: SelectChangeEvent) => {
     setCategory(event.target.value);
@@ -52,14 +59,11 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
       </Typography>
       <FormControl sx={{ minWidth: 120 }}>
         <Select
-          value={category}
+          value={category ? category : categories[0].id.toString()}
           onChange={handleChangeCategory}
           displayEmpty
           inputProps={{ "aria-label": "Without label" }}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
           {categories.map((item) => (
             <MenuItem value={item.id}>{item.name}</MenuItem>
           ))}
@@ -83,11 +87,14 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           displayEmpty
           inputProps={{ "aria-label": "Without label" }}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-
-          <MenuItem value={payer}>Yuki</MenuItem>
+          <MenuItem value={payer}>You</MenuItem>
+          {selectedFriends.map((item) => {
+            return (
+              <MenuItem value={item.email}>
+                {item.id ? `${item.firstName} ${item.lastName}` : item.email}
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
       <SecondaryButton title={"submit"} />
