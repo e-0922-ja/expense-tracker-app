@@ -1,21 +1,13 @@
 import styled from "styled-components";
 import Chip from "@mui/material/Chip";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { removeSelectedFriend } from "../../reducer/selectedFriendsSlice";
-import { Friend } from "../../types";
 
 export default function FriendIcon() {
   const selectedFriendsState = useSelector(
     (state: RootState) => state.selectedFriends
   );
   const selectedFriends = selectedFriendsState.selectedFriends;
-  const dispatch = useDispatch();
-
-  const handleDelete = (nameToDelete: Friend) => () => {
-    dispatch(removeSelectedFriend(nameToDelete.email));
-  };
 
   return (
     <ChipsWrapper>
@@ -26,7 +18,6 @@ export default function FriendIcon() {
               label={
                 item.id ? `${item.firstName} ${item.lastName}` : item.email
               }
-              onDelete={handleDelete(item)}
               sx={{
                 height: "48px",
                 fontSize: "1rem",

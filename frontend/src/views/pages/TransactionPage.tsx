@@ -113,9 +113,6 @@ export const TransactionPage = () => {
           <CategoryTitle>People</CategoryTitle>
           <PeopleSectionContainer>
             <FriendIcon />
-            <ButtonContainer>
-              <SecondaryButton title={"add"} />
-            </ButtonContainer>
           </PeopleSectionContainer>
         </Section>
         <Section>
