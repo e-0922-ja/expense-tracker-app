@@ -1,200 +1,220 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  IconButton,
-  Toolbar,
-  Drawer,
-  useMediaQuery,
-  useTheme,
-  Modal,
-  Box,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DrawerContents } from "../components/DrawerContents";
-import { MainButton } from "../components/MainButton";
-import FriendIcon from "../components/FriendIcon";
-import { TransactionCard } from "../components/TransactionCard";
-import { SecondaryButton } from "../components/SecondaryButton";
-import { FormNewExpense } from "../components/FormNewExpense";
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
+import FriendIcon from "../components/FriendIcon";
+import { MainButton } from "../components/MainButton";
+import { useEffect, useState } from "react";
 import { Category } from "../../types";
+import {
+  Box,
+  FormControl,
+  MenuItem,
+  OutlinedInput,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 
-interface TransList {
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { SubButton } from "../components/SubButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Dayjs } from "dayjs";
+
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
 
 export const TransactionPage = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [open, setOpen] = useState(false);
-  // const [date, setDate] = useState<Dayjs | null>(null);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [date, setDate] = useState<Dayjs | null>(null);
+  const [category, setCategory] = useState("");
+  const [payer, setPayer] = useState("");
 
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
+  const selectedFriendsState = useSelector(
+    (state: RootState) => state.selectedFriends
   );
+  const selectedFriends = selectedFriendsState.selectedFriends;
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  const handleChangeCategory = (event: SelectChangeEvent) => {
+    setCategory(event.target.value);
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const transactionHistory: TransList[] = [
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-  ];
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
+  const handleChangePayer = (event: SelectChangeEvent) => {
+    setPayer(event.target.value);
   };
+
+  const handlesubmit = () => {
+    console.log("cick button");
+  };
+
+  // useEffect(() => {
+  //   getCategories();
+  // }, []);
+
+  // // get categories from a table
+  // const getCategories = async () => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("Categories")
+  //       .select("*")
+  //       .order("sequence", { ascending: true });
+  //     if (error) {
+  //       setError(error.message);
+  //       return false;
+  //     } else {
+  //       console.log(data, "data");
+  //       if (data) {
+  //         console.log(data);
+  //         setCategories(data as Category[]);
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     setError(error.message);
+  //     return false;
+  //   }
+  // };
 
   return (
-    <Wrapper>
-      <NavBox>
-        <DeskTopDrawer variant="permanent" open>
-          <Toolbar />
-          <DrawerContents />
-        </DeskTopDrawer>
-        <MobileDrawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          <Toolbar />
-          <DrawerContents />
-        </MobileDrawer>
-      </NavBox>
-      <MainBox>
-        {isMobile && (
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
+    <MainContainer>
+      <SubContainer>
         <Section>
-          <CategoryTitle>People</CategoryTitle>
+          <Title>With You and </Title>
           <PeopleSectionContainer>
-            <FriendIcon />
+            {/* <FriendIcon /> */}
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <CategoryTitle>Add Transaction</CategoryTitle>
-          <MainButton title={"create"} func={handleOpen} />
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <ModalContainer>
-              <FormNewExpense categories={categories} />
-            </ModalContainer>
-          </Modal>
+          <FormContainer>
+            <InputTitle>Date</InputTitle>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={date}
+                onChange={(newValue) => setDate(newValue)}
+              />
+            </LocalizationProvider>
+
+            <InputTitle>Description</InputTitle>
+
+            <Box>
+              <OutlinedInput placeholder="Please enter text" fullWidth />
+            </Box>
+
+            <InputTitle>Categories</InputTitle>
+
+            <Select
+              value={category}
+              onChange={handleChangePayer}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              fullWidth
+            >
+              <MenuItem value={payer}>You</MenuItem>
+              {selectedFriends.map((item) => {
+                return (
+                  <MenuItem value={item.email}>
+                    {item.id
+                      ? `${item.firstName} ${item.lastName}`
+                      : item.email}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            {/* <Select
+              value={category ? category : categories[0].id.toString()}
+              onChange={handleChangeCategory}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              fullWidth
+            >
+              {categories.map((item) => (
+                <MenuItem value={item.id}>{item.name}</MenuItem>
+              ))}
+            </Select> */}
+
+            <InputTitle>Amount</InputTitle>
+
+            <Box>
+              <OutlinedInput placeholder="Please enter text" fullWidth />
+            </Box>
+
+            <InputTitle>Payer</InputTitle>
+
+            <Select
+              value={payer}
+              onChange={handleChangePayer}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              fullWidth
+            >
+              <MenuItem value={payer}>You</MenuItem>
+              {selectedFriends.map((item) => {
+                return (
+                  <MenuItem value={item.email}>
+                    {item.id
+                      ? `${item.firstName} ${item.lastName}`
+                      : item.email}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+
+            <ButtonContainer>
+              <SubButton title={"create"} func={handlesubmit} />
+            </ButtonContainer>
+          </FormContainer>
         </Section>
-        <Section>
-          <CategoryTitle>Previous History</CategoryTitle>
-          {transactionHistory.map((item, index) => {
-            return <TransactionCard item={item} key={index} />;
-          })}
-        </Section>
-      </MainBox>
-    </Wrapper>
+      </SubContainer>
+    </MainContainer>
   );
 };
 
-const drawerWidth = 290;
-
-const Wrapper = styled.div`
-  display: flex;
+const MainContainer = styled.div`
   height: calc(100% - 64px);
-`;
-
-const NavBox = styled.div`
-  flex-shrink: 0;
-
-  @media (min-width: 600px) {
-    width: ${drawerWidth}px;
-  }
-`;
-
-const DeskTopDrawer = styled(Drawer)`
-  display: none;
-  & .MuiDrawer-paper {
-    box-sizing: border-box;
-    width: ${drawerWidth}px;
-  }
-
-  @media (min-width: 600px) {
-    display: block;
-  }
-`;
-
-const MobileDrawer = styled(Drawer)`
-  display: block;
-  & .MuiDrawer-paper {
-    box-sizing: border-box;
-    width: ${drawerWidth}px;
-  }
-
-  @media (min-width: 600px) {
-    display: none;
-  }
-`;
-
-const MainBox = styled.div`
-  background: ${({ theme }) => theme.palette.primary.light};
-  padding: 50px 200px 50px 120px;
   width: 100%;
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
-  }
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const SubContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 85%;
+  width: 45%;
+  padding: 2rem;
+  background: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const Title = styled.h1`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Section = styled.div`
-  margin-bottom: 80px;
+  width: 80%;
+  margin-bottom: 50px;
 `;
 
-const CategoryTitle = styled.h2`
-  margin-top: 0;
+const FormContainer = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const InputTitle = styled.div`
+  margin-top: 7px;
+  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const PeopleSectionContainer = styled.div`
@@ -204,18 +224,5 @@ const PeopleSectionContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  width: 15%;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const ModalContainer = styled(Box)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  background-color: #fff;
-  padding: 30px;
-  outline: none;
+  margin-top: 50px;
 `;

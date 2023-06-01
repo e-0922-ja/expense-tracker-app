@@ -27,9 +27,6 @@ export const TransactionCard: React.FC<Props> = ({ item }) => {
               <Typography gutterBottom variant="h6" component="div">
                 {item.dispription}
               </Typography>
-              <Typography gutterBottom variant="h5" component="div">
-                ${item.amount}
-              </Typography>
             </DiscriptionTitleContainer>
             <DateContainer>
               <Typography variant="body2" color="text.secondary">
@@ -37,6 +34,11 @@ export const TransactionCard: React.FC<Props> = ({ item }) => {
               </Typography>
             </DateContainer>
           </DiscriptionContainer>
+          <AnountContainer>
+            <Typography gutterBottom variant="h5" component="div">
+              ${item.amount}
+            </Typography>
+          </AnountContainer>
         </ContentWrapper>
       </CardActionArea>
     </TransactionCardWrapper>
@@ -61,7 +63,14 @@ const IconContainer = styled.div`
 `;
 
 const DiscriptionContainer = styled.div`
-  width: 90%;
+  width: 70%;
+`;
+
+const AnountContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
 `;
 
 const DiscriptionTitleContainer = styled.div`
