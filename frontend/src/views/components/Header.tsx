@@ -47,7 +47,7 @@ export const Header = () => {
           theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar style={{ padding: "0 200px 0 66px" }}>
+      <Toolbar style={{ padding: "0 70px" }}>
         <Typography
           sx={{ flexGrow: 1 }}
           onClick={handleNavigateHome}
