@@ -1,5 +1,4 @@
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
-import React from "react";
+import { Card, CardActionArea, Typography } from "@mui/material";
 import styled from "styled-components";
 import PortraitIcon from "@mui/icons-material/Portrait";
 
@@ -14,7 +13,7 @@ interface Props {
   item: TransList;
 }
 
-export const TransactionCard: React.FC<Props> = ({ item }) => {
+export const TransactionCard = ({ item }: Props) => {
   return (
     <TransactionCardWrapper>
       <CardActionArea>
