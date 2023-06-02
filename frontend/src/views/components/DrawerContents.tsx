@@ -13,15 +13,15 @@ import { useNavigate } from "react-router-dom";
 export const DrawerContents = () => {
   const navigate = useNavigate();
   const handleNavigateHistory = () => {
-    navigate("/");
+    navigate("/history");
   };
 
   const handleNavigateExpense = () => {
-    navigate("/");
+    navigate("/expense");
   };
 
   const handleNavigateAccount = () => {
-    navigate("/");
+    navigate("/account");
   };
 
   const toolbarItems = [
