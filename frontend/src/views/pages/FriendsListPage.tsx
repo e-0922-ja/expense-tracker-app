@@ -4,10 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updatedFriends,
-  removeSelectedFriend,
-} from "../../reducer/selectedFriendsSlice";
 import { RootState } from "../../store/store";
 import { emailRegex, errEmail } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +23,7 @@ const supabase = createClient(
 );
 
 export const FriendsListPage = () => {
-  // const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
+  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedError, setSelectedError] = useState("");
   const [error, setError] = useState("");
@@ -38,11 +34,6 @@ export const FriendsListPage = () => {
     formState: { errors },
     reset,
   } = useForm<FriendEmail>();
-
-  const selectedFriendsState = useSelector(
-    (state: RootState) => state.selectedFriends
-  );
-  const selectedFriends = selectedFriendsState.selectedFriends;
 
   const userState = useSelector((state: RootState) => state.user);
   const isLogin = userState.isLogin;
@@ -116,9 +107,14 @@ export const FriendsListPage = () => {
         lastName: lastName,
         email: email,
       };
-      dispatch(updatedFriends(addFriend));
+      setSelectedFriends((prevSelectedFriends) => [
+        ...prevSelectedFriends,
+        addFriend,
+      ]);
     } else {
-      dispatch(removeSelectedFriend(email));
+      setSelectedFriends((prevSelectedFriends) =>
+        prevSelectedFriends.filter((person) => person.email !== email)
+      );
     }
   };
 
@@ -258,7 +254,6 @@ export const FriendsListPage = () => {
       </SubContainer>
       <SubContainer>
         <Title>Friendslist</Title>
-
         <UnorderedList>
           {friends!.map((friend: Friend, index) => {
             return (

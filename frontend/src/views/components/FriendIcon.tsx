@@ -2,18 +2,18 @@ import styled from "styled-components";
 import Chip from "@mui/material/Chip";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { Friend } from "../../types";
 
-export default function FriendIcon() {
-  const selectedFriendsState = useSelector(
-    (state: RootState) => state.selectedFriends
-  );
-  const selectedFriends = selectedFriendsState.selectedFriends;
+interface FriendIconProps {
+  friends: Friend[];
+}
 
+export const FriendIcon: React.FC<FriendIconProps> = ({ friends }) => {
   return (
     <ChipsWrapper>
-      {selectedFriends.map((item) => {
+      {friends.map((item, index) => {
         return (
-          <div key={indexedDB.toString()}>
+          <div key={index}>
             <Chip
               label={
                 item.id ? `${item.firstName} ${item.lastName}` : item.email
@@ -31,7 +31,7 @@ export default function FriendIcon() {
       })}
     </ChipsWrapper>
   );
-}
+};
 
 const ChipsWrapper = styled.div`
   width: 85%;

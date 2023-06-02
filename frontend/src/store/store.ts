@@ -1,13 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import colorModeReducer from "../reducer/colorModeSlice";
 import userReducer from "../reducer/userSlice";
-import selectedFriendsReducer from "../reducer/selectedFriendsSlice";
 
 const store = configureStore({
   reducer: {
     colorMode: colorModeReducer,
     user: userReducer,
-    selectedFriends: selectedFriendsReducer,
   },
 });
 
