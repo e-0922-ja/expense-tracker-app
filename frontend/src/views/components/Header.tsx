@@ -66,7 +66,7 @@ export const Header = () => {
           </StyledIconButton>
           <Text>
             <button onClick={handleLogInOut}>
-              {account.isLogin ? "Log0ut" : "LogIn"}
+              {account.isLogin ? "LogOut" : "LogIn"}
             </button>
           </Text>
           <Text>{account.isLogin ? account.user?.firstName : "Person"}</Text>
