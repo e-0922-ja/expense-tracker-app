@@ -65,7 +65,9 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           inputProps={{ "aria-label": "Without label" }}
         >
           {categories.map((item) => (
-            <MenuItem value={item.id}>{item.name}</MenuItem>
+            <MenuItem key={item.id} value={item.id}>
+              {item.name}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -88,13 +90,11 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           inputProps={{ "aria-label": "Without label" }}
         >
           <MenuItem value={payer}>You</MenuItem>
-          {selectedFriends.map((item) => {
-            return (
-              <MenuItem value={item.email}>
-                {item.id ? `${item.firstName} ${item.lastName}` : item.email}
-              </MenuItem>
-            );
-          })}
+          {selectedFriends.map((item) => (
+            <MenuItem key={item.id} value={item.email}>
+              {item.id ? `${item.firstName} ${item.lastName}` : item.email}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       <SecondaryButton title={"submit"} />
