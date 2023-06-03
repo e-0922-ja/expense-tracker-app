@@ -8,10 +8,12 @@ import { selectTheme } from "./reducer/colorModeSlice";
 import { SignUpPage } from "./views/pages/SignUpPage";
 import { LoginPage } from "./views/pages/LoginPage";
 import { FriendsListPage } from "./views/pages/FriendsListPage";
-
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
 import { TransactionPage } from "./views/pages/TransactionPage";
+import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
+import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
+import { AccountPage } from "./views/pages/AccountPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -28,6 +30,9 @@ function App() {
           <Route path="/friendslist" element={<FriendsListPage />} />
           <Route path="/transaction" element={<TransactionPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route path="/history/:id" element={<HistoryDetailPage />} />
+          <Route path="/history/friends/:id" element={<FriendsHistoryPage />} />
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
       </ThemeProvider>
     </div>
