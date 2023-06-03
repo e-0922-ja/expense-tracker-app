@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import Chip from "@mui/material/Chip";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import { Friend } from "../../types";
 
 interface FriendIconProps {

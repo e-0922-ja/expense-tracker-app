@@ -1,7 +1,6 @@
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import { Card, CardActionArea, Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-import PortraitIcon from "@mui/icons-material/Portrait";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 interface TransList {

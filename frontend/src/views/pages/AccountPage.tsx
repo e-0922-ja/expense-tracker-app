@@ -24,8 +24,6 @@ export const AccountPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navigate = useNavigate();
-
   const [userData, setUserData] = useState({
     firstName: "Yuki",
     lastName: "Kasugai",

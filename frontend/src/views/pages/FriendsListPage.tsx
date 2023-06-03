@@ -192,6 +192,7 @@ export const FriendsListPage = () => {
         return false;
       } else {
         setFriends(data);
+        console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
@@ -275,6 +276,7 @@ export const FriendsListPage = () => {
                       event.target.checked
                     )
                   }
+                  disabled={!friend.id}
                 />
                 <Label htmlFor={index.toString()}>
                   <ListItem>
@@ -310,7 +312,7 @@ const MainContainer = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const SubContainer = styled(Paper)`
+const SubContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;

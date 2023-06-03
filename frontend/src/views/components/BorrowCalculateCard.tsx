@@ -1,7 +1,5 @@
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
-import React from "react";
+import { Card } from "@mui/material";
 import styled from "styled-components";
-import PortraitIcon from "@mui/icons-material/Portrait";
 
 export const BorrowCalculateCard = () => {
   return (

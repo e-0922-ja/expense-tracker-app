@@ -14,7 +14,6 @@ import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
-import { FriendIcon } from "../components/FriendIcon";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
