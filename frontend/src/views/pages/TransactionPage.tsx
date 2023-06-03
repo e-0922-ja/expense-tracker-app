@@ -26,17 +26,16 @@ import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import Face3Icon from "@mui/icons-material/Face3";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
+import { selectUser } from "../../reducer/userSlice";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -55,8 +54,13 @@ export const TransactionPage = () => {
   const [payer, setPayer] = useState("");
 
   const navigate = useNavigate();
-  let location = useLocation();
-  let selectedFriends: Friend[] = location.state.selectedFriends;
+  const location = useLocation();
+  const selectedFriends: Friend[] = location.state.selectedFriends;
+  const account = useSelector(selectUser);
+  const splitters =
+    account.isLogin && account.user
+      ? [account.user, ...selectedFriends]
+      : selectedFriends;
 
   const handleChangeCategory = (event: SelectChangeEvent) => {
     setCategory(event.target.value);
@@ -113,9 +117,9 @@ export const TransactionPage = () => {
     <MainContainer>
       <SubContainer>
         <Section>
-          <Title>With You and </Title>
+          <Title>Create Expense</Title>
           <PeopleSectionContainer>
-            <FriendIcon friends={selectedFriends} />
+            <FriendIcon friends={splitters} />
           </PeopleSectionContainer>
         </Section>
         <Section>
@@ -139,22 +143,35 @@ export const TransactionPage = () => {
                 </StyledBox>
               </SubInputsWrapper>
               <SubInputsWrapper>
-                <InputTitle>Description</InputTitle>
-                <StyledBox>
-                  <OutlinedInput
-                    placeholder="Please enter text"
-                    fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px",
-                      },
-                    }}
-                  />
-                </StyledBox>
+                <InputSelectTitle>Who paid?</InputSelectTitle>
+                <Select
+                  value={
+                    payer || (splitters.length > 0 ? splitters[0].email : "")
+                  }
+                  onChange={handleChangePayer}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                  fullWidth
+                  sx={{
+                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
+                      padding: "14px", // Adjust the padding value according to your needs
+                    },
+                  }}
+                >
+                  {splitters.map((item, index) => {
+                    return (
+                      <MenuItem value={item.email} key={index}>
+                        {item.id
+                          ? `${item.firstName} ${item.lastName}`
+                          : item.email}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
               </SubInputsWrapper>
             </InputsWrapper>
             <InputsWrapper>
-              <ThirdInputsWrapper>
+              <SubInputsWrapper>
                 <InputSelectTitle>Categories</InputSelectTitle>
                 <Select
                   value={
@@ -193,6 +210,18 @@ export const TransactionPage = () => {
                     </MenuItem>
                   ))}
                 </Select>
+                <InputTitle>Description</InputTitle>
+                <StyledBox>
+                  <OutlinedInput
+                    placeholder="Please enter text"
+                    fullWidth
+                    sx={{
+                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
+                        padding: "14px",
+                      },
+                    }}
+                  />
+                </StyledBox>
                 <InputTitle>Date</InputTitle>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
@@ -210,36 +239,38 @@ export const TransactionPage = () => {
                     />
                   </DemoContainer>
                 </LocalizationProvider>
-              </ThirdInputsWrapper>
-              <ThirdInputsWrapper>
-                <InputSelectTitle>Who paid?</InputSelectTitle>
-                <Select
-                  value={payer}
-                  onChange={handleChangePayer}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  fullWidth
-                  sx={{
-                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                      padding: "14px", // Adjust the padding value according to your needs
-                    },
-                  }}
-                >
-                  <MenuItem value={payer}>You</MenuItem>
-                  {selectedFriends.map((item, index) => {
+              </SubInputsWrapper>
+              <SubInputsWrapper>
+                <InputSelectTitle>How will you guys split?</InputSelectTitle>
+                <SplitterContainer>
+                  {splitters.map((friend, index) => {
                     return (
-                      <MenuItem value={item.email} key={index}>
-                        {item.id
-                          ? `${item.firstName} ${item.lastName}`
-                          : item.email}
-                      </MenuItem>
+                      <div key={index}>
+                        <SplitWrapper>
+                          <SplitterName>{friend.firstName}</SplitterName>
+                          <SplitterBox>
+                            <OutlinedInput
+                              placeholder="0.0"
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  $
+                                </InputAdornment>
+                              }
+                              fullWidth
+                              sx={{
+                                "& .MuiInputBase-input.MuiOutlinedInput-input":
+                                  {
+                                    padding: "14px", // Adjust the padding value according to your needs
+                                  },
+                              }}
+                            />
+                          </SplitterBox>
+                        </SplitWrapper>
+                      </div>
                     );
                   })}
-                </Select>
-              </ThirdInputsWrapper>
-              <ThirdInputsWrapper>
-                <InputSelectTitle>How will you split?</InputSelectTitle>
-              </ThirdInputsWrapper>
+                </SplitterContainer>
+              </SubInputsWrapper>
             </InputsWrapper>
 
             <ButtonContainer>
@@ -261,28 +292,27 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
-  background: ${({ theme }) => theme.palette.primary.main};
+  background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
 const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 85%;
-  width: 60%;
-
-  background: ${({ theme }) => theme.palette.primary.main};
+  height: 95%;
+  width: 45%;
+  background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
 const Title = styled.h2`
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Section = styled.div`
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 `;
 
 const FormContainer = styled.form`
@@ -301,17 +331,13 @@ const SubInputsWrapper = styled.div`
   width: 50%;
 `;
 
-const ThirdInputsWrapper = styled.div`
-  width: 33%;
-`;
-
 const InputTitle = styled.div`
-  margin-top: 2rem;
+  margin-top: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const InputSelectTitle = styled.div`
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 8px;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
@@ -328,4 +354,25 @@ const ButtonContainer = styled.div`
 
 const StyledBox = styled(Box)`
   margin-top: 8px;
+`;
+
+const SplitterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const SplitWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SplitterName = styled.div`
+  width: 30%;
+  display: flex;
+  padding-left: 1rem;
+`;
+
+const SplitterBox = styled(Box)`
+  width: 70%;
 `;
