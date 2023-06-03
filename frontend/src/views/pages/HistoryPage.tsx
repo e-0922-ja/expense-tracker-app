@@ -21,6 +21,9 @@ import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
+import { useNavigate } from "react-router-dom";
+import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
+import { LendCalculateCard } from "../components/LendCalculateCard copy";
 
 interface TransList {
   category: string;
@@ -54,6 +57,14 @@ export const HistoryPage = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const navigate = useNavigate();
+  const handleGoToDetail = () => {
+    navigate("/history/1");
+  };
+
+  const handleCoToFriendsHistory = () => {
+    navigate("/history/friends/1");
+  };
   const transactionHistory: TransList[] = [
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
@@ -141,13 +152,28 @@ export const HistoryPage = () => {
               </TabList>
             </Box>
             <TabPanel value="1">
+              <Title>Summary for you</Title>
+              <CalculateCardContainer>
+                <BorrowCalculateCard />
+                <LendCalculateCard />
+              </CalculateCardContainer>
+              <Title>All Expenses</Title>
               {transactionHistory.map((item, index) => (
-                <TransactionCard key={index} item={item} />
+                <TransactionCard
+                  key={index}
+                  item={item}
+                  func={handleGoToDetail}
+                />
               ))}
             </TabPanel>
             <TabPanel value="2">
+              <Title>Previous groups</Title>
               {friendList.map((item, index) => (
-                <FriendsCard key={index} friendName={item} />
+                <FriendsCard
+                  key={index}
+                  friendName={item}
+                  func={handleCoToFriendsHistory}
+                />
               ))}
             </TabPanel>
           </TabContext>
@@ -197,11 +223,23 @@ const MobileDrawer = styled(Drawer)`
 `;
 
 const MainBox = styled.div`
-  background: ${({ theme }) => theme.palette.primary.light};
+  background: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: 100%;
   overflow: auto;
   @media (min-width: 600px) {
     width: calc(100% - ${drawerWidth}px);
   }
+`;
+
+const CalculateCardContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+`;
+
+const Title = styled.h3`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.secondary.main};
 `;

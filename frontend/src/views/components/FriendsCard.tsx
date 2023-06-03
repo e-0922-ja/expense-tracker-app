@@ -1,4 +1,5 @@
 import { Card, CardActionArea, Typography } from "@mui/material";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import React from "react";
 import styled from "styled-components";
 
@@ -8,16 +9,22 @@ interface Name {
 
 interface Props {
   friendName: Name;
+  func: () => void;
 }
 
-export const FriendsCard: React.FC<Props> = ({ friendName }) => {
+export const FriendsCard: React.FC<Props> = ({ friendName, func }) => {
   return (
-    <TransactionCardWrapper>
-      <CardActionArea>
+    <TransactionCardWrapper elevation={0}>
+      <CardActionArea onClick={func}>
         <ContentWrapper>
-          <Typography gutterBottom variant="h6" component="div">
-            {friendName.firstName}
-          </Typography>
+          <IconContainer>
+            <IconCircle>
+              <PeopleAltIcon />
+            </IconCircle>
+          </IconContainer>
+          <NameWrapper>
+            <Typography variant="body1">{friendName.firstName}</Typography>
+          </NameWrapper>
         </ContentWrapper>
       </CardActionArea>
     </TransactionCardWrapper>
@@ -27,11 +34,34 @@ export const FriendsCard: React.FC<Props> = ({ friendName }) => {
 const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
+  border-radius: 10px !important;
+`;
+
+const NameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
-  align-items: center;
   width: 100%;
-  padding: 10px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+`;
+
+const IconCircle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.palette.primary.light};
 `;

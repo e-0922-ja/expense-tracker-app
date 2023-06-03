@@ -2,6 +2,7 @@ import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import PortraitIcon from "@mui/icons-material/Portrait";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 interface TransList {
   category: string;
@@ -12,30 +13,29 @@ interface TransList {
 
 interface Props {
   item: TransList;
+  func: () => void;
 }
 
-export const TransactionCard: React.FC<Props> = ({ item }) => {
+export const TransactionCard: React.FC<Props> = ({ item, func }) => {
   return (
-    <TransactionCardWrapper>
-      <CardActionArea>
+    <TransactionCardWrapper elevation={0}>
+      <CardActionArea onClick={func}>
         <ContentWrapper>
           <IconContainer>
-            <PortraitIcon />
+            <IconCircle>
+              <RestaurantIcon />
+            </IconCircle>
           </IconContainer>
           <DiscriptionContainer>
-            <DiscriptionTitleContainer>
-              <Typography gutterBottom variant="h6" component="div">
-                {item.dispription}
-              </Typography>
-            </DiscriptionTitleContainer>
-            <DateContainer>
-              <Typography variant="body2" color="text.secondary">
-                {item.date}
-              </Typography>
-            </DateContainer>
+            <Typography gutterBottom component="div" style={{ margin: "0" }}>
+              {item.dispription}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.date}
+            </Typography>
           </DiscriptionContainer>
           <AnountContainer>
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography gutterBottom component="div">
               ${item.amount}
             </Typography>
           </AnountContainer>
@@ -48,6 +48,7 @@ export const TransactionCard: React.FC<Props> = ({ item }) => {
 const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
+  border-radius: 10px !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -59,11 +60,22 @@ const IconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 10%;
+  width: 15%;
+`;
+
+const IconCircle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.palette.primary.light};
 `;
 
 const DiscriptionContainer = styled.div`
-  width: 70%;
+  width: 65%;
+  padding: 10px;
 `;
 
 const AnountContainer = styled.div`
@@ -71,15 +83,4 @@ const AnountContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 20%;
-`;
-
-const DiscriptionTitleContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 50px 10px 25px;
-`;
-
-const DateContainer = styled.div`
-  margin: 0 0 25px 25px;
 `;
