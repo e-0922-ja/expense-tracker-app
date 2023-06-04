@@ -27,10 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject",
-    "prettier:base": "prettier --parser typescript --single-quote",
-    "prettier:check": "npm run prettier:base -- --list-different \"src/**/*.{ts,tsx}\"",
-    "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\""
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -49,12 +46,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test && npm run prettier:write",
-      "pre-push": "npm test"
-    }
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
