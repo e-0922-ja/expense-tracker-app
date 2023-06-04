@@ -97,7 +97,7 @@ export const FriendsListPage = () => {
     }
   };
 
-  // Check friends to add or not
+  // check friends to add or not
   const handleCheckedChange = (
     id: UUID,
     email: string,
@@ -136,7 +136,6 @@ export const FriendsListPage = () => {
     }
   };
 
-  // get a friend data
   const getFriendByEmail = async (email: string) => {
     try {
       const { data, error } = await supabase
@@ -182,7 +181,6 @@ export const FriendsListPage = () => {
     }
   };
 
-  // gfor showing a friends list to a user
   const getUserFriendsById = async () => {
     try {
       const { data, error } = await supabase.rpc("get_user_friends", {
