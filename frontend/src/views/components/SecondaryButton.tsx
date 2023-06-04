@@ -6,7 +6,7 @@ interface ButtonProps {
   title: string;
 }
 
-export const SecondaryButton: React.FC<ButtonProps> = ({ title }) => {
+export const SecondaryButton = ({ title }: ButtonProps) => {
   return (
     <MyButton variant="contained" disableRipple>
       {title}
