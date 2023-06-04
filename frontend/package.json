@@ -27,7 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format:js": "wp-scripts format-js",
+		"lint:js": "wp-scripts lint-js"
   },
   "eslintConfig": {
     "extends": [
@@ -47,10 +49,17 @@
       "last 1 safari version"
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test && npm run format:js && npm run lint:js",
+      "pre-push": "npm test"
+    }
+  },
   "devDependencies": {
     "@types/jest": "^29.5.1",
     "@types/node": "^20.1.2",
     "@types/styled-components": "^5.1.26",
+    "husky": "^8.0.3",
     "jest-environment-jsdom": "^29.5.0",
     "ts-jest": "^29.1.0"
   }
