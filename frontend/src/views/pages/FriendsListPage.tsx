@@ -55,7 +55,7 @@ export const FriendsListPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    isLogin ? getUserFriends() : navigate("/");
+    isLogin ? getUserFriendsById() : navigate("/");
   }, []);
 
   const onSubmit = (data: FriendEmail) => {
@@ -67,14 +67,14 @@ export const FriendsListPage = () => {
     if (email === userEmail) {
       setError("You cannot send a friend request to your email address.");
     } else {
-      const resultCountCheckFriendShip = await checkFriendShip(email);
-      if (resultCountCheckFriendShip > 0) {
+      const resultCountFriendShipByEmail = await countFriendShipByEmail(email);
+      if (resultCountFriendShipByEmail > 0) {
         setError("You've already sent a friend request to this email.");
       } else {
-        const resultGetFriendEmail = await getFriend(email);
-        if (resultGetFriendEmail) {
+        const resultGetFriendByEmail = await getFriendByEmail(email);
+        if (resultGetFriendByEmail) {
           const resultInsertFriendship = await insertFriendship(
-            resultGetFriendEmail,
+            resultGetFriendByEmail,
             email
           );
           if (resultInsertFriendship) {
@@ -83,8 +83,8 @@ export const FriendsListPage = () => {
             // ==============================================================
 
             // to retrieve the data to update the friend list
-            const resultGetUserFriends = await getUserFriends();
-            if (resultGetUserFriends) {
+            const resultGetUserFriendsById = await getUserFriendsById();
+            if (resultGetUserFriendsById) {
               reset();
               setError("");
             }
@@ -120,7 +120,7 @@ export const FriendsListPage = () => {
   };
 
   // check if a user has already sent a friend request to the input email address
-  const checkFriendShip = async (email: string) => {
+  const countFriendShipByEmail = async (email: string) => {
     try {
       const { data, error } = await supabase.rpc("check_friendship", {
         user_id: userId,
@@ -137,7 +137,7 @@ export const FriendsListPage = () => {
   };
 
   // get a friend data
-  const getFriend = async (email: string) => {
+  const getFriendByEmail = async (email: string) => {
     try {
       const { data, error } = await supabase
         .from("Users")
@@ -183,7 +183,7 @@ export const FriendsListPage = () => {
   };
 
   // gfor showing a friends list to a user
-  const getUserFriends = async () => {
+  const getUserFriendsById = async () => {
     try {
       const { data, error } = await supabase.rpc("get_user_friends", {
         user_id: userId,
