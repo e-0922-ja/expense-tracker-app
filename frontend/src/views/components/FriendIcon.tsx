@@ -19,7 +19,7 @@ export default function FriendIcon() {
   return (
     <ChipsWrapper>
       {selectedFriends.map((item) => (
-        <div key={indexedDB.toString()}>
+        <div key={item.id}>
           <Chip
             label={item.id ? `${item.firstName} ${item.lastName}` : item.email}
             onDelete={handleDelete(item)}
