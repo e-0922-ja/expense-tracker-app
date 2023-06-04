@@ -38,13 +38,17 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
     setPayer(event.target.value);
   };
 
+  const handleChangeDate = (newValue: Dayjs | null) => {
+    setDate(newValue);
+  };
+
   return (
     <form action="">
       <Typography variant="h6" component="h2">
         Date
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+        <DatePicker value={date} onChange={handleChangeDate} />
       </LocalizationProvider>
       <Typography variant="h6" component="h2">
         Description
