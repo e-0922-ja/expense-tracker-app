@@ -67,8 +67,8 @@ export const FriendsListPage = () => {
     if (email === userEmail) {
       setError("You cannot send a friend request to your email address.");
     } else {
-      const resultCheckFriendShip = await checkFriendShip(email);
-      if (resultCheckFriendShip > 0) {
+      const resultCountCheckFriendShip = await checkFriendShip(email);
+      if (resultCountCheckFriendShip > 0) {
         setError("You've already sent a friend request to this email.");
       } else {
         const resultGetFriendEmail = await getFriend(email);
