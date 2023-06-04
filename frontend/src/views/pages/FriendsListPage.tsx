@@ -106,13 +106,14 @@ export const FriendsListPage = () => {
     isChecked: boolean
   ): void => {
     if (isChecked) {
-      const addFriend: Friend = {
-        id: id,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-      };
-      dispatch(updatedFriends(addFriend));
+      dispatch(
+        updatedFriends({
+          id: id,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+        })
+      );
     } else {
       dispatch(removeSelectedFriend(email));
     }
