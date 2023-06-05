@@ -1,13 +1,13 @@
-import { createClient } from "@supabase/supabase-js";
-import styled from "styled-components";
-import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import styled from 'styled-components';
+import { Button, InputAdornment, InputBase, Paper } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { SupabaseService } from '../../services/supabase';
 import {
   emailRegex,
   errEmail,
@@ -16,12 +16,7 @@ import {
   errPassword,
   errPasswordConf,
   passwordRegex,
-} from "../../constants/regexPattern";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+} from '../../constants/regexPattern';
 
 interface NewUser {
   firstName: string;
@@ -32,7 +27,7 @@ interface NewUser {
 }
 
 export const SignUpPage = () => {
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState('');
 
   const {
     register,
@@ -45,21 +40,28 @@ export const SignUpPage = () => {
 
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
-    const { error } = await supabase.auth.signUp({
+
+    const { isError, message, user } = await SupabaseService.createAuthUser({
       email,
       password,
-      options: {
-        data: {
-          firstName,
-          lastName,
-        },
-      },
+      firstName,
+      lastName,
     });
-    if (error) {
-      setAuthError(error.message);
+    if (isError) {
+      setAuthError(message);
       return;
     }
-    navigate("/login");
+    if (!user) {
+      setAuthError('Something went wrong');
+      return;
+    }
+    const searcUuser = await SupabaseService.findUserByEmail(user.email);
+    if (searcUuser) {
+      setAuthError('User already exists');
+      return;
+    }
+    await SupabaseService.createUser(user);
+    navigate('/login');
   };
 
   return (
@@ -79,7 +81,7 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="First Name"
                 type="text"
-                {...register("firstName", { required: true })}
+                {...register('firstName', { required: true })}
               />
             </InputPaper>
             {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
@@ -92,7 +94,7 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="Last Name"
                 type="text"
-                {...register("lastName", { required: true })}
+                {...register('lastName', { required: true })}
               />
             </InputPaper>
             {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
@@ -105,7 +107,7 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
-                {...register("email", {
+                {...register('email', {
                   required: true,
                   pattern: emailRegex,
                 })}
@@ -121,7 +123,7 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="Password"
                 type="password"
-                {...register("password", {
+                {...register('password', {
                   required: true,
                   pattern: passwordRegex,
                 })}
@@ -137,9 +139,9 @@ export const SignUpPage = () => {
               <InputBase
                 placeholder="Confirm Password"
                 type="password"
-                {...register("confirmPassword", {
+                {...register('confirmPassword', {
                   required: true,
-                  validate: (value) => value === getValues("password"),
+                  validate: (value) => value === getValues('password'),
                 })}
               />
             </InputPaper>
