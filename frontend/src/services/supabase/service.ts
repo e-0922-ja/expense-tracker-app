@@ -29,16 +29,19 @@ class _supabaseService {
   };
 
   fetchUsers = async () => {
-    const { data, error } = await client.from('Users').select('*')
-    console.log(error)
-    console.log(data)
-  }
+    const { data, error } = await client.from('Users').select('*');
+    console.log(error);
+    console.log(data);
+  };
 
   findUserByEmail = async (email: string) => {
-    const { data, error } = await client.from('Users').select('*').eq('email', email);
-    console.log(data)
+    const { data, error } = await client
+      .from('Users')
+      .select('*')
+      .eq('email', email);
+    console.log(data);
     if (error) {
-      console.log(error)
+      console.log(error);
       throw new Error(error.message);
     }
     if (!data.length) {
@@ -51,9 +54,8 @@ class _supabaseService {
       firstName: `${user.firstName}`,
       lastName: `${user.lastName}`,
       email: user.email,
-    }
+    };
   };
-
 
   createUser = async ({
     id,
@@ -72,7 +74,7 @@ class _supabaseService {
       },
     ]);
     if (error) {
-      console.log(error)
+      console.log(error);
       return { isError: true, message: error.message };
     }
     return { isError: false, message: 'Success!' };
