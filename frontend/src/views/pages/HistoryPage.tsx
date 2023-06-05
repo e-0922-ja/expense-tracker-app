@@ -62,8 +62,8 @@ export const HistoryPage = () => {
     navigate("/history/1");
   };
 
-  const handleCoToFriendsHistory = () => {
-    navigate("/history/friends/1");
+  const handleGoToFriendsHistory = () => {
+    navigate("/history/group/1");
   };
   const transactionHistory: TransList[] = [
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
@@ -180,7 +180,7 @@ export const HistoryPage = () => {
                 <FriendsCard
                   key={index}
                   friendName={item.firstName}
-                  func={handleCoToFriendsHistory}
+                  func={handleGoToFriendsHistory}
                 />
               ))}
             </TabPanel>
