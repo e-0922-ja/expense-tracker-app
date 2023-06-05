@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "prettier:base": "prettier --parser typescript --single-quote",
+    "prettier:check": "npm run prettier:base -- --list-different \"frontend/src/**/*.{ts,tsx}\"",
+    "prettier:write": "npm run prettier:base -- --write \"frontend/src/**/*.{ts,tsx}\""
+  }
+}
