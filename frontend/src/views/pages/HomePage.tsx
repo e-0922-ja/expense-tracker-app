@@ -12,6 +12,7 @@ export const HomePage = () => {
   const handleNavigateLogin = () => {
     navigate("/login");
   };
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -34,6 +35,8 @@ export const HomePage = () => {
 };
 
 const Wrapper = styled.div`
+  height: calc(100% - 64px);
+  width: 100%;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
@@ -50,3 +53,4 @@ const Title = styled.h1`
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
+
