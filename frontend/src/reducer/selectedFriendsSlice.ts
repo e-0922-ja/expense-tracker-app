@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { Friend } from "../types";
+import { createSlice } from '@reduxjs/toolkit';
+import { Friend } from '../types';
 
 interface FriendState {
   selectedFriends: Friend[];
@@ -10,7 +10,7 @@ const initialState: FriendState = {
 };
 
 export const selectedFriendsSlice = createSlice({
-  name: "selectedFriends",
+  name: 'selectedFriends',
   initialState,
   reducers: {
     updatedFriends: (state, action) => {

@@ -1,21 +1,21 @@
-import { createClient } from "@supabase/supabase-js";
-import styled from "styled-components";
-import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { login } from "../../reducer/userSlice";
-import { useState } from "react";
+import { createClient } from '@supabase/supabase-js';
+import styled from 'styled-components';
+import { Button, InputAdornment, InputBase, Paper } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { login } from '../../reducer/userSlice';
+import { useState } from 'react';
 import {
   emailRegex,
   errEmail,
   errPassword,
   errUserNotFound,
   passwordRegex,
-} from "../../constants/regexPattern";
+} from '../../constants/regexPattern';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -30,7 +30,7 @@ interface CurrentUser {
 export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState('');
 
   const {
     register,
@@ -63,7 +63,7 @@ export const LoginPage = () => {
 
     dispatch(login(userInfo));
 
-    navigate("/friendslist");
+    navigate('/friendslist');
   };
 
   return (
@@ -83,7 +83,7 @@ export const LoginPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
-                {...register("email", {
+                {...register('email', {
                   required: true,
                   pattern: emailRegex,
                 })}
@@ -99,7 +99,7 @@ export const LoginPage = () => {
               <InputBase
                 placeholder="Password"
                 type="password"
-                {...register("password", {
+                {...register('password', {
                   required: true,
                   pattern: passwordRegex,
                 })}

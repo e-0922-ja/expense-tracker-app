@@ -1,15 +1,15 @@
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./views/pages/HomePage";
-import { Header } from "./views/components/Header";
-import { useSelector } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { selectTheme } from "./reducer/colorModeSlice";
-import { SignUpPage } from "./views/pages/SignUpPage";
-import { LoginPage } from "./views/pages/LoginPage";
-import { FriendsListPage } from "./views/pages/FriendsListPage";
-import { TransactionPage } from "./views/pages/TransactionPage";
-import { Toolbar } from "@mui/material";
+import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { HomePage } from './views/pages/HomePage';
+import { Header } from './views/components/Header';
+import { useSelector } from 'react-redux';
+import { ThemeProvider } from 'styled-components';
+import { selectTheme } from './reducer/colorModeSlice';
+import { SignUpPage } from './views/pages/SignUpPage';
+import { LoginPage } from './views/pages/LoginPage';
+import { FriendsListPage } from './views/pages/FriendsListPage';
+import { TransactionPage } from './views/pages/TransactionPage';
+import { Toolbar } from '@mui/material';
 
 function App() {
   const theme = useSelector(selectTheme);

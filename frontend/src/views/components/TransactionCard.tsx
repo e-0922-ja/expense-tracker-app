@@ -1,6 +1,6 @@
-import { Card, CardActionArea, Typography } from "@mui/material";
-import styled from "styled-components";
-import PortraitIcon from "@mui/icons-material/Portrait";
+import { Card, CardActionArea, Typography } from '@mui/material';
+import styled from 'styled-components';
+import PortraitIcon from '@mui/icons-material/Portrait';
 
 interface TransList {
   category: string;

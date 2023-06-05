@@ -4,37 +4,37 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import HistoryIcon from "@mui/icons-material/History";
-import CreateIcon from "@mui/icons-material/Create";
-import PortraitIcon from "@mui/icons-material/Portrait";
-import { useNavigate } from "react-router-dom";
+} from '@mui/material';
+import HistoryIcon from '@mui/icons-material/History';
+import CreateIcon from '@mui/icons-material/Create';
+import PortraitIcon from '@mui/icons-material/Portrait';
+import { useNavigate } from 'react-router-dom';
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
   const handleNavigateHistory = () => {
-    navigate("/history");
+    navigate('/history');
   };
 
   const handleNavigateExpense = () => {
-    navigate("/expense");
+    navigate('/expense');
   };
 
   const handleNavigateAccount = () => {
-    navigate("/account");
+    navigate('/account');
   };
 
   const toolbarItems = [
-    { text: "History", icon: <HistoryIcon />, func: handleNavigateHistory },
-    { text: "New Expense", icon: <CreateIcon />, func: handleNavigateExpense },
-    { text: "My Account", icon: <PortraitIcon />, func: handleNavigateAccount },
+    { text: 'History', icon: <HistoryIcon />, func: handleNavigateHistory },
+    { text: 'New Expense', icon: <CreateIcon />, func: handleNavigateExpense },
+    { text: 'My Account', icon: <PortraitIcon />, func: handleNavigateAccount },
   ];
 
   return (
-    <List style={{ paddingTop: "35px" }}>
+    <List style={{ paddingTop: '35px' }}>
       {toolbarItems.map((item, index) => (
         <ListItem key={index} disablePadding>
-          <ListItemButton style={{ padding: "10px 45px" }} onClick={item.func}>
+          <ListItemButton style={{ padding: '10px 45px' }} onClick={item.func}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItemButton>

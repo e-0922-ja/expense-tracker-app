@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   IconButton,
   Toolbar,
@@ -8,17 +8,17 @@ import {
   useTheme,
   Modal,
   Box,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DrawerContents } from "../components/DrawerContents";
-import { MainButton } from "../components/MainButton";
-import FriendIcon from "../components/FriendIcon";
-import { TransactionCard } from "../components/TransactionCard";
-import { SecondaryButton } from "../components/SecondaryButton";
-import { FormNewExpense } from "../components/FormNewExpense";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { DrawerContents } from '../components/DrawerContents';
+import { MainButton } from '../components/MainButton';
+import FriendIcon from '../components/FriendIcon';
+import { TransactionCard } from '../components/TransactionCard';
+import { SecondaryButton } from '../components/SecondaryButton';
+import { FormNewExpense } from '../components/FormNewExpense';
+import { createClient } from '@supabase/supabase-js';
+import { Database } from '../../../../supabase/schema';
+import { Category } from '../../types';
 
 interface TransList {
   category: string;
@@ -30,10 +30,10 @@ interface TransList {
 export const TransactionPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
   // const [date, setDate] = useState<Dayjs | null>(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
 
   const supabase = createClient<Database>(
@@ -49,11 +49,11 @@ export const TransactionPage = () => {
   const handleClose = () => setOpen(false);
 
   const transactionHistory: TransList[] = [
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
   ];
 
   useEffect(() => {
@@ -64,9 +64,9 @@ export const TransactionPage = () => {
   const getCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
+        .from('Categories')
+        .select('*')
+        .order('sequence', { ascending: true });
       if (error) {
         setError(error.message);
         return false;
@@ -114,13 +114,13 @@ export const TransactionPage = () => {
           <PeopleSectionContainer>
             <FriendIcon />
             <ButtonContainer>
-              <SecondaryButton title={"add"} />
+              <SecondaryButton title={'add'} />
             </ButtonContainer>
           </PeopleSectionContainer>
         </Section>
         <Section>
           <CategoryTitle>Add Transaction</CategoryTitle>
-          <MainButton title={"create"} func={handleOpen} />
+          <MainButton title={'create'} func={handleOpen} />
           <Modal
             open={open}
             onClose={handleClose}

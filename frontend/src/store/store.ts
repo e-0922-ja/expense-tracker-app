@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
-import colorModeReducer from "../reducer/colorModeSlice";
-import userReducer from "../reducer/userSlice";
-import selectedFriendsReducer from "../reducer/selectedFriendsSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import colorModeReducer from '../reducer/colorModeSlice';
+import userReducer from '../reducer/userSlice';
+import selectedFriendsReducer from '../reducer/selectedFriendsSlice';
 
 const store = configureStore({
   reducer: {
