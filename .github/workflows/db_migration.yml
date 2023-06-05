@@ -7,11 +7,6 @@ on:
     paths:
       - 'supabase/migrations/**'
 
-defaults:
-  run:
-    shell: bash
-    working-directory: backend
-
 jobs:
   migration:
     runs-on: ubuntu-latest
