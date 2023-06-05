@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useState } from 'react';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import {
   Box,
   FormControl,
@@ -10,11 +10,11 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
-} from "@mui/material";
-import { SecondaryButton } from "./SecondaryButton";
-import { Category } from "../../types";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+} from '@mui/material';
+import { SecondaryButton } from './SecondaryButton';
+import { Category } from '../../types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface ExpenseProps {
   categories: Category[];
@@ -22,8 +22,8 @@ interface ExpenseProps {
 
 export const FormNewExpense = ({ categories }: ExpenseProps) => {
   const [date, setDate] = useState<Dayjs | null>(null);
-  const [category, setCategory] = useState("");
-  const [payer, setPayer] = useState("");
+  const [category, setCategory] = useState('');
+  const [payer, setPayer] = useState('');
 
   const selectedFriendsState = useSelector(
     (state: RootState) => state.selectedFriends
@@ -54,7 +54,7 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
         Description
       </Typography>
       <Box component="form" noValidate autoComplete="off">
-        <FormControl sx={{ width: "25ch" }}>
+        <FormControl sx={{ width: '25ch' }}>
           <OutlinedInput placeholder="Please enter text" />
         </FormControl>
       </Box>
@@ -66,7 +66,7 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           value={category ? category : categories[0].id.toString()}
           onChange={handleChangeCategory}
           displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
+          inputProps={{ 'aria-label': 'Without label' }}
         >
           {categories.map((item) => (
             <MenuItem key={item.id} value={item.id}>
@@ -79,7 +79,7 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
         Amount
       </Typography>
       <Box component="form" noValidate autoComplete="off">
-        <FormControl sx={{ width: "25ch" }}>
+        <FormControl sx={{ width: '25ch' }}>
           <OutlinedInput placeholder="Please enter text" />
         </FormControl>
       </Box>
@@ -91,7 +91,7 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           value={payer}
           onChange={handleChangePayer}
           displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
+          inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem value={payer}>You</MenuItem>
           {selectedFriends.map((item) => (
@@ -101,7 +101,7 @@ export const FormNewExpense = ({ categories }: ExpenseProps) => {
           ))}
         </Select>
       </FormControl>
-      <SecondaryButton title={"submit"} />
+      <SecondaryButton title={'submit'} />
     </form>
   );
 };

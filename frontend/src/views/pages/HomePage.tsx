@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   const handleNavigateSignUp = () => {
-    navigate("/signup");
+    navigate('/signup');
   };
 
   const handleNavigateLogin = () => {
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -53,4 +53,3 @@ const Title = styled.h1`
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
 `;
-
