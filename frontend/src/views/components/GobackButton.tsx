@@ -1,11 +1,11 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 
-interface ButtonProps {
+interface GobackButtonProps {
   func: () => void;
 }
 
-export const GobackButton: React.FC<ButtonProps> = ({ func }) => {
+export const GobackButton = ({ func }: GobackButtonProps) => {
   return (
     <IconButton onClick={func}>
       <ArrowBackIcon />

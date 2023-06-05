@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import React from "react";
 
-interface ButtonProps {
+interface SecondaryButtonProps {
   title: string;
 }
 
-export const SecondaryButton: React.FC<ButtonProps> = ({ title }) => {
+export const SecondaryButton = ({ title }: SecondaryButtonProps) => {
   return (
     <MyButton variant="contained" disableRipple>
       {title}

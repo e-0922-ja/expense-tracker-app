@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import React from "react";
 
-interface ButtonProps {
+interface SubButtonProps {
   title: string;
   func: () => void;
 }
 
-export const SubButton: React.FC<ButtonProps> = ({ title, func }) => {
+export const SubButton = ({ title, func }: SubButtonProps) => {
   return (
     <MyButton variant="contained" disableRipple onClick={func} type="submit">
       {title}

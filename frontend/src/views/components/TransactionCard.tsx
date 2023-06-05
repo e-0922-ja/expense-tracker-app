@@ -10,12 +10,12 @@ interface TransList {
   date: string;
 }
 
-interface Props {
+interface TransactionProps {
   item: TransList;
   func: () => void;
 }
 
-export const TransactionCard: React.FC<Props> = ({ item, func }) => {
+export const TransactionCard = ({ item, func }: TransactionProps) => {
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={func}>

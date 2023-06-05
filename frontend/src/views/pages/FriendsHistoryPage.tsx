@@ -17,7 +17,7 @@ import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
-import { LendCalculateCard } from "../components/LendCalculateCard copy";
+import { LendCalculateCard } from "../components/LendCalculateCard";
 
 interface TransList {
   category: string;

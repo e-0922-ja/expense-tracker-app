@@ -6,7 +6,7 @@ interface FriendIconProps {
   friends: Friend[];
 }
 
-export const FriendIcon: React.FC<FriendIconProps> = ({ friends }) => {
+export const FriendIcon = ({ friends }: FriendIconProps) => {
   return (
     <ChipsWrapper>
       {friends.map((item, index) => {

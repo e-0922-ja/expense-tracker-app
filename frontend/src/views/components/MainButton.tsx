@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import React from "react";
 
-interface ButtonProps {
+interface MainButtonProps {
   title: string;
   func: () => void;
 }
 
-export const MainButton: React.FC<ButtonProps> = ({ title, func }) => {
+export const MainButton = ({ title, func }: MainButtonProps) => {
   return (
     <MyButton variant="contained" disableRipple onClick={func}>
       {title}

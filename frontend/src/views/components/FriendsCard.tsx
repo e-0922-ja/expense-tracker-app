@@ -7,12 +7,12 @@ interface Name {
   firstName: string;
 }
 
-interface Props {
+interface FriendsCardProps {
   friendName: Name;
   func: () => void;
 }
 
-export const FriendsCard: React.FC<Props> = ({ friendName, func }) => {
+export const FriendsCard = ({ friendName, func }: FriendsCardProps) => {
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={func}>
