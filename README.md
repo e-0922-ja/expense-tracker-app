@@ -52,6 +52,27 @@ npm run start
 - [Frontend]http://localhost:3000
 - [Supabase]http://localhost:54321
 
+## Migrate database
+
+1. Edit table schema with [Supabase SQL Editor](https://supabase.com/docs/guides/database/overview#the-sql-editor).
+
+2. After editing tables, run the following command to create migration files. Refer [this URL](https://supabase.com/docs/reference/cli/supabase-db-diff)
+
+```bash
+supabase db diff --file <change name>
+```
+
+For example:
+
+```bash
+supabase db diff --file add-users-table
+Connecting to local database...
+Creating shadow database...
+Applying migration 20230602141215_add-users-table.sql...
+Diffing schemas: auth,extensions,public,storage
+```
+
+-> Created supabase/migrations/20230602141215_add-users-table.sql
 ## Run the edge functions
 
 ```bash
