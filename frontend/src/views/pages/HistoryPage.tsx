@@ -154,8 +154,16 @@ export const HistoryPage = () => {
             <TabPanel value="1">
               <Title>Summary for you</Title>
               <CalculateCardContainer>
-                <BorrowCalculateCard />
-                <LendCalculateCard />
+                <BorrowCalculateCard
+                  name={"Megan"}
+                  amount={200}
+                  totalAmount={300}
+                />
+                <LendCalculateCard
+                  name={"Megan"}
+                  amount={200}
+                  totalAmount={300}
+                />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {transactionHistory.map((item, index) => (

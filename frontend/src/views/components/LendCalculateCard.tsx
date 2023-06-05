@@ -2,7 +2,17 @@ import { Card } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 
-export const LendCalculateCard = () => {
+interface LendCalculateCardProps {
+  name: string;
+  amount: number;
+  totalAmount: number;
+}
+
+export const LendCalculateCard = ({
+  name,
+  amount,
+  totalAmount,
+}: LendCalculateCardProps) => {
   return (
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
@@ -10,21 +20,13 @@ export const LendCalculateCard = () => {
           <SubContainer>
             <BorrowTitle>Lend</BorrowTitle>
             <CalculateContainer>
-              <CalculateName>Megan</CalculateName>
-              <CalculateAmount>$200</CalculateAmount>
-            </CalculateContainer>
-            <CalculateContainer>
-              <CalculateName>Bob</CalculateName>
-              <CalculateAmount>$10</CalculateAmount>
-            </CalculateContainer>
-            <CalculateContainer>
-              <CalculateName>Alex</CalculateName>
-              <CalculateAmount>$50</CalculateAmount>
+              <CalculateName>{name}</CalculateName>
+              <CalculateAmount>${amount}</CalculateAmount>
             </CalculateContainer>
           </SubContainer>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>$1000</BorrowTotal>
+            <BorrowTotal>${totalAmount}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>

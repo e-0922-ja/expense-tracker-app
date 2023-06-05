@@ -1,7 +1,17 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
 
-export const BorrowCalculateCard = () => {
+interface BorrowCalculateCardProps {
+  name: string;
+  amount: number;
+  totalAmount: number;
+}
+
+export const BorrowCalculateCard = ({
+  name,
+  amount,
+  totalAmount,
+}: BorrowCalculateCardProps) => {
   return (
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
@@ -9,21 +19,13 @@ export const BorrowCalculateCard = () => {
           <SubContainer>
             <BorrowTitle>Borrow</BorrowTitle>
             <CalculateContainer>
-              <CalculateName>Megan</CalculateName>
-              <CalculateAmount>$200</CalculateAmount>
-            </CalculateContainer>
-            <CalculateContainer>
-              <CalculateName>Bob</CalculateName>
-              <CalculateAmount>$10</CalculateAmount>
-            </CalculateContainer>
-            <CalculateContainer>
-              <CalculateName>Alex</CalculateName>
-              <CalculateAmount>$50</CalculateAmount>
+              <CalculateName>{name}</CalculateName>
+              <CalculateAmount>${amount}</CalculateAmount>
             </CalculateContainer>
           </SubContainer>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>$1000</BorrowTotal>
+            <BorrowTotal>${totalAmount}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>
