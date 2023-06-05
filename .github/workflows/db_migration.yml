@@ -13,12 +13,11 @@ jobs:
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-      PROJECT_ID: kxhxastqrugqqhspyczs
 
     steps:
       - uses: actions/checkout@v3
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase link --project-ref $PROJECT_ID
+      - run: supabase link --project-ref kxhxastqrugqqhspyczs
       - run: supabase db push

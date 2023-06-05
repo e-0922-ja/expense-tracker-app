@@ -66,7 +66,6 @@ For example:
 
 ```bash
 supabase db diff --file add-users-table
-
 Connecting to local database...
 Creating shadow database...
 Applying migration 20230602141215_add-users-table.sql...
@@ -74,7 +73,6 @@ Diffing schemas: auth,extensions,public,storage
 ```
 
 -> Created supabase/migrations/20230602141215_add-users-table.sql
-
 ## Run the edge functions
 
 ```bash
