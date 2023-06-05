@@ -76,18 +76,8 @@ export const FriendsHistoryPage = () => {
     }
   };
 
-  const [value, setValue] = useState("1");
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
   const handleGoBack = () => {
     navigate("/history");
-  };
-
-  const handleGoToDetail = () => {
-    navigate("/history/1");
   };
 
   return (
@@ -102,7 +92,7 @@ export const FriendsHistoryPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           <Toolbar />
@@ -145,11 +135,7 @@ export const FriendsHistoryPage = () => {
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {transactionHistory.map((item, index) => (
-                <TransactionCard
-                  key={index}
-                  item={item}
-                  func={handleGoToDetail}
-                />
+                <TransactionCard key={index} item={item} />
               ))}
             </TransactionCardContainer>
           </DetailBox>

@@ -2,6 +2,7 @@ import { Card, CardActionArea, Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
+import { useNavigate } from "react-router-dom";
 
 interface TransList {
   category: string;
@@ -12,13 +13,16 @@ interface TransList {
 
 interface TransactionProps {
   item: TransList;
-  func: () => void;
 }
 
-export const TransactionCard = ({ item, func }: TransactionProps) => {
+export const TransactionCard = ({ item }: TransactionProps) => {
+  const navigate = useNavigate();
+  const handleGoToDetail = () => {
+    navigate("/history/1");
+  };
   return (
     <TransactionCardWrapper elevation={0}>
-      <CardActionArea onClick={func}>
+      <CardActionArea onClick={handleGoToDetail}>
         <ContentWrapper>
           <IconContainer>
             <IconCircle>

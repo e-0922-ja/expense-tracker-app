@@ -54,17 +54,6 @@ export const HistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const navigate = useNavigate();
-  const handleGoToDetail = () => {
-    navigate("/history/1");
-  };
-
-  const handleGoToFriendsHistory = () => {
-    navigate("/history/group/1");
-  };
   const transactionHistory: TransList[] = [
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
     { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
@@ -167,21 +156,13 @@ export const HistoryPage = () => {
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {transactionHistory.map((item, index) => (
-                <TransactionCard
-                  key={index}
-                  item={item}
-                  func={handleGoToDetail}
-                />
+                <TransactionCard key={index} item={item} />
               ))}
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
               {friendList.map((item, index) => (
-                <FriendsCard
-                  key={index}
-                  friendName={item.firstName}
-                  func={handleGoToFriendsHistory}
-                />
+                <FriendsCard key={index} friendName={item.firstName} />
               ))}
             </TabPanel>
           </TabContext>

@@ -2,16 +2,20 @@ import { Card, CardActionArea, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 interface FriendsCardProps {
   friendName: string;
-  func: () => void;
 }
 
-export const FriendsCard = ({ friendName, func }: FriendsCardProps) => {
+export const FriendsCard = ({ friendName }: FriendsCardProps) => {
+  const navigate = useNavigate();
+  const handleGoToFriendsHistory = () => {
+    navigate("/history/group/1");
+  };
   return (
     <TransactionCardWrapper elevation={0}>
-      <CardActionArea onClick={func}>
+      <CardActionArea onClick={handleGoToFriendsHistory}>
         <ContentWrapper>
           <IconContainer>
             <IconCircle>
