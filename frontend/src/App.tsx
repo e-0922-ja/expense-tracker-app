@@ -10,7 +10,7 @@ import { LoginPage } from "./views/pages/LoginPage";
 import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
-import { TransactionPage } from "./views/pages/TransactionPage";
+import { PaymentPage } from "./views/pages/PaymentPage";
 import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
@@ -27,11 +27,11 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/friendslist" element={<FriendsListPage />} />
-          <Route path="/transaction" element={<TransactionPage />} />
+          <Route path="/expenses/friendslist" element={<FriendsListPage />} />
+          <Route path="/expenses/payment" element={<PaymentPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/history/:id" element={<HistoryDetailPage />} />
-          <Route path="/history/friends/:id" element={<FriendsHistoryPage />} />
+          <Route path="/history/group/:id" element={<FriendsHistoryPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Routes>
       </ThemeProvider>

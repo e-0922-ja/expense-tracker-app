@@ -46,7 +46,7 @@ interface CategoryIcon {
   category: string;
   icon: React.ReactElement;
 }
-export const TransactionPage = () => {
+export const PaymentPage = () => {
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [date, setDate] = useState<Dayjs | null>(null);
