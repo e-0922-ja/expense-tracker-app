@@ -3,12 +3,8 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import React from "react";
 import styled from "styled-components";
 
-interface Name {
-  firstName: string;
-}
-
 interface FriendsCardProps {
-  friendName: Name;
+  friendName: string;
   func: () => void;
 }
 
@@ -23,7 +19,7 @@ export const FriendsCard = ({ friendName, func }: FriendsCardProps) => {
             </IconCircle>
           </IconContainer>
           <NameWrapper>
-            <Typography variant="body1">{friendName.firstName}</Typography>
+            <Typography variant="body1">{friendName}</Typography>
           </NameWrapper>
         </ContentWrapper>
       </CardActionArea>

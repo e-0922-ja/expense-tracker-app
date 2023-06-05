@@ -179,7 +179,7 @@ export const HistoryPage = () => {
               {friendList.map((item, index) => (
                 <FriendsCard
                   key={index}
-                  friendName={item}
+                  friendName={item.firstName}
                   func={handleCoToFriendsHistory}
                 />
               ))}
