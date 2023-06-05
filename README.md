@@ -85,6 +85,9 @@ For example, you can fetch users by the following command.
 curl localhost:54321/functions/v1/users
 ```
 
+## Prepare lint
+To run lint, you need to install the husky and prettier. So please run `npm i` on root directory
+
 ## Frontend Test
 
 ```bash
