@@ -30,7 +30,9 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
 
-interface TransList {
+interface TransactionHistory {
+  id: number;
+  paidPerson: string;
   category: string;
   dispription: string;
   amount: number;
@@ -38,7 +40,14 @@ interface TransList {
 }
 
 interface Dammy {
+  id: number;
   firstName: string;
+  splitBill: number;
+}
+
+interface CategoryIcon {
+  category: string;
+  icon: React.ReactElement;
 }
 
 export const HistoryDetailPage = () => {
@@ -76,18 +85,32 @@ export const HistoryDetailPage = () => {
 
   const navigate = useNavigate();
 
-  const transactionHistory: TransList[] = [
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-  ];
+  const transactionHistory: TransactionHistory = {
+    id: 1,
+    paidPerson: "Yuki",
+    category: "Food",
+    dispription: "starbucks",
+    amount: 123,
+    date: "5/23",
+  };
 
   const dammy: Dammy[] = [
-    { firstName: "Max" },
-    { firstName: "Bob" },
-    { firstName: "Anna" },
+    { id: 1, firstName: "Max", splitBill: 100 },
+    { id: 2, firstName: "Bob", splitBill: 200 },
+    { id: 3, firstName: "Anna", splitBill: 300 },
+  ];
+
+  const categoryIcons: CategoryIcon[] = [
+    { category: "Food", icon: <RestaurantIcon /> },
+    { category: "Entertainment", icon: <MusicNoteIcon /> },
+    { category: "Transportation", icon: <DirectionsTransitIcon /> },
+    { category: "Cost of Living", icon: <HouseIcon /> },
+    { category: "Utility", icon: <LightIcon /> },
+    { category: "Health", icon: <MonitorHeartIcon /> },
+    { category: "Beauty", icon: <Face3Icon /> },
+    { category: "Cloth", icon: <ShoppingCartIcon /> },
+    { category: "Others", icon: <HelpOutlineIcon /> },
+    { category: "None", icon: <HorizontalRuleIcon /> },
   ];
 
   useEffect(() => {
@@ -111,16 +134,6 @@ export const HistoryDetailPage = () => {
       setError(error.message);
       return false;
     }
-  };
-
-  const [value, setValue] = useState("1");
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  const handlesubmit = () => {
-    navigate("/history");
   };
 
   const handleGoBack = () => {
@@ -161,7 +174,7 @@ export const HistoryDetailPage = () => {
           <GobackButton func={handleGoBack} />
           <DetailBox>
             <Section>
-              <Title>StarBucks</Title>
+              <Title>{transactionHistory.dispription}</Title>
             </Section>
             <Section>
               <FormContainer>
@@ -169,13 +182,13 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <TopicTitle>Amount</TopicTitle>
                     <StyledBox>
-                      <Data>$100</Data>
+                      <Data>{transactionHistory.amount}</Data>
                     </StyledBox>
                   </SubInputsWrapper>
                   <SubInputsWrapper>
                     <TopicTitle>Who paid?</TopicTitle>
                     <StyledBox>
-                      <Data>Yuki</Data>
+                      <Data>{transactionHistory.paidPerson}</Data>
                     </StyledBox>
                   </SubInputsWrapper>
                 </InputsWrapper>
@@ -183,26 +196,31 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <TopicTitle>Date</TopicTitle>
                     <StyledBox>
-                      <Data>2023/06/02</Data>
+                      <Data>{transactionHistory.date}</Data>
                     </StyledBox>
                     <TopicTitle>Categories</TopicTitle>
                     <StyledBox>
                       <CategoryData>
                         <IconContainer>
                           <IconCircle>
-                            <RestaurantIcon />
+                            {
+                              categoryIcons.find(
+                                (item) =>
+                                  item.category === transactionHistory.category
+                              )?.icon
+                            }
                           </IconCircle>
                         </IconContainer>
-                        Food
+                        {transactionHistory.category}
                       </CategoryData>
                     </StyledBox>
                   </SubInputsWrapper>
                   <SubInputsWrapper>
                     <InputSelectTitle>Already Have Returned?</InputSelectTitle>
                     <SplitterContainer>
-                      {dammy.map((friend, index) => {
+                      {dammy.map((friend) => {
                         return (
-                          <div key={index}>
+                          <div key={friend.id}>
                             <SplitWrapper>
                               <Checkbox
                                 checked={checked}
@@ -212,7 +230,7 @@ export const HistoryDetailPage = () => {
                               <SplitterName>{friend.firstName}</SplitterName>
                               <SplitterBox>
                                 <StyledBox>
-                                  <Data>$100</Data>
+                                  <Data>${friend.splitBill}</Data>
                                 </StyledBox>
                               </SplitterBox>
                             </SplitWrapper>

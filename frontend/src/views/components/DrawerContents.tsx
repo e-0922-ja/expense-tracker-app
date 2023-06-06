@@ -23,8 +23,18 @@ export const DrawerContents = () => {
   };
 
   const toolbarItems = [
-    { text: "History", icon: <HistoryIcon />, func: handleNavigateHistory },
-    { text: "My Account", icon: <PortraitIcon />, func: handleNavigateAccount },
+    {
+      text: "History",
+      icon: <HistoryIcon />,
+      func: handleNavigateHistory,
+      id: 1,
+    },
+    {
+      text: "My Account",
+      icon: <PortraitIcon />,
+      func: handleNavigateAccount,
+      id: 2,
+    },
   ];
 
   return (
@@ -33,8 +43,8 @@ export const DrawerContents = () => {
         <MainButton title={"create"} />
       </ButtonContainer>
       <StyledList>
-        {toolbarItems.map((item, index) => (
-          <ListItem key={index} disablePadding>
+        {toolbarItems.map((item) => (
+          <ListItem key={item.id} disablePadding>
             <StyledListItemButton onClick={item.func}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />

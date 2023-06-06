@@ -9,9 +9,9 @@ interface FriendIconProps {
 export const FriendIcon = ({ friends }: FriendIconProps) => {
   return (
     <ChipsWrapper>
-      {friends.map((item, index) => {
+      {friends.map((item) => {
         return (
-          <div key={index}>
+          <div key={item.id}>
             <StyledChips
               label={
                 item.id ? `${item.firstName} ${item.lastName}` : item.email

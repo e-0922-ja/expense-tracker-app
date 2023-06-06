@@ -21,11 +21,13 @@ import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
-import { useNavigate } from "react-router-dom";
+
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 
-interface TransList {
+interface TransactionHistory {
+  id: number;
+  paidPerson: string;
   category: string;
   dispription: string;
   amount: number;
@@ -33,6 +35,7 @@ interface TransList {
 }
 
 interface Name {
+  id: number;
   firstName: string;
 }
 
@@ -54,20 +57,55 @@ export const HistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const transactionHistory: TransList[] = [
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+  const transactionHistory: TransactionHistory[] = [
+    {
+      id: 1,
+      paidPerson: "Yuki",
+      category: "Food",
+      dispription: "starbucks",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 2,
+      paidPerson: "Hana",
+      category: "Food",
+      dispription: "Korean",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 3,
+      paidPerson: "Kota",
+      category: "Food",
+      dispription: "Chinese",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 4,
+      paidPerson: "Haruka",
+      category: "Food",
+      dispription: "Itarian",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 5,
+      paidPerson: "Akito",
+      category: "Food",
+      dispription: "French",
+      amount: 123,
+      date: "5/23",
+    },
   ];
 
   const friendList: Name[] = [
-    { firstName: "yuki" },
-    { firstName: "anna" },
-    { firstName: "max" },
-    { firstName: "tom" },
-    { firstName: "Bob" },
+    { id: 1, firstName: "yuki" },
+    { id: 2, firstName: "anna" },
+    { id: 3, firstName: "max" },
+    { id: 4, firstName: "tom" },
+    { id: 5, firstName: "Bob" },
   ];
 
   useEffect(() => {
@@ -111,7 +149,7 @@ export const HistoryPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           <Toolbar />
@@ -131,7 +169,7 @@ export const HistoryPage = () => {
         )}
         <SubBox>
           <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <StyledBox>
               <TabList
                 onChange={handleChange}
                 aria-label="lab API tabs example"
@@ -139,7 +177,7 @@ export const HistoryPage = () => {
                 <Tab label="ALL" value="1" />
                 <Tab label="Friends" value="2" />
               </TabList>
-            </Box>
+            </StyledBox>
             <TabPanel value="1">
               <Title>Summary for you</Title>
               <CalculateCardContainer>
@@ -155,14 +193,14 @@ export const HistoryPage = () => {
                 />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item, index) => (
-                <TransactionCard key={index} item={item} />
+              {transactionHistory.map((item) => (
+                <TransactionCard key={item.id} item={item} />
               ))}
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
-              {friendList.map((item, index) => (
-                <FriendsCard key={index} friendName={item.firstName} />
+              {friendList.map((item) => (
+                <FriendsCard key={item.id} friendName={item.firstName} />
               ))}
             </TabPanel>
           </TabContext>
@@ -235,4 +273,8 @@ const Title = styled.h3`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const StyledBox = styled.div`
+  border-bottom: 1px solid #000;
 `;

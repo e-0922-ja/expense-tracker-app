@@ -19,7 +19,9 @@ import { useNavigate } from "react-router-dom";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 
-interface TransList {
+interface TransactionHistory {
+  id: number;
+  paidPerson: string;
   category: string;
   dispription: string;
   amount: number;
@@ -45,12 +47,47 @@ export const FriendsHistoryPage = () => {
 
   const navigate = useNavigate();
 
-  const transactionHistory: TransList[] = [
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
-    { category: "food", dispription: "starbucks", amount: 123, date: "5/23" },
+  const transactionHistory: TransactionHistory[] = [
+    {
+      id: 1,
+      paidPerson: "Yuki",
+      category: "Food",
+      dispription: "starbucks",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 2,
+      paidPerson: "Hana",
+      category: "Food",
+      dispription: "Korean",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 3,
+      paidPerson: "Kota",
+      category: "Food",
+      dispription: "Chinese",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 4,
+      paidPerson: "Haruka",
+      category: "Food",
+      dispription: "Itarian",
+      amount: 123,
+      date: "5/23",
+    },
+    {
+      id: 5,
+      paidPerson: "Akito",
+      category: "Food",
+      dispription: "French",
+      amount: 123,
+      date: "5/23",
+    },
   ];
 
   useEffect(() => {
@@ -134,8 +171,8 @@ export const FriendsHistoryPage = () => {
                 />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item, index) => (
-                <TransactionCard key={index} item={item} />
+              {transactionHistory.map((item) => (
+                <TransactionCard key={item.id} item={item} />
               ))}
             </TransactionCardContainer>
           </DetailBox>
