@@ -1,21 +1,15 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { MainButton } from "../components/MainButton";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-
 import { useEffect, useState } from "react";
 import { Category } from "../../types";
 import {
   Box,
-  FormControl,
   InputAdornment,
   MenuItem,
   OutlinedInput,
-  Paper,
   Select,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
@@ -128,7 +122,7 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
                 <StyledBox>
-                  <OutlinedInput
+                  <StyledOutlinedInput
                     placeholder="0.0"
                     startAdornment={
                       <InputAdornment position="start">$</InputAdornment>
@@ -212,14 +206,9 @@ export const PaymentPage = () => {
                 </Select>
                 <InputTitle>Description</InputTitle>
                 <StyledBox>
-                  <OutlinedInput
+                  <StyledOutlinedInput
                     placeholder="Please enter text"
                     fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px",
-                      },
-                    }}
                   />
                 </StyledBox>
                 <InputTitle>Date</InputTitle>
@@ -228,14 +217,6 @@ export const PaymentPage = () => {
                     <DatePicker
                       value={date}
                       onChange={(newValue) => setDate(newValue)}
-                      sx={{
-                        "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                          padding: "14px",
-                        },
-                        "& .MuiStack-root": {
-                          paddingTop: "4px",
-                        },
-                      }}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -249,7 +230,7 @@ export const PaymentPage = () => {
                         <SplitWrapper>
                           <SplitterName>{friend.firstName}</SplitterName>
                           <SplitterBox>
-                            <OutlinedInput
+                            <StyledOutlinedInput
                               placeholder="0.0"
                               startAdornment={
                                 <InputAdornment position="start">
@@ -257,12 +238,6 @@ export const PaymentPage = () => {
                                 </InputAdornment>
                               }
                               fullWidth
-                              sx={{
-                                "& .MuiInputBase-input.MuiOutlinedInput-input":
-                                  {
-                                    padding: "14px", // Adjust the padding value according to your needs
-                                  },
-                              }}
                             />
                           </SplitterBox>
                         </SplitWrapper>
@@ -375,4 +350,10 @@ const SplitterName = styled.div`
 
 const SplitterBox = styled(Box)`
   width: 70%;
+`;
+
+const StyledOutlinedInput = styled(OutlinedInput)`
+  && .MuiInputBase-input.MuiOutlinedInput-input {
+    padding: 14px;
+  }
 `;

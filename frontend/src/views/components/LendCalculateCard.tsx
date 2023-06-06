@@ -17,13 +17,13 @@ export const LendCalculateCard = ({
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
         <Container>
-          <SubContainer>
+          <div>
             <BorrowTitle>Lend</BorrowTitle>
             <CalculateContainer>
               <CalculateName>{name}</CalculateName>
               <CalculateAmount>${amount}</CalculateAmount>
             </CalculateContainer>
-          </SubContainer>
+          </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
             <BorrowTotal>${totalAmount}</BorrowTotal>
@@ -51,8 +51,6 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
 `;
-
-const SubContainer = styled.div``;
 
 const BorrowTitle = styled.h3`
   margin: 0 0 1rem 0;

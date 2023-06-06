@@ -6,7 +6,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import CreateIcon from "@mui/icons-material/Create";
 import PortraitIcon from "@mui/icons-material/Portrait";
 import { useNavigate } from "react-router-dom";
 import { MainButton } from "./MainButton";
@@ -17,10 +16,6 @@ export const DrawerContents = () => {
 
   const handleNavigateHistory = () => {
     navigate("/history");
-  };
-
-  const handleNavigateTransaction = () => {
-    navigate("/friendslist");
   };
 
   const handleNavigateAccount = () => {
@@ -35,21 +30,18 @@ export const DrawerContents = () => {
   return (
     <>
       <ButtonContainer>
-        <MainButton title={"create"} func={handleNavigateTransaction} />
+        <MainButton title={"create"} />
       </ButtonContainer>
-      <List style={{ paddingTop: "35px" }}>
+      <StyledList>
         {toolbarItems.map((item, index) => (
           <ListItem key={index} disablePadding>
-            <ListItemButton
-              style={{ padding: "10px 45px" }}
-              onClick={item.func}
-            >
+            <StyledListItemButton onClick={item.func}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
-            </ListItemButton>
+            </StyledListItemButton>
           </ListItem>
         ))}
-      </List>
+      </StyledList>
     </>
   );
 };
@@ -60,4 +52,12 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledList = styled(List)`
+  padding-top: 1rem !important;
+`;
+
+const StyledListItemButton = styled(ListItemButton)`
+  padding: 0.5rem 3.5rem !important;
 `;

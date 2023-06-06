@@ -12,17 +12,10 @@ export const FriendIcon = ({ friends }: FriendIconProps) => {
       {friends.map((item, index) => {
         return (
           <div key={index}>
-            <Chip
+            <StyledChips
               label={
                 item.id ? `${item.firstName} ${item.lastName}` : item.email
               }
-              sx={{
-                height: "48px",
-                fontSize: "1rem",
-                borderRadius: "4px",
-                padding: "0 10px",
-                margin: "0 10px 10px 0",
-              }}
             />
           </div>
         );
@@ -35,4 +28,12 @@ const ChipsWrapper = styled.div`
   width: 85%;
   display: flex;
   flex-wrap: wrap;
+`;
+
+const StyledChips = styled(Chip)`
+  height: 48px !important;
+  font-size: 1rem !important;
+  border-radius: 4px !important;
+  padding: 0 10px !important;
+  margin: 0 10px 10px 0 !important;
 `;

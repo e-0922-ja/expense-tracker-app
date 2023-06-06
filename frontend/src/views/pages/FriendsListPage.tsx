@@ -42,7 +42,6 @@ export const FriendsListPage = () => {
   const userFirstName = userState.user?.firstName; // use it when sending an email
   const userLastName = userState.user?.lastName; // use it when sending an email
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -203,7 +202,7 @@ export const FriendsListPage = () => {
   const handleClick = () => {
     if (selectedFriends.length > 0) {
       setSelectedError("");
-      navigate("/transaction", {
+      navigate("/expenses/payment", {
         state: { selectedFriends },
       });
     } else {
@@ -215,18 +214,7 @@ export const FriendsListPage = () => {
     <MainContainer>
       <SubContainer>
         <Title>Add new friends</Title>
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "70%",
-            marginTop: "2rem",
-          }}
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
             <InputPaper elevation={0}>
               <InputAdornment position="start">
@@ -251,7 +239,7 @@ export const FriendsListPage = () => {
               <SuccessText>{success}</SuccessText>
             ) : null}
           </SubButtonWrapper>
-        </Box>
+        </StyledBox>
       </SubContainer>
       <SubContainer>
         <Title>Friendslist</Title>
@@ -401,4 +389,11 @@ const SubButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 30px;
+`;
+
+const StyledBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margintop: 2rem;
 `;

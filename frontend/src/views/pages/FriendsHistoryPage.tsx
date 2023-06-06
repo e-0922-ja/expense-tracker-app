@@ -110,7 +110,7 @@ export const FriendsHistoryPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-        <Box sx={{ width: "100%", typography: "body1" }}>
+        <SubBox>
           <GobackButton func={handleGoBack} />
           <DetailBox>
             <Section>
@@ -139,7 +139,7 @@ export const FriendsHistoryPage = () => {
               ))}
             </TransactionCardContainer>
           </DetailBox>
-        </Box>
+        </SubBox>
       </MainBox>
     </Wrapper>
   );
@@ -228,4 +228,8 @@ const CalculateCardContainer = styled.div`
 const Span = styled.span`
   color: ${({ theme }) => theme.palette.secondary.light};
   margin-left: 0.5rem;
+`;
+
+const SubBox = styled(Box)`
+  width: 100%;
 `;

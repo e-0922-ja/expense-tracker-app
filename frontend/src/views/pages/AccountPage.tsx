@@ -11,8 +11,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-
-import { useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
 
 export const AccountPage = () => {
@@ -30,6 +28,7 @@ export const AccountPage = () => {
     email: "yuki@gmail.com",
     password: "*******",
   });
+
   const [editStatus, setEditStatus] = useState(false);
 
   const handleEdit = () => {
@@ -38,8 +37,6 @@ export const AccountPage = () => {
 
   const handleSave = () => {
     setEditStatus(false);
-    // Here, you might want to have some logic to save the updated user data.
-    // saveData(userData);
   };
 
   return (
@@ -72,83 +69,68 @@ export const AccountPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-        <Box sx={{ width: "100%", typography: "body1" }}></Box>
-        <DetailBox>
-          <Section>
-            <Title>Account</Title>
-            <InfoContainer>
-              <InputTitle>First Name</InputTitle>
-              <StyledBox>
-                <Data>{userData.firstName}</Data>
-              </StyledBox>
-              <InputTitle>last Name</InputTitle>
-              <StyledBox>
-                {editStatus ? (
-                  <OutlinedInput
-                    value={userData.lastName}
-                    onChange={(e) =>
-                      setUserData({ ...userData, lastName: e.target.value })
-                    }
-                    fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px",
-                      },
-                    }}
-                  />
-                ) : (
-                  <Data>{userData.lastName}</Data>
-                )}
-              </StyledBox>
-              <InputTitle>email</InputTitle>
-              <StyledBox>
-                {editStatus ? (
-                  <OutlinedInput
-                    value={userData.email}
-                    onChange={(e) =>
-                      setUserData({ ...userData, email: e.target.value })
-                    }
-                    fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px",
-                      },
-                    }}
-                  />
-                ) : (
-                  <Data>{userData.email}</Data>
-                )}
-              </StyledBox>
-              <InputTitle>password</InputTitle>
-              <StyledBox>
-                {editStatus ? (
-                  <OutlinedInput
-                    value={userData.password}
-                    onChange={(e) =>
-                      setUserData({ ...userData, password: e.target.value })
-                    }
-                    fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px",
-                      },
-                    }}
-                  />
-                ) : (
-                  <Data>{userData.password}</Data>
-                )}
-              </StyledBox>
-
-              <ButtonContainer>
-                {editStatus ? (
-                  <SubButton title={"save"} func={handleSave} />
-                ) : (
-                  <SubButton title={"edit"} func={handleEdit} />
-                )}
-              </ButtonContainer>
-            </InfoContainer>
-          </Section>
-        </DetailBox>
+        <SubBox>
+          <DetailBox>
+            <Section>
+              <Title>Account</Title>
+              <InfoContainer>
+                <InputTitle>First Name</InputTitle>
+                <StyledBox>
+                  <Data>{userData.firstName}</Data>
+                </StyledBox>
+                <InputTitle>last Name</InputTitle>
+                <StyledBox>
+                  {editStatus ? (
+                    <StyledOutlinedInput
+                      value={userData.lastName}
+                      onChange={(e) =>
+                        setUserData({ ...userData, lastName: e.target.value })
+                      }
+                      fullWidth
+                    />
+                  ) : (
+                    <Data>{userData.lastName}</Data>
+                  )}
+                </StyledBox>
+                <InputTitle>email</InputTitle>
+                <StyledBox>
+                  {editStatus ? (
+                    <StyledOutlinedInput
+                      value={userData.email}
+                      onChange={(e) =>
+                        setUserData({ ...userData, email: e.target.value })
+                      }
+                      fullWidth
+                    />
+                  ) : (
+                    <Data>{userData.email}</Data>
+                  )}
+                </StyledBox>
+                <InputTitle>password</InputTitle>
+                <StyledBox>
+                  {editStatus ? (
+                    <StyledOutlinedInput
+                      value={userData.password}
+                      onChange={(e) =>
+                        setUserData({ ...userData, password: e.target.value })
+                      }
+                      fullWidth
+                    />
+                  ) : (
+                    <Data>{userData.password}</Data>
+                  )}
+                </StyledBox>
+                <ButtonContainer>
+                  {editStatus ? (
+                    <SubButton title={"save"} func={handleSave} />
+                  ) : (
+                    <SubButton title={"edit"} func={handleEdit} />
+                  )}
+                </ButtonContainer>
+              </InfoContainer>
+            </Section>
+          </DetailBox>
+        </SubBox>
       </MainBox>
     </Wrapper>
   );
@@ -241,4 +223,14 @@ const Data = styled.div`
 
 const ButtonContainer = styled.div`
   margin-top: 30px;
+`;
+
+const StyledOutlinedInput = styled(OutlinedInput)`
+  && .MuiInputBase-input.MuiOutlinedInput-input {
+    padding: 14px;
+  }
+`;
+
+const SubBox = styled(Box)`
+  width: 100%;
 `;

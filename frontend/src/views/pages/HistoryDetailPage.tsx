@@ -157,7 +157,7 @@ export const HistoryDetailPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-        <Box sx={{ width: "100%", typography: "body1" }}>
+        <SubBox>
           <GobackButton func={handleGoBack} />
           <DetailBox>
             <Section>
@@ -228,7 +228,7 @@ export const HistoryDetailPage = () => {
               </FormContainer>
             </Section>
           </DetailBox>
-        </Box>
+        </SubBox>
       </MainBox>
     </Wrapper>
   );
@@ -384,4 +384,8 @@ const IconCircle = styled.div`
 
 const ButtonContainer = styled.div`
   margin-top: 30px;
+`;
+
+const SubBox = styled(Box)`
+  width: 100%;
 `;

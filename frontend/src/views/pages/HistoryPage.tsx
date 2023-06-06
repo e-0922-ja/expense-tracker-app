@@ -129,7 +129,7 @@ export const HistoryPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-        <Box sx={{ width: "100%", typography: "body1" }}>
+        <SubBox>
           <TabContext value={value}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
@@ -166,7 +166,7 @@ export const HistoryPage = () => {
               ))}
             </TabPanel>
           </TabContext>
-        </Box>
+        </SubBox>
       </MainBox>
     </Wrapper>
   );
@@ -231,4 +231,8 @@ const Title = styled.h3`
   margin-top: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const SubBox = styled(Box)`
+  width: 100%;
 `;
