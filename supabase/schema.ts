@@ -25,6 +25,126 @@ export interface Database {
           name?: string | null
           sequence?: number | null
         }
+        Relationships: []
+      }
+      Expenses: {
+        Row: {
+          categoryId: number | null
+          description: string | null
+          groupId: string | null
+          id: number
+          methodId: number | null
+          payer: string | null
+          payment: number | null
+          registeredAt: string | null
+          registeredBy: string | null
+          settled: boolean | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          categoryId?: number | null
+          description?: string | null
+          groupId?: string | null
+          id?: number
+          methodId?: number | null
+          payer?: string | null
+          payment?: number | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          settled?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          categoryId?: number | null
+          description?: string | null
+          groupId?: string | null
+          id?: number
+          methodId?: number | null
+          payer?: string | null
+          payment?: number | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          settled?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_categoryid_fkey"
+            columns: ["categoryId"]
+            referencedRelation: "Categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_groupid_fkey"
+            columns: ["groupId"]
+            referencedRelation: "Groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_payer_fkey"
+            columns: ["payer"]
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_registeredby_fkey"
+            columns: ["registeredBy"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_updatedby_fkey"
+            columns: ["updatedBy"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      ExpenseStatus: {
+        Row: {
+          amount: number | null
+          id: number
+          paid: boolean | null
+          ratio: number | null
+          updatedAt: string | null
+          updatedBy: string | null
+          userId: string | null
+        }
+        Insert: {
+          amount?: number | null
+          id?: number
+          paid?: boolean | null
+          ratio?: number | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+          userId?: string | null
+        }
+        Update: {
+          amount?: number | null
+          id?: number
+          paid?: boolean | null
+          ratio?: number | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+          userId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expensestatus_updatedby_fkey"
+            columns: ["updatedBy"]
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expensestatus_userid_fkey"
+            columns: ["userId"]
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       Friendships: {
         Row: {
@@ -54,43 +174,127 @@ export interface Database {
           updatedAt?: string | null
           userId?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_friendid_fkey"
+            columns: ["friendId"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_statusid_fkey"
+            columns: ["statusId"]
+            referencedRelation: "Status"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_userid_fkey"
+            columns: ["userId"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
-      Job: {
+      GroupMembers: {
         Row: {
-          created_at: string | null
-          friendId: string | null
-          id: string | null
-          userId: string | null
+          friendshipId: string | null
+          groupId: string
         }
         Insert: {
-          created_at?: string | null
-          friendId?: string | null
-          id?: string | null
-          userId?: string | null
+          friendshipId?: string | null
+          groupId: string
         }
         Update: {
-          created_at?: string | null
-          friendId?: string | null
-          id?: string | null
-          userId?: string | null
+          friendshipId?: string | null
+          groupId?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "groupmembers_friendshipid_fkey"
+            columns: ["friendshipId"]
+            referencedRelation: "Friendships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "groupmembers_groupid_fkey"
+            columns: ["groupId"]
+            referencedRelation: "Groups"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      Groups: {
+        Row: {
+          id: string
+          name: string | null
+          registeredAt: string | null
+          registeredBy: string | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          id: string
+          name?: string | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_registeredby_fkey"
+            columns: ["registeredBy"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "groups_updatedby_fkey"
+            columns: ["updatedBy"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      Methods: {
+        Row: {
+          id: number
+          name: string | null
+          sequence: number | null
+        }
+        Insert: {
+          id?: number
+          name?: string | null
+          sequence?: number | null
+        }
+        Update: {
+          id?: number
+          name?: string | null
+          sequence?: number | null
+        }
+        Relationships: []
       }
       Status: {
         Row: {
           id: number
-          registeredAt: string | null
           statusName: string | null
         }
         Insert: {
           id?: number
-          registeredAt?: string | null
           statusName?: string | null
         }
         Update: {
           id?: number
-          registeredAt?: string | null
           statusName?: string | null
         }
+        Relationships: []
       }
       Users: {
         Row: {
@@ -98,28 +302,33 @@ export interface Database {
           firstName: string | null
           id: string
           lastName: string | null
-          password: string | null
-          registered_at: string | null
-          updated_at: string | null
+          registeredAt: string | null
+          updatedAt: string | null
         }
         Insert: {
           email?: string | null
           firstName?: string | null
           id: string
           lastName?: string | null
-          password?: string | null
-          registered_at?: string | null
-          updated_at?: string | null
+          registeredAt?: string | null
+          updatedAt?: string | null
         }
         Update: {
           email?: string | null
           firstName?: string | null
           id?: string
           lastName?: string | null
-          password?: string | null
-          registered_at?: string | null
-          updated_at?: string | null
+          registeredAt?: string | null
+          updatedAt?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
@@ -132,16 +341,6 @@ export interface Database {
           friend_email: string
         }
         Returns: number
-      }
-      get_friendship: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      get_friendships: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          count: number
-        }[]
       }
       get_user_friends: {
         Args: {
