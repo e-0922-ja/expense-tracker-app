@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { emailRegex, errEmail } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";

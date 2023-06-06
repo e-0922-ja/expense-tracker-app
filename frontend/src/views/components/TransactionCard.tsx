@@ -5,6 +5,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
 
 interface Transaction {
+
   category: string;
   dispription: string;
   amount: number;

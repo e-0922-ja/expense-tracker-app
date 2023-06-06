@@ -128,11 +128,6 @@ export const PaymentPage = () => {
                       <InputAdornment position="start">$</InputAdornment>
                     }
                     fullWidth
-                    sx={{
-                      "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                        padding: "14px", // Adjust the padding value according to your needs
-                      },
-                    }}
                   />
                 </StyledBox>
               </SubInputsWrapper>
@@ -187,20 +182,14 @@ export const PaymentPage = () => {
                 >
                   {categories.map((item, index) => (
                     <MenuItem value={item.id} key={index}>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                        }}
-                      >
+                      <MenuItemContainer>
                         {
                           categoryIcons.find(
                             (icon) => icon.category === item.name
                           )?.icon
                         }
                         {item.name}
-                      </div>
+                      </MenuItemContainer>
                     </MenuItem>
                   ))}
                 </Select>
@@ -356,4 +345,10 @@ const StyledOutlinedInput = styled(OutlinedInput)`
   && .MuiInputBase-input.MuiOutlinedInput-input {
     padding: 14px;
   }
+`;
+
+const MenuItemContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
 `;
