@@ -4,7 +4,7 @@ import styled from "styled-components";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
 
-interface TransList {
+interface Transaction {
   category: string;
   dispription: string;
   amount: number;
@@ -12,7 +12,7 @@ interface TransList {
 }
 
 interface TransactionProps {
-  item: TransList;
+  item: Transaction;
 }
 
 export const TransactionCard = ({ item }: TransactionProps) => {
