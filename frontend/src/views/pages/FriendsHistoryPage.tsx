@@ -148,7 +148,7 @@ export const FriendsHistoryPage = () => {
           </IconButton>
         )}
         <SubBox>
-          <GobackButton func={handleGoBack} />
+          <GobackButton onClick={handleGoBack} />
           <DetailBox>
             <Section>
               <PageTitle>

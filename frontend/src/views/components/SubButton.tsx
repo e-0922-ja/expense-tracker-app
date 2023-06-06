@@ -4,12 +4,12 @@ import React from "react";
 
 interface SubButtonProps {
   title: string;
-  func: () => void;
+  onClick: () => void;
 }
 
-export const SubButton = ({ title, func }: SubButtonProps) => {
+export const SubButton = ({ title, onClick }: SubButtonProps) => {
   return (
-    <MyButton variant="contained" disableRipple onClick={func} type="submit">
+    <MyButton variant="contained" disableRipple onClick={onClick} type="submit">
       {title}
     </MyButton>
   );

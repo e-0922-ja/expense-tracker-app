@@ -171,7 +171,7 @@ export const HistoryDetailPage = () => {
           </IconButton>
         )}
         <SubBox>
-          <GobackButton func={handleGoBack} />
+          <GobackButton onClick={handleGoBack} />
           <DetailBox>
             <Section>
               <Title>{transactionHistory.dispription}</Title>
@@ -239,7 +239,7 @@ export const HistoryDetailPage = () => {
                       })}
                     </SplitterContainer>
                     <ButtonContainer>
-                      <SubButton title={"save"} func={handlegoback} />
+                      <SubButton title={"save"} onClick={handlegoback} />
                     </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>

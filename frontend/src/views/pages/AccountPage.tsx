@@ -122,9 +122,9 @@ export const AccountPage = () => {
                 </StyledBox>
                 <ButtonContainer>
                   {editStatus ? (
-                    <SubButton title={"save"} func={handleSave} />
+                    <SubButton title={"save"} onClick={handleSave} />
                   ) : (
-                    <SubButton title={"edit"} func={handleEdit} />
+                    <SubButton title={"edit"} onClick={handleEdit} />
                   )}
                 </ButtonContainer>
               </InfoContainer>

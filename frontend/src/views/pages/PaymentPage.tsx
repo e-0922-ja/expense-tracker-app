@@ -238,7 +238,7 @@ export const PaymentPage = () => {
             </InputsWrapper>
 
             <ButtonContainer>
-              <SubButton title={"create"} func={handlesubmit} />
+              <SubButton title={"create"} onClick={handlesubmit} />
             </ButtonContainer>
           </FormContainer>
         </Section>

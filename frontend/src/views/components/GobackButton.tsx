@@ -2,12 +2,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 
 interface GobackButtonProps {
-  func: () => void;
+  onClick: () => void;
 }
 
-export const GobackButton = ({ func }: GobackButtonProps) => {
+export const GobackButton = ({ onClick }: GobackButtonProps) => {
   return (
-    <IconButton onClick={func}>
+    <IconButton onClick={onClick}>
       <ArrowBackIcon />
     </IconButton>
   );

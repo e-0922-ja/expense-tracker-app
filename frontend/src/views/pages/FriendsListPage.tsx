@@ -232,7 +232,7 @@ export const FriendsListPage = () => {
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
-            <SubButton title={"send"} func={handleSendEmail} />
+            <SubButton title={"send"} onClick={handleSendEmail} />
             {error ? (
               <ErrorText>{error}</ErrorText>
             ) : success ? (
@@ -280,7 +280,7 @@ export const FriendsListPage = () => {
         </UnorderedList>
 
         <ButtonContainer>
-          <SubButton title={"create"} func={handleClick} />
+          <SubButton title={"create"} onClick={handleClick} />
         </ButtonContainer>
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
       </SubContainer>
