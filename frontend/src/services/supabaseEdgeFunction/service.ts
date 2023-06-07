@@ -9,18 +9,18 @@ class _supabaseEdgeFunctionService {
   }
 
   async sendEmail(toAddress: string, requestee: string) {
-      const body = JSON.stringify({ toAddress, requestee });
-      const response = await fetch(`${this.endpoint}/email`, {
-        body,
-        headers: {
-          // Will implements JWT auth later
-          // Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      return response;
-    }
+    const body = JSON.stringify({ toAddress, requestee });
+    const response = await fetch(`${this.endpoint}/email`, {
+      body,
+      headers: {
+        // Will implements JWT auth later
+        // Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+    return response;
   }
+}
 
 export const SupabaseEdgeFunctionService = new _supabaseEdgeFunctionService();
