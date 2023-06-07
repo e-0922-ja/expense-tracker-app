@@ -14,26 +14,66 @@ brew install supabase/tap/supabase
 git clone https://github.com/e-0922-ja/expense-tracker-app.git
 ```
 
-2. Build and run backend containers. After executing this command, you can access the app at http://localhost:8000.
-
-```bash
-supabase start
-docker-compose build
-docker-compose up
-```
-
-```bash
-docker-compose exec backend npx prisma migrate dev
-```
-
-3. Run the frontend. After executing this command, you can access the app at http://localhost:3000.
+2. Install dependencies.
 
 ```bash
 cd frontend
-npm run start or yarn start
+npm i
+
+cd backend
+yarn install
 ```
 
-4. Run the edge functions
+# How to use
+
+## Run the application
+
+1. Use the following command to start the application.
+
+```bash
+pwd
+# /path/to/expense-tracker-app
+
+# Start supbase
+supbase start
+
+# Migrate database from backend
+cd backend
+npx prisma migrate dev
+cd ..
+
+# Start frontend
+cd frontend
+npm run start
+```
+
+2. Access the application at
+
+- [Frontend]http://localhost:3000
+- [Supabase]http://localhost:54321
+
+## Migrate database
+
+1. Edit table schema with [Supabase SQL Editor](https://supabase.com/docs/guides/database/overview#the-sql-editor).
+
+2. After editing tables, run the following command to create migration files. Refer [this URL](https://supabase.com/docs/reference/cli/supabase-db-diff)
+
+```bash
+supabase db diff --file <change name>
+```
+
+For example:
+
+```bash
+supabase db diff --file add-users-table
+Connecting to local database...
+Creating shadow database...
+Applying migration 20230602141215_add-users-table.sql...
+Diffing schemas: auth,extensions,public,storage
+```
+
+-> Created supabase/migrations/20230602141215_add-users-table.sql
+## Run the edge functions
 
 ```bash
 supabase functions serve --no-verify-jwt
@@ -43,4 +83,14 @@ For example, you can fetch users by the following command.
 
 ```bash
 curl localhost:54321/functions/v1/users
+```
+
+## Prepare lint
+To run lint, you need to install the husky and prettier. So please run `npm i` on root directory
+
+## Frontend Test
+
+```bash
+cd frontend
+npm test
 ```

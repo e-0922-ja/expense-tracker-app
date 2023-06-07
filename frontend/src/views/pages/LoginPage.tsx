@@ -1,26 +1,27 @@
-import { createClient } from "@supabase/supabase-js";
-import styled from "styled-components";
-import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { login } from "../../reducer/userSlice";
-import { useState } from "react";
+import { createClient } from '@supabase/supabase-js';
+import styled from 'styled-components';
+import { Button, InputAdornment, InputBase, Paper } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { login } from '../../reducer/userSlice';
+import { useState } from 'react';
 import {
   emailRegex,
   errEmail,
   errPassword,
   errUserNotFound,
   passwordRegex,
-} from "../../constants/regexPattern";
+} from '../../constants/regexPattern';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+
 interface CurrentUser {
   email: string;
   password: string;
@@ -29,7 +30,7 @@ interface CurrentUser {
 export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState('');
 
   const {
     register,
@@ -54,16 +55,15 @@ export const LoginPage = () => {
 
     let user = data.user;
     let userInfo = {
+      id: user?.id,
       firstName: user?.user_metadata.firstName,
       lastName: user?.user_metadata.lastName,
       email: user?.email,
     };
 
     dispatch(login(userInfo));
-    // ================================================
-    // Will change the path to new page later
-    // ================================================
-    navigate("/account");
+
+    navigate("/history");
   };
 
   return (
@@ -83,7 +83,7 @@ export const LoginPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
-                {...register("email", {
+                {...register('email', {
                   required: true,
                   pattern: emailRegex,
                 })}
@@ -99,7 +99,7 @@ export const LoginPage = () => {
               <InputBase
                 placeholder="Password"
                 type="password"
-                {...register("password", {
+                {...register('password', {
                   required: true,
                   pattern: passwordRegex,
                 })}
@@ -120,6 +120,7 @@ export const LoginPage = () => {
 };
 
 const ComponentWrapper = styled.div`
+  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -128,7 +129,7 @@ const ComponentWrapper = styled.div`
 
 const LoginWrapper = styled.div`
   padding: 20px 0;
-  width: 45%;
+  width: 30%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;

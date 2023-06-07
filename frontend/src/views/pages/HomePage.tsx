@@ -1,52 +1,124 @@
-import styled from "styled-components";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
-  const handleNavigateSignUp = () => {
-    navigate("/signup");
-  };
 
   const handleNavigateLogin = () => {
-    navigate("/login");
+    navigate('/login');
   };
+
   return (
     <Wrapper>
-      <TitleWrapper>
-        <Title>HomePage</Title>
-      </TitleWrapper>
-      <Text>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
-        commodi reiciendis fuga! Odio quasi nemo nam sapiente laborum possimus
-        labore iste eaque id, eligendi, doloribus consequatur! Eaque impedit sit
-        velit?
-      </Text>
-      <Button variant="contained" disableRipple onClick={handleNavigateLogin}>
-        LogIn
-      </Button>
-      <Button variant="contained" disableRipple onClick={handleNavigateSignUp}>
-        SignUp
-      </Button>
+      <HeroSection>
+        <HeroContainer>
+          <Title>SpendShare</Title>
+          <Text>
+            Welcome to SpendShare, the ultimate tool for managing your group
+            expenses with ease! Are you frequently dining out, traveling, or
+            sharing costs with roommates, friends, or colleagues? SpendShare is
+            designed to simplify your financial life. Our app allows you to
+            split bills and track expenses effortlessly, bringing transparency,
+            fairness, and convenience to shared expenditures.
+          </Text>
+          <ButtonWrapper>
+            <StyledButton
+              variant="contained"
+              disableRipple
+              onClick={handleNavigateLogin}
+            >
+              Get Started
+            </StyledButton>
+          </ButtonWrapper>
+        </HeroContainer>
+        <HeroContainer></HeroContainer>
+      </HeroSection>
+      <SubSection>
+        <FeatContainer>
+          <h3>Split Bills Instantly</h3>
+          <div>
+            Whether it's a restaurant bill, a utility payment, or a group gift,
+            divide the costs equally or specify individual amounts in just a few
+            taps.
+          </div>
+        </FeatContainer>
+        <FeatContainer>
+          <h3>Track Expenses</h3>
+          <div>
+            Keep a clear record of who paid what, when, and why. SpendShare
+            helps you stay on top of your finances without the need for
+            complicated spreadsheets.
+          </div>
+        </FeatContainer>
+        <FeatContainer>
+          <h3>Settle Debts Easily</h3>
+          <div>
+            No more awkward conversations about money. SpendShare calculates who
+            owes what and facilitates seamless payments.
+          </div>
+        </FeatContainer>
+      </SubSection>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
+  height: calc(100% - 64px);
+  width: 100%;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const TitleWrapper = styled.section`
-  height: 200px;
-  background: ${({ theme }) => theme.palette.primary.light};
-`;
-
 const Title = styled.h1`
-  margin: 0;
+  font-size: 4rem;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
+`;
+
+const HeroSection = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 60%;
+  padding: 0 70px;
+`;
+
+const HeroContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-item: center;
+  width: 50%;
+  height: 100%;
+`;
+
+const SubSection = styled.div`
+  gap: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 40%;
+  padding: 0 70px;
+  background: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+`;
+
+const FeatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.palette.secondary.main} !important;
 `;

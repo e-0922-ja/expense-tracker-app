@@ -1,8 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
+import { UUID } from "crypto";
 
 interface UserInfo {
+  id: UUID;
   firstName: string;
   lastName: string;
   email: string;
@@ -19,11 +20,12 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     login: (state, action) => {
       state.user = {
+        id: action.payload.id,
         firstName: action.payload.firstName,
         lastName: action.payload.lastName,
         email: action.payload.email,
