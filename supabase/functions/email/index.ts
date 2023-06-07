@@ -37,6 +37,5 @@ serve(async (req) => {
     },
     method: "POST"
   })
-  console.log(response)
-  return response
+  return new Response({ status: response.status, message: response.statusText })
 });
