@@ -6,20 +6,8 @@ import {
   Drawer,
   useMediaQuery,
   useTheme,
+  Modal,
   Box,
-<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
-import { TransactionCard } from "../components/TransactionCard";
-import { GobackButton } from "../components/GobackButton";
-import { useNavigate } from "react-router-dom";
-import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
-import { LendCalculateCard } from "../components/LendCalculateCard";
-=======
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { DrawerContents } from '../components/DrawerContents';
@@ -31,28 +19,21 @@ import { FormNewExpense } from '../components/FormNewExpense';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../../../../supabase/schema';
 import { Category } from '../../types';
->>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
 
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
+interface TransList {
   category: string;
   dispription: string;
   amount: number;
   date: string;
 }
 
-export const FriendsHistoryPage = () => {
+export const TransactionPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
-<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
-  const [error, setError] = useState("");
-=======
   // const [date, setDate] = useState<Dayjs | null>(null);
   const [error, setError] = useState('');
->>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
   const [categories, setCategories] = useState<Category[]>([]);
 
   const supabase = createClient<Database>(
@@ -64,58 +45,15 @@ export const FriendsHistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navigate = useNavigate();
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
-  const transactionHistory: TransactionHistory[] = [
-    {
-      id: 1,
-      paidPerson: "Yuki",
-      category: "Food",
-      dispription: "starbucks",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 2,
-      paidPerson: "Hana",
-      category: "Food",
-      dispription: "Korean",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 3,
-      paidPerson: "Kota",
-      category: "Food",
-      dispription: "Chinese",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 4,
-      paidPerson: "Haruka",
-      category: "Food",
-      dispription: "Itarian",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 5,
-      paidPerson: "Akito",
-      category: "Food",
-      dispription: "French",
-      amount: 123,
-      date: "5/23",
-    },
-=======
   const transactionHistory: TransList[] = [
     { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
     { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
     { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
     { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
     { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
->>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
   ];
 
   useEffect(() => {
@@ -141,10 +79,6 @@ export const FriendsHistoryPage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate("/history");
-  };
-
   return (
     <Wrapper>
       <NavBox>
@@ -157,7 +91,7 @@ export const FriendsHistoryPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true,
+            keepMounted: true, // Better open performance on mobile.
           }}
         >
           <Toolbar />
@@ -175,38 +109,6 @@ export const FriendsHistoryPage = () => {
             <MenuIcon />
           </IconButton>
         )}
-<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
-        <SubBox>
-          <GobackButton onClick={handleGoBack} />
-          <DetailBox>
-            <Section>
-              <PageTitle>
-                Expense with<Span>Kota</Span>
-                <Span>Hana</Span>
-              </PageTitle>
-            </Section>
-            <TransactionCardContainer>
-              <Title>Summary for this group</Title>
-              <CalculateCardContainer>
-                <BorrowCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
-                <LendCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
-              </CalculateCardContainer>
-              <Title>All Expenses</Title>
-              {transactionHistory.map((item) => (
-                <TransactionCard key={item.id} item={item} />
-              ))}
-            </TransactionCardContainer>
-          </DetailBox>
-        </SubBox>
-=======
         <Section>
           <CategoryTitle>People</CategoryTitle>
           <PeopleSectionContainer>
@@ -236,7 +138,6 @@ export const FriendsHistoryPage = () => {
             return <TransactionCard item={item} key={index} />;
           })}
         </Section>
->>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
       </MainBox>
     </Wrapper>
   );
@@ -282,8 +183,8 @@ const MobileDrawer = styled(Drawer)`
 `;
 
 const MainBox = styled.div`
-  background-color: ${({ theme }) => theme.palette.primary.main};
-  padding: 50px 120px;
+  background: ${({ theme }) => theme.palette.primary.light};
+  padding: 50px 200px 50px 120px;
   width: 100%;
   overflow: auto;
   @media (min-width: 600px) {
@@ -291,42 +192,33 @@ const MainBox = styled.div`
   }
 `;
 
-const PageTitle = styled.h2`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
-`;
-
-const Title = styled.h3`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
-`;
-
 const Section = styled.div`
+  margin-bottom: 80px;
+`;
+
+const CategoryTitle = styled.h2`
+  margin-top: 0;
+`;
+
+const PeopleSectionContainer = styled.div`
   width: 100%;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-beteen;
 `;
 
-const TransactionCardContainer = styled.div`
-  width: 100%;
+const ButtonContainer = styled.div`
+  width: 15%;
+  display: flex;
+  justify-content: flex-end;
 `;
 
-const DetailBox = styled.div`
-  margin: 0 1rem;
-`;
-
-const CalculateCardContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-`;
-
-const Span = styled.span`
-  color: ${({ theme }) => theme.palette.secondary.light};
-  margin-left: 0.5rem;
-`;
-
-const SubBox = styled(Box)`
-  width: 100%;
+const ModalContainer = styled(Box)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  background-color: #fff;
+  padding: 30px;
+  outline: none;
 `;
