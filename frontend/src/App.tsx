@@ -8,6 +8,7 @@ import { ThemeProvider } from "styled-components";
 import { selectTheme } from "./reducer/colorModeSlice";
 import { SignUpPage } from "./views/pages/SignUpPage";
 import { LoginPage } from "./views/pages/LoginPage";
+import { AccountPage } from "./views/pages/AccountPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
         <Footer />
       </ThemeProvider>
