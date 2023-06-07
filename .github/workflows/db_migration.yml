@@ -2,31 +2,22 @@ name: Database Migration
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'backend/prisma/**'
-
-defaults:
-  run:
-    shell: bash
-    working-directory: backend
+      - 'supabase/migrations/**'
 
 jobs:
   migration:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+
     steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: supabase/setup-cli@v1
         with:
-          node-version: "17.x"
-
-      - name: Install pnpm
-        run: npm i -g pnpm
-
-      - name: Install dependencies 🔧
-        run: pnpm install
-
-      - name: Database migration ✅
-        run: pnpx prisma generate && pnpx prisma migrate dev && pnpm run build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          version: latest
+      - run: supabase link --project-ref kxhxastqrugqqhspyczs
+      - run: supabase db push

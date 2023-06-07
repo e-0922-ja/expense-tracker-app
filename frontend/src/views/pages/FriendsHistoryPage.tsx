@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   IconButton,
   Toolbar,
@@ -7,6 +7,7 @@ import {
   useMediaQuery,
   useTheme,
   Box,
+<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
@@ -18,6 +19,19 @@ import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
+=======
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { DrawerContents } from '../components/DrawerContents';
+import { MainButton } from '../components/MainButton';
+import FriendIcon from '../components/FriendIcon';
+import { TransactionCard } from '../components/TransactionCard';
+import { SecondaryButton } from '../components/SecondaryButton';
+import { FormNewExpense } from '../components/FormNewExpense';
+import { createClient } from '@supabase/supabase-js';
+import { Database } from '../../../../supabase/schema';
+import { Category } from '../../types';
+>>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
 
 interface TransactionHistory {
   id: number;
@@ -31,9 +45,14 @@ interface TransactionHistory {
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
+<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
   const [error, setError] = useState("");
+=======
+  // const [date, setDate] = useState<Dayjs | null>(null);
+  const [error, setError] = useState('');
+>>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
   const [categories, setCategories] = useState<Category[]>([]);
 
   const supabase = createClient<Database>(
@@ -47,6 +66,7 @@ export const FriendsHistoryPage = () => {
 
   const navigate = useNavigate();
 
+<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
   const transactionHistory: TransactionHistory[] = [
     {
       id: 1,
@@ -88,6 +108,14 @@ export const FriendsHistoryPage = () => {
       amount: 123,
       date: "5/23",
     },
+=======
+  const transactionHistory: TransList[] = [
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+    { category: 'food', dispription: 'starbucks', amount: 123, date: '5/23' },
+>>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
   ];
 
   useEffect(() => {
@@ -98,9 +126,9 @@ export const FriendsHistoryPage = () => {
   const getCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
+        .from('Categories')
+        .select('*')
+        .order('sequence', { ascending: true });
       if (error) {
         setError(error.message);
         return false;
@@ -147,6 +175,7 @@ export const FriendsHistoryPage = () => {
             <MenuIcon />
           </IconButton>
         )}
+<<<<<<< HEAD:frontend/src/views/pages/FriendsHistoryPage.tsx
         <SubBox>
           <GobackButton onClick={handleGoBack} />
           <DetailBox>
@@ -177,6 +206,37 @@ export const FriendsHistoryPage = () => {
             </TransactionCardContainer>
           </DetailBox>
         </SubBox>
+=======
+        <Section>
+          <CategoryTitle>People</CategoryTitle>
+          <PeopleSectionContainer>
+            <FriendIcon />
+            <ButtonContainer>
+              <SecondaryButton title={'add'} />
+            </ButtonContainer>
+          </PeopleSectionContainer>
+        </Section>
+        <Section>
+          <CategoryTitle>Add Transaction</CategoryTitle>
+          <MainButton title={'create'} func={handleOpen} />
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <ModalContainer>
+              <FormNewExpense categories={categories} />
+            </ModalContainer>
+          </Modal>
+        </Section>
+        <Section>
+          <CategoryTitle>Previous History</CategoryTitle>
+          {transactionHistory.map((item, index) => {
+            return <TransactionCard item={item} key={index} />;
+          })}
+        </Section>
+>>>>>>> main:frontend/src/views/pages/TransactionPage.tsx
       </MainBox>
     </Wrapper>
   );
