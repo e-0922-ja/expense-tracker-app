@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   useTheme,
   Box,
-  SelectChangeEvent,
   Checkbox,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -17,7 +16,6 @@ import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
-import { Dayjs } from "dayjs";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
@@ -54,11 +52,8 @@ export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [date, setDate] = useState<Dayjs | null>(null);
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [age, setAge] = useState("");
 
   const [checked, setChecked] = useState(false);
 
@@ -66,9 +61,6 @@ export const HistoryDetailPage = () => {
     setChecked(event.target.checked);
   };
 
-  const handledDammy = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
 
   const handlegoback = () => {
     navigate("/history");

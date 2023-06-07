@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Category } from "../../types";
 import {
   Box,
+  Button,
   InputAdornment,
   MenuItem,
   OutlinedInput,
@@ -64,7 +65,8 @@ export const PaymentPage = () => {
     setPayer(event.target.value);
   };
 
-  const handlesubmit = () => {
+  const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     navigate("/history");
   };
 
@@ -117,7 +119,7 @@ export const PaymentPage = () => {
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <FormContainer>
+          <FormContainer onSubmit={handlesubmit}>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
@@ -238,7 +240,12 @@ export const PaymentPage = () => {
             </InputsWrapper>
 
             <ButtonContainer>
-              <SubButton title={"create"} onClick={handlesubmit} />
+            <StyledButton
+              variant="contained"
+              disableRipple
+            >
+              create
+            </StyledButton>
             </ButtonContainer>
           </FormContainer>
         </Section>
@@ -351,4 +358,8 @@ const MenuItemContainer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+`;
+
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.palette.secondary.main} !important;
 `;

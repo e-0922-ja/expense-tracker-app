@@ -1,5 +1,4 @@
 import { Card, CardActionArea, Typography } from "@mui/material";
-import React from "react";
 import styled from "styled-components";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";

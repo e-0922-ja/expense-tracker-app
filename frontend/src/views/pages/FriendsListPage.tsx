@@ -36,11 +36,9 @@ export const FriendsListPage = () => {
   } = useForm<FriendEmail>();
 
   const userState = useSelector((state: RootState) => state.user);
-  const isLogin = userState.isLogin;
   const userId = userState.user?.id;
   const userEmail = userState.user?.email;
-  const userFirstName = userState.user?.firstName; // use it when sending an email
-  const userLastName = userState.user?.lastName; // use it when sending an email
+
 
   const navigate = useNavigate();
 

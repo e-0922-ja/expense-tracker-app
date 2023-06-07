@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface MainButtonProps {

@@ -1,6 +1,5 @@
 import { Card, CardActionArea, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
