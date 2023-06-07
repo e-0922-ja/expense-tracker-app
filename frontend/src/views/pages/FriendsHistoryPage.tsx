@@ -32,7 +32,6 @@ export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -92,7 +91,7 @@ export const FriendsHistoryPage = () => {
 
   useEffect(() => {
     getCategories();
-  }, []);
+  });
 
   // get categories from a table
   const getCategories = async () => {
@@ -106,6 +105,7 @@ export const FriendsHistoryPage = () => {
         return false;
       } else {
         setCategories(data);
+        console.log(categories)
       }
     } catch (error: any) {
       setError(error.message);
@@ -116,6 +116,8 @@ export const FriendsHistoryPage = () => {
   const handleGoBack = () => {
     navigate("/history");
   };
+  
+  console.log(error)
 
   return (
     <Wrapper>

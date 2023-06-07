@@ -107,7 +107,7 @@ export const HistoryDetailPage = () => {
 
   useEffect(() => {
     getCategories();
-  }, []);
+  });
 
   // get categories from a table
   const getCategories = async () => {
@@ -118,14 +118,17 @@ export const HistoryDetailPage = () => {
         .order("sequence", { ascending: true });
       if (error) {
         setError(error.message);
+
         return false;
       } else {
         setCategories(data);
+        console.log(categories)
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
+    console.error(error)
   };
 
   const handleGoBack = () => {

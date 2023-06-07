@@ -11,17 +11,14 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
-
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 
@@ -43,7 +40,7 @@ export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [open, setOpen] = useState(false);
+
   // const [date, setDate] = useState<Dayjs | null>(null);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -110,7 +107,7 @@ export const HistoryPage = () => {
 
   useEffect(() => {
     getCategories();
-  }, []);
+  });
 
   // get categories from a table
   const getCategories = async () => {
@@ -124,12 +121,15 @@ export const HistoryPage = () => {
         return false;
       } else {
         setCategories(data);
+        console.log(categories)
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
+
   };
+  console.log(error)
 
   const [value, setValue] = useState("1");
 

@@ -44,7 +44,7 @@ export const FriendsListPage = () => {
 
   useEffect(() => {
     getUserFriendsById();
-  }, []);
+  });
 
   const onSubmit = (data: FriendEmail) => {
     const { email } = data;

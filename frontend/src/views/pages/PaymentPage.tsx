@@ -24,7 +24,6 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
@@ -47,7 +46,6 @@ export const PaymentPage = () => {
   const [date, setDate] = useState<Dayjs | null>(null);
   const [category, setCategory] = useState("");
   const [payer, setPayer] = useState("");
-
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
@@ -69,6 +67,8 @@ export const PaymentPage = () => {
     e.preventDefault()
     navigate("/history");
   };
+
+  console.log(error)
 
   useEffect(() => {
     getCategories();
@@ -108,6 +108,8 @@ export const PaymentPage = () => {
     { category: "Others", icon: <HelpOutlineIcon /> },
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
+
+
 
   return (
     <MainContainer>
