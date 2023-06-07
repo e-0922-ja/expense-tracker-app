@@ -37,23 +37,22 @@ export const DrawerContents = () => {
     },
   ];
 
-
   return (
     <>
-    <ButtonContainer>
-      <MainButton title={"create"} />
-    </ButtonContainer>
-    <StyledList>
-      {toolbarItems.map((item) => (
-        <ListItem key={item.id} disablePadding>
-          <StyledListItemButton onClick={item.func}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </StyledListItemButton>
-        </ListItem>
-      ))}
-    </StyledList>
-  </>
+      <ButtonContainer>
+        <MainButton title={"create"} />
+      </ButtonContainer>
+      <StyledList>
+        {toolbarItems.map((item) => (
+          <ListItem key={item.id} disablePadding>
+            <StyledListItemButton onClick={item.func}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </StyledListItemButton>
+          </ListItem>
+        ))}
+      </StyledList>
+    </>
   );
 };
 

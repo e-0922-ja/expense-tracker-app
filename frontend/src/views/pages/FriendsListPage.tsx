@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
@@ -13,26 +12,6 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Friend } from "../../types";
 import { UUID } from "crypto";
 import { SubButton } from "../components/SubButton";
-=======
-import Box from '@mui/material/Box';
-import styled from 'styled-components';
-import { createClient } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  updatedFriends,
-  removeSelectedFriend,
-} from '../../reducer/selectedFriendsSlice';
-import { RootState } from '../../store/store';
-import Button from '@mui/material/Button';
-import { emailRegex, errEmail } from '../../constants/regexPattern';
-import { useNavigate } from 'react-router-dom';
-import { InputAdornment, InputBase, Paper } from '@mui/material';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import { Friend } from '../../types';
-import { UUID } from 'crypto';
->>>>>>> main
 
 interface FriendEmail {
   email: string;
@@ -66,11 +45,7 @@ export const FriendsListPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-<<<<<<< HEAD
-    getUserFriends();
-=======
-    isLogin ? getUserFriendsById() : navigate('/');
->>>>>>> main
+    getUserFriendsById();
   }, []);
 
   const onSubmit = (data: FriendEmail) => {
@@ -112,15 +87,11 @@ export const FriendsListPage = () => {
     }
   };
 
-<<<<<<< HEAD
   const handleSendEmail = () => {
     console.log("send mail");
   };
 
   // Check friends to add or not
-=======
-  // check friends to add or not
->>>>>>> main
   const handleCheckedChange = (
     id: UUID,
     email: string,
@@ -129,7 +100,6 @@ export const FriendsListPage = () => {
     isChecked: boolean
   ): void => {
     if (isChecked) {
-<<<<<<< HEAD
       const addFriend: Friend = {
         id: id,
         firstName: firstName,
@@ -140,16 +110,6 @@ export const FriendsListPage = () => {
         ...prevSelectedFriends,
         addFriend,
       ]);
-=======
-      dispatch(
-        updatedFriends({
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-        })
-      );
->>>>>>> main
     } else {
       setSelectedFriends((prevSelectedFriends) =>
         prevSelectedFriends.filter((person) => person.email !== email)
@@ -228,6 +188,8 @@ export const FriendsListPage = () => {
         setError(error.message);
         return false;
       } else {
+        console.log(userId,"id")
+        console.log(data,"data")
         setFriends(data);
         console.log(friends, "friends");
       }
@@ -239,13 +201,8 @@ export const FriendsListPage = () => {
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
-<<<<<<< HEAD
       setSelectedError("");
       navigate("/expenses/payment", {
-=======
-      setSelectedError('');
-      navigate('/transaction', {
->>>>>>> main
         state: { selectedFriends },
       });
     } else {
@@ -257,23 +214,7 @@ export const FriendsListPage = () => {
     <MainContainer>
       <SubContainer>
         <Title>Add new friends</Title>
-<<<<<<< HEAD
         <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
-=======
-        <Box
-          component="form"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '50%',
-            marginTop: '2rem',
-            gap: '3rem',
-          }}
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
->>>>>>> main
           <InputWrapper>
             <InputPaper elevation={0}>
               <InputAdornment position="start">
@@ -290,7 +231,6 @@ export const FriendsListPage = () => {
             </InputPaper>
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
-<<<<<<< HEAD
           <SubButtonWrapper>
             <SubButton title={"send"} onClick={handleSendEmail} />
             {error ? (
@@ -300,23 +240,6 @@ export const FriendsListPage = () => {
             ) : null}
           </SubButtonWrapper>
         </StyledBox>
-=======
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              width: '100%',
-            }}
-          >
-            SEND
-          </Button>
-          {error ? (
-            <ErrorText>{error}</ErrorText>
-          ) : success ? (
-            <SuccessText>{success}</SuccessText>
-          ) : null}
-        </Box>
->>>>>>> main
       </SubContainer>
       <SubContainer>
         <Title>Friendslist</Title>
@@ -355,24 +278,10 @@ export const FriendsListPage = () => {
             );
           })}
         </UnorderedList>
-<<<<<<< HEAD
 
         <ButtonContainer>
           <SubButton title={"create"} onClick={handleClick} />
         </ButtonContainer>
-=======
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            width: '50%',
-            marginTop: '2rem',
-          }}
-          onClick={handleClick}
-        >
-          CREATE A TRANSACTION
-        </Button>
->>>>>>> main
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
       </SubContainer>
     </MainContainer>
