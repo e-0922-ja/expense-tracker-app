@@ -1,41 +1,47 @@
-import { Card, CardActionArea, Typography } from '@mui/material';
-import styled from 'styled-components';
-import PortraitIcon from '@mui/icons-material/Portrait';
+import { Card, CardActionArea, Typography } from "@mui/material";
+import styled from "styled-components";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import { useNavigate } from "react-router-dom";
 
-interface TransList {
+interface Transaction {
+
   category: string;
   dispription: string;
   amount: number;
   date: string;
 }
 
-interface Props {
-  item: TransList;
+interface TransactionProps {
+  item: Transaction;
 }
 
-export const TransactionCard = ({ item }: Props) => {
+export const TransactionCard = ({ item }: TransactionProps) => {
+  const navigate = useNavigate();
+  const handleGoToDetail = () => {
+    navigate("/history/1");
+  };
   return (
-    <TransactionCardWrapper>
-      <CardActionArea>
+    <TransactionCardWrapper elevation={0}>
+      <CardActionArea onClick={handleGoToDetail}>
         <ContentWrapper>
           <IconContainer>
-            <PortraitIcon />
+            <IconCircle>
+              <RestaurantIcon />
+            </IconCircle>
           </IconContainer>
           <DiscriptionContainer>
-            <DiscriptionTitleContainer>
-              <Typography gutterBottom variant="h6" component="div">
-                {item.dispription}
-              </Typography>
-              <Typography gutterBottom variant="h5" component="div">
-                ${item.amount}
-              </Typography>
-            </DiscriptionTitleContainer>
-            <DateContainer>
-              <Typography variant="body2" color="text.secondary">
-                {item.date}
-              </Typography>
-            </DateContainer>
+            <Typography gutterBottom component="div" style={{ margin: "0" }}>
+              {item.dispription}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.date}
+            </Typography>
           </DiscriptionContainer>
+          <AnountContainer>
+            <Typography gutterBottom component="div">
+              ${item.amount}
+            </Typography>
+          </AnountContainer>
         </ContentWrapper>
       </CardActionArea>
     </TransactionCardWrapper>
@@ -45,6 +51,7 @@ export const TransactionCard = ({ item }: Props) => {
 const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
+  border-radius: 10px !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -56,20 +63,27 @@ const IconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 10%;
+  width: 15%;
+`;
+
+const IconCircle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.palette.primary.light};
 `;
 
 const DiscriptionContainer = styled.div`
-  width: 90%;
+  width: 65%;
+  padding: 10px;
 `;
 
-const DiscriptionTitleContainer = styled.div`
+const AnountContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin: 10px 50px 10px 25px;
-`;
-
-const DateContainer = styled.div`
-  margin: 0 0 25px 25px;
+  width: 20%;
 `;

@@ -1,15 +1,19 @@
-import styled from 'styled-components';
-import { Button } from '@mui/material';
-import React from 'react';
+import styled from "styled-components";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-interface ButtonProps {
+interface MainButtonProps {
   title: string;
-  func: () => void;
 }
 
-export const MainButton: React.FC<ButtonProps> = ({ title, func }) => {
+export const MainButton = ({ title }: MainButtonProps) => {
+  const navigate = useNavigate();
+
+  const handleCreateExpense = () => {
+    navigate("/expenses/friendslist");
+  };
   return (
-    <MyButton variant="contained" disableRipple onClick={func}>
+    <MyButton variant="contained" disableRipple onClick={handleCreateExpense}>
       {title}
     </MyButton>
   );
