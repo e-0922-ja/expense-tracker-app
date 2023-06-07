@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
 
@@ -33,11 +34,16 @@ export const userSlice = createSlice({
       state.user = null;
       state.isLogin = false;
     },
+    update: (state, action) => {
+      state.user = action.payload;
+      state.isLogin = true;
+      console.log(state.user, "new!");
+    },
   },
 });
 
 export const selectUser = (state: RootState) => state.user;
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, update } = userSlice.actions;
 
 export default userSlice.reducer;
