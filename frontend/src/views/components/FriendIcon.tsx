@@ -1,44 +1,39 @@
-import styled from 'styled-components';
-import Chip from '@mui/material/Chip';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
-import { removeSelectedFriend } from '../../reducer/selectedFriendsSlice';
-import { Friend } from '../../types';
+import styled from "styled-components";
+import Chip from "@mui/material/Chip";
+import { Friend } from "../../types";
 
-export default function FriendIcon() {
-  const selectedFriendsState = useSelector(
-    (state: RootState) => state.selectedFriends
-  );
-  const selectedFriends = selectedFriendsState.selectedFriends;
-  const dispatch = useDispatch();
+interface FriendIconProps {
+  friends: Friend[];
+}
 
-  const handleDelete = (nameToDelete: Friend) => () => {
-    dispatch(removeSelectedFriend(nameToDelete.email));
-  };
-
+export const FriendIcon = ({ friends }: FriendIconProps) => {
   return (
     <ChipsWrapper>
-      {selectedFriends.map((item) => (
-        <div key={item.id}>
-          <Chip
-            label={item.id ? `${item.firstName} ${item.lastName}` : item.email}
-            onDelete={handleDelete(item)}
-            sx={{
-              height: '48px',
-              fontSize: '1rem',
-              borderRadius: '4px',
-              padding: '0 10px',
-              margin: '0 10px 10px 0',
-            }}
-          />
-        </div>
-      ))}
+      {friends.map((item) => {
+        return (
+          <div key={item.id}>
+            <StyledChips
+              label={
+                item.id ? `${item.firstName} ${item.lastName}` : item.email
+              }
+            />
+          </div>
+        );
+      })}
     </ChipsWrapper>
   );
-}
+};
 
 const ChipsWrapper = styled.div`
   width: 85%;
   display: flex;
   flex-wrap: wrap;
+`;
+
+const StyledChips = styled(Chip)`
+  height: 48px !important;
+  font-size: 1rem !important;
+  border-radius: 4px !important;
+  padding: 0 10px !important;
+  margin: 0 10px 10px 0 !important;
 `;

@@ -4,42 +4,71 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from '@mui/material';
-import HistoryIcon from '@mui/icons-material/History';
-import CreateIcon from '@mui/icons-material/Create';
-import PortraitIcon from '@mui/icons-material/Portrait';
-import { useNavigate } from 'react-router-dom';
+} from "@mui/material";
+import HistoryIcon from "@mui/icons-material/History";
+import PortraitIcon from "@mui/icons-material/Portrait";
+import { useNavigate } from "react-router-dom";
+import { MainButton } from "./MainButton";
+import styled from "styled-components";
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
-  const handleNavigateHistory = () => {
-    navigate('/history');
-  };
 
-  const handleNavigateExpense = () => {
-    navigate('/expense');
+  const handleNavigateHistory = () => {
+    navigate("/history");
   };
 
   const handleNavigateAccount = () => {
-    navigate('/account');
+    navigate("/account");
   };
 
   const toolbarItems = [
-    { text: 'History', icon: <HistoryIcon />, func: handleNavigateHistory },
-    { text: 'New Expense', icon: <CreateIcon />, func: handleNavigateExpense },
-    { text: 'My Account', icon: <PortraitIcon />, func: handleNavigateAccount },
+    {
+      text: "History",
+      icon: <HistoryIcon />,
+      func: handleNavigateHistory,
+      id: 1,
+    },
+    {
+      text: "My Account",
+      icon: <PortraitIcon />,
+      func: handleNavigateAccount,
+      id: 2,
+    },
   ];
 
+
   return (
-    <List style={{ paddingTop: '35px' }}>
-      {toolbarItems.map((item, index) => (
-        <ListItem key={index} disablePadding>
-          <ListItemButton style={{ padding: '10px 45px' }} onClick={item.func}>
+    <>
+    <ButtonContainer>
+      <MainButton title={"create"} />
+    </ButtonContainer>
+    <StyledList>
+      {toolbarItems.map((item) => (
+        <ListItem key={item.id} disablePadding>
+          <StyledListItemButton onClick={item.func}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
-          </ListItemButton>
+          </StyledListItemButton>
         </ListItem>
       ))}
-    </List>
+    </StyledList>
+  </>
   );
 };
+
+const ButtonContainer = styled.div`
+  margin-top: 35px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StyledList = styled(List)`
+  padding-top: 1rem !important;
+`;
+
+const StyledListItemButton = styled(ListItemButton)`
+  padding: 0.5rem 3.5rem !important;
+`;

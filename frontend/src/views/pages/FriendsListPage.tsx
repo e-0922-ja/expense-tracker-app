@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+import Box from "@mui/material/Box";
+import styled from "styled-components";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { emailRegex, errEmail } from "../../constants/regexPattern";
+import { useNavigate } from "react-router-dom";
+import { InputAdornment, InputBase, Paper } from "@mui/material";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { Friend } from "../../types";
+import { UUID } from "crypto";
+import { SubButton } from "../components/SubButton";
+=======
 import Box from '@mui/material/Box';
 import styled from 'styled-components';
 import { createClient } from '@supabase/supabase-js';
@@ -16,6 +32,7 @@ import { InputAdornment, InputBase, Paper } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { Friend } from '../../types';
 import { UUID } from 'crypto';
+>>>>>>> main
 
 interface FriendEmail {
   email: string;
@@ -27,7 +44,7 @@ const supabase = createClient(
 );
 
 export const FriendsListPage = () => {
-  // const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
+  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selectedError, setSelectedError] = useState('');
   const [error, setError] = useState('');
@@ -39,11 +56,6 @@ export const FriendsListPage = () => {
     reset,
   } = useForm<FriendEmail>();
 
-  const selectedFriendsState = useSelector(
-    (state: RootState) => state.selectedFriends
-  );
-  const selectedFriends = selectedFriendsState.selectedFriends;
-
   const userState = useSelector((state: RootState) => state.user);
   const isLogin = userState.isLogin;
   const userId = userState.user?.id;
@@ -51,11 +63,14 @@ export const FriendsListPage = () => {
   const userFirstName = userState.user?.firstName; // use it when sending an email
   const userLastName = userState.user?.lastName; // use it when sending an email
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
+<<<<<<< HEAD
+    getUserFriends();
+=======
     isLogin ? getUserFriendsById() : navigate('/');
+>>>>>>> main
   }, []);
 
   const onSubmit = (data: FriendEmail) => {
@@ -97,7 +112,15 @@ export const FriendsListPage = () => {
     }
   };
 
+<<<<<<< HEAD
+  const handleSendEmail = () => {
+    console.log("send mail");
+  };
+
+  // Check friends to add or not
+=======
   // check friends to add or not
+>>>>>>> main
   const handleCheckedChange = (
     id: UUID,
     email: string,
@@ -106,6 +129,18 @@ export const FriendsListPage = () => {
     isChecked: boolean
   ): void => {
     if (isChecked) {
+<<<<<<< HEAD
+      const addFriend: Friend = {
+        id: id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+      };
+      setSelectedFriends((prevSelectedFriends) => [
+        ...prevSelectedFriends,
+        addFriend,
+      ]);
+=======
       dispatch(
         updatedFriends({
           id: id,
@@ -114,8 +149,11 @@ export const FriendsListPage = () => {
           email: email,
         })
       );
+>>>>>>> main
     } else {
-      dispatch(removeSelectedFriend(email));
+      setSelectedFriends((prevSelectedFriends) =>
+        prevSelectedFriends.filter((person) => person.email !== email)
+      );
     }
   };
 
@@ -191,6 +229,7 @@ export const FriendsListPage = () => {
         return false;
       } else {
         setFriends(data);
+        console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
@@ -200,8 +239,13 @@ export const FriendsListPage = () => {
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
+<<<<<<< HEAD
+      setSelectedError("");
+      navigate("/expenses/payment", {
+=======
       setSelectedError('');
       navigate('/transaction', {
+>>>>>>> main
         state: { selectedFriends },
       });
     } else {
@@ -213,6 +257,9 @@ export const FriendsListPage = () => {
     <MainContainer>
       <SubContainer>
         <Title>Add new friends</Title>
+<<<<<<< HEAD
+        <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
+=======
         <Box
           component="form"
           sx={{
@@ -226,8 +273,9 @@ export const FriendsListPage = () => {
           autoComplete="off"
           onSubmit={handleSubmit(onSubmit)}
         >
+>>>>>>> main
           <InputWrapper>
-            <InputPaper>
+            <InputPaper elevation={0}>
               <InputAdornment position="start">
                 <MailOutlineIcon />
               </InputAdornment>
@@ -242,6 +290,17 @@ export const FriendsListPage = () => {
             </InputPaper>
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
+<<<<<<< HEAD
+          <SubButtonWrapper>
+            <SubButton title={"send"} onClick={handleSendEmail} />
+            {error ? (
+              <ErrorText>{error}</ErrorText>
+            ) : success ? (
+              <SuccessText>{success}</SuccessText>
+            ) : null}
+          </SubButtonWrapper>
+        </StyledBox>
+=======
           <Button
             type="submit"
             variant="contained"
@@ -257,6 +316,7 @@ export const FriendsListPage = () => {
             <SuccessText>{success}</SuccessText>
           ) : null}
         </Box>
+>>>>>>> main
       </SubContainer>
       <SubContainer>
         <Title>Friendslist</Title>
@@ -281,6 +341,7 @@ export const FriendsListPage = () => {
                       event.target.checked
                     )
                   }
+                  disabled={!friend.id}
                 />
                 <Label htmlFor={index.toString()}>
                   <ListItem>
@@ -294,6 +355,12 @@ export const FriendsListPage = () => {
             );
           })}
         </UnorderedList>
+<<<<<<< HEAD
+
+        <ButtonContainer>
+          <SubButton title={"create"} onClick={handleClick} />
+        </ButtonContainer>
+=======
         <Button
           type="submit"
           variant="contained"
@@ -305,6 +372,7 @@ export const FriendsListPage = () => {
         >
           CREATE A TRANSACTION
         </Button>
+>>>>>>> main
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
       </SubContainer>
     </MainContainer>
@@ -312,28 +380,29 @@ export const FriendsListPage = () => {
 };
 
 const MainContainer = styled.div`
+  height: calc(100% - 64px);
+  width: 100%;
+  overflow: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 3rem;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const SubContainer = styled.div`
+const SubContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 70vh;
-  width: 600px;
-  border: 2px solid ${({ theme }) => theme.palette.secondary.main};
+  height: 70%;
+  width: 35%;
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
 const Title = styled.h1`
-  margin-top: 3rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
 `;
@@ -341,7 +410,7 @@ const Title = styled.h1`
 const UnorderedList = styled.ul`
   padding: 0px;
   height: 60%;
-  width: 500px;
+  width: 80%;
   overflow: auto;
 `;
 
@@ -354,14 +423,14 @@ const CheckBox = styled.input`
 const Label = styled.label`
   display: flex;
   justify-content: space-between;
-  border: 2px solid ${({ theme }) => theme.palette.secondary.main};
+  border: 1px solid ${({ theme }) => theme.palette.secondary.main};
   border-radius: 0.25rem;
-  padding: 0.5rem;
+  padding: 0.6rem;
   margin-bottom: 0.75rem;
   color: ${({ theme }) => theme.palette.secondary.main};
   cursor: pointer;
   ${CheckBox}:checked + & {
-    background: gray;
+    background: #e0e0e0;
   }
 `;
 
@@ -369,12 +438,19 @@ const ListItem = styled.span`
   display: inline-block;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 80%;
+`;
+
 const ErrorText = styled.div`
+  margin-top: 7px;
   font-size: 1rem;
   color: #ff908d;
 `;
 
 const SuccessText = styled.div`
+  margin-top: 7px;
   font-size: 1rem;
   color: #4caf50;
 `;
@@ -392,8 +468,23 @@ const InputWrapper = styled.div`
 // commonized later
 // ==============================================================
 const InputPaper = styled(Paper)`
-  margin: 15px 0 7px;
+  margin: 15px 0 0;
   padding: 7px;
   display: flex;
   align-items: center;
+  border: solid 1px ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const SubButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+`;
+
+const StyledBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margintop: 2rem;
 `;
