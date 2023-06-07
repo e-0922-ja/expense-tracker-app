@@ -47,14 +47,14 @@ export const Header = () => {
           theme.zIndex.drawer + 1,
       }}
     >
-      <StyledToolbar>
+      <Toolbar style={{ padding: '0 200px 0 66px' }}>
         <Typography
           sx={{ flexGrow: 1 }}
           onClick={handleNavigateHome}
           variant="h5"
           component="div"
         >
-          SpendShare
+          Expense Tracker
         </Typography>
         <AppBarNavWrapper>
           <StyledIconButton size="large" onClick={handleChangeMode}>
@@ -71,7 +71,7 @@ export const Header = () => {
           </Text>
           <Text>{account.isLogin ? account.user?.firstName : 'Person'}</Text>
         </AppBarNavWrapper>
-      </StyledToolbar>
+      </Toolbar>
     </AppBarWrapper>
   );
 };
@@ -98,8 +98,4 @@ const StyledIconButton = styled(IconButton)`
   .MuiTouchRipple-root {
     color: #f8f9f9;
   }
-`;
-
-const StyledToolbar = styled(Toolbar)`
-  padding: 0 70px !important;
 `;
