@@ -63,7 +63,7 @@ export const LoginPage = () => {
     // ================================================
     // Will change the path to new page later
     // ================================================
-    navigate("/");
+    navigate("/account");
   };
 
   return (
