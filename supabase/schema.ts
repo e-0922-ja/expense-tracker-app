@@ -26,6 +26,73 @@ export interface Database {
           sequence?: number | null
         }
       }
+      Expenses: {
+        Row: {
+          categoryId: number | null
+          description: string | null
+          groupId: string | null
+          id: string
+          payer: string | null
+          payment: number | null
+          registeredAt: string | null
+          registeredBy: string | null
+          settled: boolean | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          categoryId?: number | null
+          description?: string | null
+          groupId?: string | null
+          id?: string
+          payer?: string | null
+          payment?: number | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          settled?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          categoryId?: number | null
+          description?: string | null
+          groupId?: string | null
+          id?: string
+          payer?: string | null
+          payment?: number | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          settled?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+      }
+      ExpenseStatus: {
+        Row: {
+          amount: number | null
+          expenseId: string
+          paid: boolean | null
+          updatedAt: string | null
+          updatedBy: string | null
+          userId: string
+        }
+        Insert: {
+          amount?: number | null
+          expenseId: string
+          paid?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+          userId: string
+        }
+        Update: {
+          amount?: number | null
+          expenseId?: string
+          paid?: boolean | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+          userId?: string
+        }
+      }
       Friendships: {
         Row: {
           friendEmail: string | null
@@ -55,70 +122,101 @@ export interface Database {
           userId?: string | null
         }
       }
-      Job: {
+      GroupMembers: {
         Row: {
-          created_at: string | null
-          friendId: string | null
-          id: string | null
-          userId: string | null
+          groupId: string
+          memberId: string
         }
         Insert: {
-          created_at?: string | null
-          friendId?: string | null
-          id?: string | null
-          userId?: string | null
+          groupId: string
+          memberId: string
         }
         Update: {
-          created_at?: string | null
-          friendId?: string | null
-          id?: string | null
-          userId?: string | null
+          groupId?: string
+          memberId?: string
+        }
+      }
+      Groups: {
+        Row: {
+          id: string
+          name: string | null
+          registeredAt: string | null
+          registeredBy: string | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          id?: string
+          name?: string | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          registeredAt?: string | null
+          registeredBy?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+      }
+      Methods: {
+        Row: {
+          id: number
+          name: string | null
+          sequence: number | null
+        }
+        Insert: {
+          id?: number
+          name?: string | null
+          sequence?: number | null
+        }
+        Update: {
+          id?: number
+          name?: string | null
+          sequence?: number | null
         }
       }
       Status: {
         Row: {
           id: number
-          registeredAt: string | null
           statusName: string | null
         }
         Insert: {
           id?: number
-          registeredAt?: string | null
           statusName?: string | null
         }
         Update: {
           id?: number
-          registeredAt?: string | null
           statusName?: string | null
         }
       }
       Users: {
         Row: {
-          email: string | null
           firstName: string | null
           id: string
           lastName: string | null
           password: string | null
-          registered_at: string | null
-          updated_at: string | null
+          registeredAt: string | null
+          updatedAt: string | null
         }
         Insert: {
-          email?: string | null
           firstName?: string | null
           id: string
           lastName?: string | null
           password?: string | null
-          registered_at?: string | null
-          updated_at?: string | null
+          registeredAt?: string | null
+          updatedAt?: string | null
         }
         Update: {
-          email?: string | null
           firstName?: string | null
           id?: string
           lastName?: string | null
           password?: string | null
-          registered_at?: string | null
-          updated_at?: string | null
+          registeredAt?: string | null
+          updatedAt?: string | null
         }
       }
     }
@@ -133,14 +231,44 @@ export interface Database {
         }
         Returns: number
       }
-      get_friendship: {
-        Args: Record<PropertyKey, never>
-        Returns: number
+      get_borrowed_money_total: {
+        Args: {
+          user_id: string
+        }
+        Returns: undefined
       }
-      get_friendships: {
-        Args: Record<PropertyKey, never>
+      get_histories: {
+        Args: {
+          user_id: string
+        }
         Returns: {
-          count: number
+          id: string
+          categoryId: number
+          description: string
+          payment: number
+          registeredAt: string
+        }[]
+      }
+      get_total_borrowed_amount: {
+        Args: {
+          user_id: string
+        }
+        Returns: {
+          payer: string
+          total_borrowed_amount: number
+          firstName: string
+          lastName: string
+        }[]
+      }
+      get_total_lent_amount: {
+        Args: {
+          user_id: string
+        }
+        Returns: {
+          userId: string
+          total_lent_amount: number
+          firstName: string
+          lastName: string
         }[]
       }
       get_user_friends: {
@@ -153,6 +281,20 @@ export interface Database {
           lastName: string
           email: string
         }[]
+      }
+      insert_expense: {
+        Args: {
+          group_name: string
+          registered_by: string
+          member_ids: string[]
+          member_paids: boolean[]
+          member_amounts: number[]
+          payer_id: string
+          category_id: number
+          description: string
+          payment: number
+        }
+        Returns: undefined
       }
     }
     Enums: {
