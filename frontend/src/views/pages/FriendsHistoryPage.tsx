@@ -38,6 +38,7 @@ export const FriendsHistoryPage = () => {
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [categories, setCategories] = useState<Category[]>([]);
 
   const handleDrawerToggle = () => {
