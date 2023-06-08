@@ -12,6 +12,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { Friend } from '../../types';
 import { UUID } from 'crypto';
 import { SubButton } from '../components/SubButton';
+import { SupabaseEdgeFunctionService } from '../../services/supabaseEdgeFunction';
 
 interface FriendEmail {
   email: string;
@@ -38,6 +39,8 @@ export const FriendsListPage = () => {
   const userState = useSelector((state: RootState) => state.user);
   const userId = userState.user?.id;
   const userEmail = userState.user?.email;
+  const userFirstName = userState.user?.firstName;
+  const userLastName = userState.user?.lastName;
 
   const navigate = useNavigate();
 
