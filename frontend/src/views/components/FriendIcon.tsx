@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import Chip from "@mui/material/Chip";
-import { Friend } from "../../types";
+import styled from 'styled-components';
+import Chip from '@mui/material/Chip';
+import { Friend } from '../../types';
 
 interface FriendIconProps {
   friends: Friend[];

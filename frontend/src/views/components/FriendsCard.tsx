@@ -1,7 +1,7 @@
-import { Card, CardActionArea, Typography } from "@mui/material";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Card, CardActionArea, Typography } from '@mui/material';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface FriendsCardProps {
   friendName: string;
@@ -10,7 +10,7 @@ interface FriendsCardProps {
 export const FriendsCard = ({ friendName }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
-    navigate("/history/group/1");
+    navigate('/history/group/1');
   };
   return (
     <TransactionCardWrapper elevation={0}>

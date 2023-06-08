@@ -4,33 +4,33 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import HistoryIcon from "@mui/icons-material/History";
-import PortraitIcon from "@mui/icons-material/Portrait";
-import { useNavigate } from "react-router-dom";
-import { MainButton } from "./MainButton";
-import styled from "styled-components";
+} from '@mui/material';
+import HistoryIcon from '@mui/icons-material/History';
+import PortraitIcon from '@mui/icons-material/Portrait';
+import { useNavigate } from 'react-router-dom';
+import { MainButton } from './MainButton';
+import styled from 'styled-components';
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
 
   const handleNavigateHistory = () => {
-    navigate("/history");
+    navigate('/history');
   };
 
   const handleNavigateAccount = () => {
-    navigate("/account");
+    navigate('/account');
   };
 
   const toolbarItems = [
     {
-      text: "History",
+      text: 'History',
       icon: <HistoryIcon />,
       func: handleNavigateHistory,
       id: 1,
     },
     {
-      text: "My Account",
+      text: 'My Account',
       icon: <PortraitIcon />,
       func: handleNavigateAccount,
       id: 2,
@@ -40,7 +40,7 @@ export const DrawerContents = () => {
   return (
     <>
       <ButtonContainer>
-        <MainButton title={"create"} />
+        <MainButton title={'create'} />
       </ButtonContainer>
       <StyledList>
         {toolbarItems.map((item) => (

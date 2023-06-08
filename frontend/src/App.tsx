@@ -1,19 +1,19 @@
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./views/pages/HomePage";
-import { Header } from "./views/components/Header";
-import { useSelector } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { selectTheme } from "./reducer/colorModeSlice";
-import { SignUpPage } from "./views/pages/SignUpPage";
-import { LoginPage } from "./views/pages/LoginPage";
-import { FriendsListPage } from "./views/pages/FriendsListPage";
-import { Toolbar } from "@mui/material";
-import { HistoryPage } from "./views/pages/HistoryPage";
-import { PaymentPage } from "./views/pages/PaymentPage";
-import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
-import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
-import { AccountPage } from "./views/pages/AccountPage";
+import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { HomePage } from './views/pages/HomePage';
+import { Header } from './views/components/Header';
+import { useSelector } from 'react-redux';
+import { ThemeProvider } from 'styled-components';
+import { selectTheme } from './reducer/colorModeSlice';
+import { SignUpPage } from './views/pages/SignUpPage';
+import { LoginPage } from './views/pages/LoginPage';
+import { FriendsListPage } from './views/pages/FriendsListPage';
+import { Toolbar } from '@mui/material';
+import { HistoryPage } from './views/pages/HistoryPage';
+import { PaymentPage } from './views/pages/PaymentPage';
+import { FriendsHistoryPage } from './views/pages/FriendsHistoryPage';
+import { HistoryDetailPage } from './views/pages/HistoryDetailPage';
+import { AccountPage } from './views/pages/AccountPage';
 
 function App() {
   const theme = useSelector(selectTheme);

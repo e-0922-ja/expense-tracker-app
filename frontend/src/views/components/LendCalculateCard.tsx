@@ -1,5 +1,5 @@
-import { Card } from "@mui/material";
-import styled from "styled-components";
+import { Card } from '@mui/material';
+import styled from 'styled-components';
 
 interface LendCalculateCardProps {
   name: string;

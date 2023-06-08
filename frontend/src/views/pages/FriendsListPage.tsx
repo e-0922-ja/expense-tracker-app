@@ -1,17 +1,17 @@
-import Box from "@mui/material/Box";
-import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { emailRegex, errEmail } from "../../constants/regexPattern";
-import { useNavigate } from "react-router-dom";
-import { InputAdornment, InputBase, Paper } from "@mui/material";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Friend } from "../../types";
-import { UUID } from "crypto";
-import { SubButton } from "../components/SubButton";
+import Box from '@mui/material/Box';
+import styled from 'styled-components';
+import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { emailRegex, errEmail } from '../../constants/regexPattern';
+import { useNavigate } from 'react-router-dom';
+import { InputAdornment, InputBase, Paper } from '@mui/material';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { Friend } from '../../types';
+import { UUID } from 'crypto';
+import { SubButton } from '../components/SubButton';
 
 interface FriendEmail {
   email: string;
@@ -25,9 +25,9 @@ const supabase = createClient(
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
-  const [selectedError, setSelectedError] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [selectedError, setSelectedError] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const {
     register,
     handleSubmit,
@@ -52,7 +52,7 @@ export const FriendsListPage = () => {
 
   const sendFriendRequest = async (email: string) => {
     if (email === userEmail) {
-      setError("You cannot send a friend request to your email address.");
+      setError('You cannot send a friend request to your email address.');
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(email);
       if (resultCountFriendShipByEmail > 0) {
@@ -71,14 +71,14 @@ export const FriendsListPage = () => {
             );
 
             if (!emailResponse.status) {
-              setError("Failed to send an email.");
+              setError('Failed to send an email.');
             }
 
             // to retrieve the data to update the friend list
             const resultGetUserFriendsById = await getUserFriendsById();
             if (resultGetUserFriendsById) {
               reset();
-              setError("");
+              setError('');
             }
             setSuccess(
               `You have successfully sent a friend request to ${email}!`
@@ -90,7 +90,7 @@ export const FriendsListPage = () => {
   };
 
   const handleSendEmail = () => {
-    console.log("send mail");
+    console.log('send mail');
   };
 
   // Check friends to add or not
@@ -122,7 +122,7 @@ export const FriendsListPage = () => {
   // check if a user has already sent a friend request to the input email address
   const countFriendShipByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase.rpc("check_friendship", {
+      const { data, error } = await supabase.rpc('check_friendship', {
         user_id: userId,
         friend_email: email,
       });
@@ -139,9 +139,9 @@ export const FriendsListPage = () => {
   const getFriendByEmail = async (email: string) => {
     try {
       const { data, error } = await supabase
-        .from("Users")
-        .select("*")
-        .eq("email", email);
+        .from('Users')
+        .select('*')
+        .eq('email', email);
       if (error) {
         setError(error.message);
         return false;
@@ -167,7 +167,7 @@ export const FriendsListPage = () => {
 
     try {
       const { error } = await supabase
-        .from("Friendships")
+        .from('Friendships')
         .insert(friendshipsData);
       if (error) {
         setError(error.message);
@@ -183,17 +183,17 @@ export const FriendsListPage = () => {
 
   const getUserFriendsById = async () => {
     try {
-      const { data, error } = await supabase.rpc("get_user_friends", {
+      const { data, error } = await supabase.rpc('get_user_friends', {
         user_id: userId,
       });
       if (error) {
         setError(error.message);
         return false;
       } else {
-        console.log(userId, "id");
-        console.log(data, "data");
+        console.log(userId, 'id');
+        console.log(data, 'data');
         setFriends(data);
-        console.log(friends, "friends");
+        console.log(friends, 'friends');
       }
     } catch (error: any) {
       setError(error.message);
@@ -203,12 +203,12 @@ export const FriendsListPage = () => {
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
-      setSelectedError("");
-      navigate("/expenses/payment", {
+      setSelectedError('');
+      navigate('/expenses/payment', {
         state: { selectedFriends },
       });
     } else {
-      setSelectedError("select friends from your friends list");
+      setSelectedError('select friends from your friends list');
     }
   };
 
@@ -225,7 +225,7 @@ export const FriendsListPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
-                {...register("email", {
+                {...register('email', {
                   required: true,
                   pattern: emailRegex,
                 })}
@@ -234,7 +234,7 @@ export const FriendsListPage = () => {
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
-            <SubButton title={"send"} onClick={handleSendEmail} />
+            <SubButton title={'send'} onClick={handleSendEmail} />
             {error ? (
               <ErrorText>{error}</ErrorText>
             ) : success ? (
@@ -272,7 +272,7 @@ export const FriendsListPage = () => {
                   <ListItem>
                     {friend.firstName
                       ? `${friend.firstName}  ${friend.lastName}`
-                      : "-"}
+                      : '-'}
                   </ListItem>
                   <ListItem>{friend.email}</ListItem>
                 </Label>
@@ -282,7 +282,7 @@ export const FriendsListPage = () => {
         </UnorderedList>
 
         <ButtonContainer>
-          <SubButton title={"create"} onClick={handleClick} />
+          <SubButton title={'create'} onClick={handleClick} />
         </ButtonContainer>
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
       </SubContainer>

@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface MainButtonProps {
   title: string;
@@ -10,7 +10,7 @@ export const MainButton = ({ title }: MainButtonProps) => {
   const navigate = useNavigate();
 
   const handleCreateExpense = () => {
-    navigate("/expenses/friendslist");
+    navigate('/expenses/friendslist');
   };
   return (
     <MyButton variant="contained" disableRipple onClick={handleCreateExpense}>

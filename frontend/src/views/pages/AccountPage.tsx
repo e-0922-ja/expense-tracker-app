@@ -1,5 +1,5 @@
-import { useState } from "react";
-import styled from "styled-components";
+import { useState } from 'react';
+import styled from 'styled-components';
 import {
   IconButton,
   Toolbar,
@@ -8,25 +8,25 @@ import {
   useTheme,
   Box,
   OutlinedInput,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DrawerContents } from "../components/DrawerContents";
-import { SubButton } from "../components/SubButton";
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { DrawerContents } from '../components/DrawerContents';
+import { SubButton } from '../components/SubButton';
 
 export const AccountPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const [userData, setUserData] = useState({
-    firstName: "Yuki",
-    lastName: "Kasugai",
-    email: "yuki@gmail.com",
-    password: "*******",
+    firstName: 'Yuki',
+    lastName: 'Kasugai',
+    email: 'yuki@gmail.com',
+    password: '*******',
   });
 
   const [editStatus, setEditStatus] = useState(false);
@@ -122,9 +122,9 @@ export const AccountPage = () => {
                 </StyledBox>
                 <ButtonContainer>
                   {editStatus ? (
-                    <SubButton title={"save"} onClick={handleSave} />
+                    <SubButton title={'save'} onClick={handleSave} />
                   ) : (
-                    <SubButton title={"edit"} onClick={handleEdit} />
+                    <SubButton title={'edit'} onClick={handleEdit} />
                   )}
                 </ButtonContainer>
               </InfoContainer>

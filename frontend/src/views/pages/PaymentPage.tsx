@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
-import { FriendIcon } from "../components/FriendIcon";
-import { useEffect, useState } from "react";
-import { Category } from "../../types";
+import styled from 'styled-components';
+import { createClient } from '@supabase/supabase-js';
+import { FriendIcon } from '../components/FriendIcon';
+import { useEffect, useState } from 'react';
+import { Category } from '../../types';
 import {
   Box,
   Button,
@@ -11,25 +11,25 @@ import {
   OutlinedInput,
   Select,
   SelectChangeEvent,
-} from "@mui/material";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
-import HouseIcon from "@mui/icons-material/House";
-import LightIcon from "@mui/icons-material/Light";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
-import Face3Icon from "@mui/icons-material/Face3";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { useSelector } from "react-redux";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Friend } from "../../types";
-import { selectUser } from "../../reducer/userSlice";
+} from '@mui/material';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
+import HouseIcon from '@mui/icons-material/House';
+import LightIcon from '@mui/icons-material/Light';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import Face3Icon from '@mui/icons-material/Face3';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { useSelector } from 'react-redux';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Dayjs } from 'dayjs';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Friend } from '../../types';
+import { selectUser } from '../../reducer/userSlice';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -41,11 +41,11 @@ interface CategoryIcon {
   icon: React.ReactElement;
 }
 export const PaymentPage = () => {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [date, setDate] = useState<Dayjs | null>(null);
-  const [category, setCategory] = useState("");
-  const [payer, setPayer] = useState("");
+  const [category, setCategory] = useState('');
+  const [payer, setPayer] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
@@ -64,11 +64,11 @@ export const PaymentPage = () => {
   };
 
   const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    navigate("/history");
+    e.preventDefault();
+    navigate('/history');
   };
 
-  console.log(error)
+  console.log(error);
 
   useEffect(() => {
     getCategories();
@@ -78,14 +78,14 @@ export const PaymentPage = () => {
   const getCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
+        .from('Categories')
+        .select('*')
+        .order('sequence', { ascending: true });
       if (error) {
         setError(error.message);
         return false;
       } else {
-        console.log(data, "data");
+        console.log(data, 'data');
         if (data) {
           console.log(data);
           setCategories(data as Category[]);
@@ -97,19 +97,17 @@ export const PaymentPage = () => {
     }
   };
   const categoryIcons: CategoryIcon[] = [
-    { category: "Food", icon: <RestaurantIcon /> },
-    { category: "Entertainment", icon: <MusicNoteIcon /> },
-    { category: "Transportation", icon: <DirectionsTransitIcon /> },
-    { category: "Cost of Living", icon: <HouseIcon /> },
-    { category: "Utility", icon: <LightIcon /> },
-    { category: "Health", icon: <MonitorHeartIcon /> },
-    { category: "Beauty", icon: <Face3Icon /> },
-    { category: "Cloth", icon: <ShoppingCartIcon /> },
-    { category: "Others", icon: <HelpOutlineIcon /> },
-    { category: "None", icon: <HorizontalRuleIcon /> },
+    { category: 'Food', icon: <RestaurantIcon /> },
+    { category: 'Entertainment', icon: <MusicNoteIcon /> },
+    { category: 'Transportation', icon: <DirectionsTransitIcon /> },
+    { category: 'Cost of Living', icon: <HouseIcon /> },
+    { category: 'Utility', icon: <LightIcon /> },
+    { category: 'Health', icon: <MonitorHeartIcon /> },
+    { category: 'Beauty', icon: <Face3Icon /> },
+    { category: 'Cloth', icon: <ShoppingCartIcon /> },
+    { category: 'Others', icon: <HelpOutlineIcon /> },
+    { category: 'None', icon: <HorizontalRuleIcon /> },
   ];
-
-
 
   return (
     <MainContainer>
@@ -139,15 +137,15 @@ export const PaymentPage = () => {
                 <InputSelectTitle>Who paid?</InputSelectTitle>
                 <Select
                   value={
-                    payer || (splitters.length > 0 ? splitters[0].email : "")
+                    payer || (splitters.length > 0 ? splitters[0].email : '')
                   }
                   onChange={handleChangePayer}
                   displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
+                  inputProps={{ 'aria-label': 'Without label' }}
                   fullWidth
                   sx={{
-                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                      padding: "14px", // Adjust the padding value according to your needs
+                    '& .MuiInputBase-input.MuiOutlinedInput-input': {
+                      padding: '14px', // Adjust the padding value according to your needs
                     },
                   }}
                 >
@@ -172,15 +170,15 @@ export const PaymentPage = () => {
                       ? category
                       : categories.length > 0
                       ? categories[0].id.toString()
-                      : ""
+                      : ''
                   }
                   onChange={handleChangeCategory}
                   displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
+                  inputProps={{ 'aria-label': 'Without label' }}
                   fullWidth
                   sx={{
-                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                      padding: "14px", // Adjust the padding value according to your needs
+                    '& .MuiInputBase-input.MuiOutlinedInput-input': {
+                      padding: '14px', // Adjust the padding value according to your needs
                     },
                   }}
                 >
@@ -206,7 +204,7 @@ export const PaymentPage = () => {
                 </StyledBox>
                 <InputTitle>Date</InputTitle>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
+                  <DemoContainer components={['DatePicker']}>
                     <DatePicker
                       value={date}
                       onChange={(newValue) => setDate(newValue)}
@@ -242,12 +240,9 @@ export const PaymentPage = () => {
             </InputsWrapper>
 
             <ButtonContainer>
-            <StyledButton
-              variant="contained"
-              disableRipple
-            >
-              create
-            </StyledButton>
+              <StyledButton variant="contained" disableRipple>
+                create
+              </StyledButton>
             </ButtonContainer>
           </FormContainer>
         </Section>

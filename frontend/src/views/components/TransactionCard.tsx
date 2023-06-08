@@ -1,10 +1,9 @@
-import { Card, CardActionArea, Typography } from "@mui/material";
-import styled from "styled-components";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import { useNavigate } from "react-router-dom";
+import { Card, CardActionArea, Typography } from '@mui/material';
+import styled from 'styled-components';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { useNavigate } from 'react-router-dom';
 
 interface Transaction {
-
   category: string;
   dispription: string;
   amount: number;
@@ -18,7 +17,7 @@ interface TransactionProps {
 export const TransactionCard = ({ item }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
-    navigate("/history/1");
+    navigate('/history/1');
   };
   return (
     <TransactionCardWrapper elevation={0}>
@@ -30,7 +29,7 @@ export const TransactionCard = ({ item }: TransactionProps) => {
             </IconCircle>
           </IconContainer>
           <DiscriptionContainer>
-            <Typography gutterBottom component="div" style={{ margin: "0" }}>
+            <Typography gutterBottom component="div" style={{ margin: '0' }}>
               {item.dispription}
             </Typography>
             <Typography variant="body2" color="text.secondary">
