@@ -1,31 +1,28 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
+import { LentAmountReturns } from "../pages/HistoryPage";
 
 interface LendCalculateCardProps {
-  name: string;
-  amount: number;
-  totalAmount: number;
+  lent: LentAmountReturns;
 }
 
-export const LendCalculateCard = ({
-  name,
-  amount,
-  totalAmount,
-}: LendCalculateCardProps) => {
+export const LendCalculateCard = ({ lent }: LendCalculateCardProps) => {
   return (
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
         <Container>
           <div>
             <BorrowTitle>Lend</BorrowTitle>
-            <CalculateContainer>
-              <CalculateName>{name}</CalculateName>
-              <CalculateAmount>${amount}</CalculateAmount>
-            </CalculateContainer>
+            {lent.map((member) => (
+              <CalculateContainer>
+                <CalculateName>{`${member.firstName} ${member.lastName}`}</CalculateName>
+                <CalculateAmount>{member.total_lent_amount}</CalculateAmount>
+              </CalculateContainer>
+            ))}
           </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>${totalAmount}</BorrowTotal>
+            {/* <BorrowTotal>${totalAmount}</BorrowTotal> */}
           </CalculateContainer>
         </Container>
       </InsideWrapper>

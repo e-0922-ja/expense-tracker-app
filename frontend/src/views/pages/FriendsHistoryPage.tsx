@@ -162,7 +162,7 @@ export const FriendsHistoryPage = () => {
             <TransactionCardContainer>
               <Title>Summary for this group</Title>
               <CalculateCardContainer>
-                <BorrowCalculateCard
+                {/* <BorrowCalculateCard
                   name={"Megan"}
                   amount={200}
                   totalAmount={300}
@@ -171,7 +171,7 @@ export const FriendsHistoryPage = () => {
                   name={"Megan"}
                   amount={200}
                   totalAmount={300}
-                />
+                /> */}
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {transactionHistory.map((item) => (

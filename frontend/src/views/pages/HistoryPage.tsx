@@ -21,6 +21,9 @@ import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
 
 interface TransactionHistory {
   id: number;
@@ -36,19 +39,26 @@ interface Name {
   firstName: string;
 }
 
+const supabase = createClient<Database>(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
+
+export type BorrowedAmountReturns =
+  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
+export type LentAmountReturns =
+  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
+
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-
-  // const [date, setDate] = useState<Dayjs | null>(null);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
+  const account = useSelector(selectUser);
+  const userId = account.user?.id!;
+  const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
+  const [lent, setLent] = useState<LentAmountReturns>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -105,9 +115,51 @@ export const HistoryPage = () => {
     { id: 5, firstName: "Bob" },
   ];
 
+  // ------------------------------------------------------------------------------------------
+  const getTotalLentAmount = async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_lent_amount", {
+        user_id: userId,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("lent", data);
+        setLent(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
+  const getTotalBorrowedAmount = async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
+        user_id: userId!,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("borrowed", data);
+        setBorrowed(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+  // ------------------------------------------------------------------------------------------
+
   useEffect(() => {
     getCategories();
-  });
+  }, []);
+
+  useEffect(() => {
+    getTotalLentAmount();
+  }, []);
+
+  useEffect(() => {
+    getTotalBorrowedAmount();
+  }, []);
 
   // get categories from a table
   const getCategories = async () => {
@@ -121,15 +173,14 @@ export const HistoryPage = () => {
         return false;
       } else {
         setCategories(data);
-        console.log(categories)
+        console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-
   };
-  console.log(error)
+  console.log(error);
 
   const [value, setValue] = useState("1");
 
@@ -181,16 +232,8 @@ export const HistoryPage = () => {
             <TabPanel value="1">
               <Title>Summary for you</Title>
               <CalculateCardContainer>
-                <BorrowCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
-                <LendCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
+                <BorrowCalculateCard borrowed={borrowed} />
+                <LendCalculateCard lent={lent} />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {transactionHistory.map((item) => (
