@@ -261,7 +261,7 @@ export interface Database {
         }
         Returns: {
           payer: string
-          total_borrowed_amount: number
+          totalAmount: number
           firstName: string
           lastName: string
         }[]
@@ -272,7 +272,7 @@ export interface Database {
         }
         Returns: {
           userId: string
-          total_lent_amount: number
+          totalAmount: number
           firstName: string
           lastName: string
         }[]

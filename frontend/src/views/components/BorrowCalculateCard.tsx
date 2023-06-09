@@ -1,30 +1,33 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
 import { BorrowedAmountReturns } from "../pages/HistoryPage";
+import { calculateTotalAmount } from "../../utils/utils";
 
 interface BorrowCalculateCardProps {
   borrowed: BorrowedAmountReturns;
 }
 
 export const BorrowCalculateCard = ({ borrowed }: BorrowCalculateCardProps) => {
+  const total = calculateTotalAmount(borrowed);
+
   return (
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
         <Container>
           <div>
             <BorrowTitle>Borrow</BorrowTitle>
-            {borrowed.map((member) => (
-              <CalculateContainer>
+            {borrowed.map((member, index) => (
+              <CalculateContainer key={index}>
                 <CalculateName>{`${member.firstName} ${member.lastName}`}</CalculateName>
                 <CalculateAmount>
-                  {member.total_borrowed_amount}
+                  {member.totalAmount.toLocaleString()}
                 </CalculateAmount>
               </CalculateContainer>
             ))}
           </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            {/* <BorrowTotal>${totalAmount}</BorrowTotal> */}
+            <BorrowTotal>{total ? total : "-"}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>

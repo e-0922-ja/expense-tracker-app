@@ -142,7 +142,7 @@ export const PaymentPage = () => {
       (member) => member.id === account.user?.id
     );
     const memberAmounts = memberExpense.map((member) =>
-      parseInt(member.amount)
+      parseFloat(member.amount)
     );
 
     try {
@@ -156,7 +156,7 @@ export const PaymentPage = () => {
         payer_id: payer,
         category_id: parseInt(category),
         description: description,
-        payment: parseInt(amount),
+        payment: parseFloat(amount),
       });
       if (error) {
         setError(error.message);
