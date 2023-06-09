@@ -3,19 +3,20 @@ import styled from "styled-components";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
 
-interface Transaction {
-
-  category: string;
-  dispription: string;
-  amount: number;
+interface Expense {
+  id: string;
+  categoryId: number;
+  description: string;
+  payment: number;
   date: string;
+  registeredAt: string;
 }
 
 interface TransactionProps {
-  item: Transaction;
+  expense: Expense;
 }
 
-export const TransactionCard = ({ item }: TransactionProps) => {
+export const TransactionCard = ({ expense }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
     navigate("/history/1");
@@ -31,15 +32,15 @@ export const TransactionCard = ({ item }: TransactionProps) => {
           </IconContainer>
           <DiscriptionContainer>
             <Typography gutterBottom component="div" style={{ margin: "0" }}>
-              {item.dispription}
+              {expense.description}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {item.date}
+              {expense.date.toLocaleString().substring(0, 10)}
             </Typography>
           </DiscriptionContainer>
           <AnountContainer>
             <Typography gutterBottom component="div">
-              ${item.amount}
+              ${expense.payment.toString()}
             </Typography>
           </AnountContainer>
         </ContentWrapper>
