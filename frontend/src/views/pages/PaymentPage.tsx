@@ -148,7 +148,7 @@ export const PaymentPage = () => {
     try {
       const { data, error } = await supabase.rpc("insert_expense", {
         group_name: "",
-        date: date?.toISOString(),
+        date: date?.toISOString()!,
         registered_by: account.user!.id, // think about the user data handling later
         member_ids: memberIds,
         member_paids: memberPaids,

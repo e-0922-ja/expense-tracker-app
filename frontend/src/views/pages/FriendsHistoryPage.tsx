@@ -174,9 +174,9 @@ export const FriendsHistoryPage = () => {
                 /> */}
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item) => (
+              {/* {transactionHistory.map((item) => (
                 <TransactionCard key={item.id} item={item} />
-              ))}
+              ))} */}
             </TransactionCardContainer>
           </DetailBox>
         </SubBox>

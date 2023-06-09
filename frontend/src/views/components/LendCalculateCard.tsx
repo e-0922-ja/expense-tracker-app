@@ -1,7 +1,7 @@
-import { Card } from "@mui/material";
-import styled from "styled-components";
-import { LentAmountReturns } from "../pages/HistoryPage";
-import { calculateTotalAmount } from "../../utils/utils";
+import { Card } from '@mui/material';
+import styled from 'styled-components';
+import { LentAmountReturns } from '../pages/HistoryPage';
+import { calculateTotalAmount } from '../../utils/utils';
 
 interface LendCalculateCardProps {
   lent: LentAmountReturns;
@@ -27,7 +27,7 @@ export const LendCalculateCard = ({ lent }: LendCalculateCardProps) => {
           </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>{total ? total : "-"}</BorrowTotal>
+            <BorrowTotal>{total ? total : '-'}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>

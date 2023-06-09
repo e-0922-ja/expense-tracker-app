@@ -21,18 +21,8 @@ import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
-import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
 
 interface Name {
   id: number;
@@ -48,6 +38,8 @@ export type BorrowedAmountReturns =
   Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
 export type LentAmountReturns =
   Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
+export type ExpensesReturns =
+  Database["public"]["Functions"]["get_expenses"]["Returns"];
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,53 +51,11 @@ export const HistoryPage = () => {
   const userId = account.user?.id!;
   const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
   const [lent, setLent] = useState<LentAmountReturns>([]);
+  const [expenses, setExpenses] = useState<ExpensesReturns>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const transactionHistory: TransactionHistory[] = [
-    {
-      id: 1,
-      paidPerson: "Yuki",
-      category: "Food",
-      dispription: "starbucks",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 2,
-      paidPerson: "Hana",
-      category: "Food",
-      dispription: "Korean",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 3,
-      paidPerson: "Kota",
-      category: "Food",
-      dispription: "Chinese",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 4,
-      paidPerson: "Haruka",
-      category: "Food",
-      dispription: "Itarian",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 5,
-      paidPerson: "Akito",
-      category: "Food",
-      dispription: "French",
-      amount: 123,
-      date: "5/23",
-    },
-  ];
 
   const friendList: Name[] = [
     { id: 1, firstName: "yuki" },
@@ -135,13 +85,29 @@ export const HistoryPage = () => {
   const getTotalBorrowedAmount = async () => {
     try {
       const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
-        user_id: userId!,
+        user_id: userId,
       });
       if (error) {
         console.error(error.message);
       } else {
         console.log("borrowed", data);
         setBorrowed(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
+  const getExpenses = async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_expenses", {
+        user_id: userId,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("histories", data);
+        setExpenses(data);
       }
     } catch (error: any) {
       console.error(error.message);
@@ -159,6 +125,10 @@ export const HistoryPage = () => {
 
   useEffect(() => {
     getTotalBorrowedAmount();
+  }, []);
+
+  useEffect(() => {
+    getExpenses();
   }, []);
 
   // get categories from a table
@@ -236,8 +206,8 @@ export const HistoryPage = () => {
                 <LendCalculateCard lent={lent} />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item) => (
-                <TransactionCard key={item.id} item={item} />
+              {expenses.map((expense) => (
+                <TransactionCard key={expense.id} expense={expense} />
               ))}
             </TabPanel>
             <TabPanel value="2">

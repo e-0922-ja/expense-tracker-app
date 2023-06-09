@@ -1,7 +1,7 @@
-import { Card } from "@mui/material";
-import styled from "styled-components";
-import { BorrowedAmountReturns } from "../pages/HistoryPage";
-import { calculateTotalAmount } from "../../utils/utils";
+import { Card } from '@mui/material';
+import styled from 'styled-components';
+import { BorrowedAmountReturns } from '../pages/HistoryPage';
+import { calculateTotalAmount } from '../../utils/utils';
 
 interface BorrowCalculateCardProps {
   borrowed: BorrowedAmountReturns;
@@ -27,7 +27,7 @@ export const BorrowCalculateCard = ({ borrowed }: BorrowCalculateCardProps) => {
           </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>{total ? total : "-"}</BorrowTotal>
+            <BorrowTotal>{total ? total : '-'}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>
