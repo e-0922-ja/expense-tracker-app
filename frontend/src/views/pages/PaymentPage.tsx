@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Category } from "../../types";
 import {
   Box,
@@ -30,30 +30,55 @@ import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { Database } from "../../../../supabase/schema";
 
 interface CategoryIcon {
   category: string;
   icon: React.ReactElement;
 }
+
+interface EachAmount extends Friend {
+  amount: string;
+}
+
+const supabase = createClient<Database>(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
+
 export const PaymentPage = () => {
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [date, setDate] = useState<Dayjs | null>(null);
+  // const [expense, setExpense] = useState<Database["public"]["Functions"]["insert_expense"]["Args"] | null>(null);
+  // const [expense, setExpense] = useState<ExpenseArgs>({
+  //   group_name: "",
+  //   registered_by: "",
+  //   member_ids: [],
+  //   member_paids: [],
+  //   member_amounts: [],
+  //   payer_id: "",
+  //   category_id: 0,
+  //   description: "",
+  //   payment: 0,
+  // });
+  const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [payer, setPayer] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState<Dayjs | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
   const account = useSelector(selectUser);
   const splitters =
-    account.isLogin && account.user
-      ? [account.user, ...selectedFriends]
-      : selectedFriends;
+    account.isLogin && account.user ? [account.user, ...selectedFriends] : [];
+
+  const memberWithAmount = splitters.map((member) => ({
+    ...member,
+    amount: "",
+  }));
+  const [memberExpense, setMemberExpense] =
+    useState<EachAmount[]>(memberWithAmount);
+  const [payer, setPayer] = useState(splitters[0].id.toString());
 
   const handleChangeCategory = (event: SelectChangeEvent) => {
     setCategory(event.target.value);
@@ -63,12 +88,13 @@ export const PaymentPage = () => {
     setPayer(event.target.value);
   };
 
-  const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handlesubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    insertExpense();
     navigate("/history");
   };
 
-  console.log(error)
+  console.log(error);
 
   useEffect(() => {
     getCategories();
@@ -89,6 +115,7 @@ export const PaymentPage = () => {
         if (data) {
           console.log(data);
           setCategories(data as Category[]);
+          setCategory(data[0].id.toString());
         }
       }
     } catch (error: any) {
@@ -109,7 +136,68 @@ export const PaymentPage = () => {
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
 
+  const insertExpense = async () => {
+    const memberIds = memberExpense.map((member) => member.id.toString());
+    const memberPaids = memberExpense.map(
+      (member) => member.id === account.user?.id
+    );
+    const memberAmounts = memberExpense.map((member) =>
+      parseInt(member.amount)
+    );
 
+    try {
+      const { data, error } = await supabase.rpc("insert_expense", {
+        group_name: "",
+        date: date?.toISOString(),
+        registered_by: account.user!.id, // think about the user data handling later
+        member_ids: memberIds,
+        member_paids: memberPaids,
+        member_amounts: memberAmounts,
+        payer_id: payer,
+        category_id: parseInt(category),
+        description: description,
+        payment: parseInt(amount),
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        console.log(data);
+        // setTransactionHistory(data);
+      }
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
+    setAmount(event.target.value);
+  };
+  const handleChangeDate = (newValue: Dayjs | null) => {
+    setDate(newValue);
+  };
+
+  const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value);
+  };
+
+  const handleChangeEachAmount = (event: ChangeEvent<HTMLInputElement>) => {
+    const updatedEachAmount = memberExpense.map((member) => {
+      if (member.id.toString() === event.target.id) {
+        return { ...member, amount: event.target.value };
+      } else {
+        return member;
+      }
+    });
+    setMemberExpense(updatedEachAmount);
+  };
+
+  // const handleInputChange = (event: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   setExpense((prevExpenseData: ExpenseArgs) => ({
+  //     ...prevExpenseData,
+  //     [name]: value,
+  //   }));
+  // };
 
   return (
     <MainContainer>
@@ -126,7 +214,10 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
                 <StyledBox>
-                  <StyledOutlinedInput
+                  <StyledOutlinedNumberInput
+                    value={amount}
+                    onChange={handleChangeAmount}
+                    type="number"
                     placeholder="0.0"
                     startAdornment={
                       <InputAdornment position="start">$</InputAdornment>
@@ -138,9 +229,7 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Who paid?</InputSelectTitle>
                 <Select
-                  value={
-                    payer || (splitters.length > 0 ? splitters[0].email : "")
-                  }
+                  value={payer || (splitters.length > 0 ? splitters[0].id : "")}
                   onChange={handleChangePayer}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
@@ -151,12 +240,12 @@ export const PaymentPage = () => {
                     },
                   }}
                 >
-                  {splitters.map((item, index) => {
+                  {splitters.map((member, index) => {
                     return (
-                      <MenuItem value={item.email} key={index}>
-                        {item.id
-                          ? `${item.firstName} ${item.lastName}`
-                          : item.email}
+                      <MenuItem value={member.id} key={index}>
+                        {member.id
+                          ? `${member.firstName} ${member.lastName}`
+                          : member.email}
                       </MenuItem>
                     );
                   })}
@@ -200,6 +289,8 @@ export const PaymentPage = () => {
                 <InputTitle>Description</InputTitle>
                 <StyledBox>
                   <StyledOutlinedInput
+                    value={description}
+                    onChange={handleChangeDescription}
                     placeholder="Please enter text"
                     fullWidth
                   />
@@ -207,24 +298,25 @@ export const PaymentPage = () => {
                 <InputTitle>Date</InputTitle>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      value={date}
-                      onChange={(newValue) => setDate(newValue)}
-                    />
+                    <DatePicker value={date} onChange={handleChangeDate} />
                   </DemoContainer>
                 </LocalizationProvider>
               </SubInputsWrapper>
               <SubInputsWrapper>
                 <InputSelectTitle>How will you guys split?</InputSelectTitle>
                 <SplitterContainer>
-                  {splitters.map((friend, index) => {
+                  {memberExpense.map((member, index) => {
                     return (
                       <div key={index}>
                         <SplitWrapper>
-                          <SplitterName>{friend.firstName}</SplitterName>
+                          <SplitterName>{member.firstName}</SplitterName>
                           <SplitterBox>
-                            <StyledOutlinedInput
+                            <StyledOutlinedNumberInput
+                              id={member.id}
+                              value={member.amount}
+                              onChange={handleChangeEachAmount}
                               placeholder="0.0"
+                              type="number"
                               startAdornment={
                                 <InputAdornment position="start">
                                   $
@@ -242,12 +334,9 @@ export const PaymentPage = () => {
             </InputsWrapper>
 
             <ButtonContainer>
-            <StyledButton
-              variant="contained"
-              disableRipple
-            >
-              create
-            </StyledButton>
+              <StyledButton variant="contained" disableRipple type="submit">
+                create
+              </StyledButton>
             </ButtonContainer>
           </FormContainer>
         </Section>
@@ -351,6 +440,21 @@ const SplitterBox = styled(Box)`
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
+  && .MuiInputBase-input.MuiOutlinedInput-input {
+    padding: 14px;
+  }
+`;
+
+const StyledOutlinedNumberInput = styled(OutlinedInput)`
+  && input::-webkit-outer-spin-button,
+  && input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  && input[type="number"] {
+    -moz-appearance: textfield;
+  }
   && .MuiInputBase-input.MuiOutlinedInput-input {
     padding: 14px;
   }

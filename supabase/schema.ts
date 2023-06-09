@@ -29,6 +29,7 @@ export interface Database {
       Expenses: {
         Row: {
           categoryId: number | null
+          date: string | null
           description: string | null
           groupId: string | null
           id: string
@@ -42,6 +43,7 @@ export interface Database {
         }
         Insert: {
           categoryId?: number | null
+          date?: string | null
           description?: string | null
           groupId?: string | null
           id?: string
@@ -55,6 +57,7 @@ export interface Database {
         }
         Update: {
           categoryId?: number | null
+          date?: string | null
           description?: string | null
           groupId?: string | null
           id?: string
@@ -195,6 +198,7 @@ export interface Database {
       }
       Users: {
         Row: {
+          email: string | null
           firstName: string | null
           id: string
           lastName: string | null
@@ -203,6 +207,7 @@ export interface Database {
           updatedAt: string | null
         }
         Insert: {
+          email?: string | null
           firstName?: string | null
           id: string
           lastName?: string | null
@@ -211,6 +216,7 @@ export interface Database {
           updatedAt?: string | null
         }
         Update: {
+          email?: string | null
           firstName?: string | null
           id?: string
           lastName?: string | null
@@ -282,20 +288,36 @@ export interface Database {
           email: string
         }[]
       }
-      insert_expense: {
-        Args: {
-          group_name: string
-          registered_by: string
-          member_ids: string[]
-          member_paids: boolean[]
-          member_amounts: number[]
-          payer_id: string
-          category_id: number
-          description: string
-          payment: number
-        }
-        Returns: undefined
-      }
+      insert_expense:
+        | {
+            Args: {
+              group_name: string
+              registered_by: string
+              member_ids: string[]
+              member_paids: boolean[]
+              member_amounts: number[]
+              payer_id: string
+              category_id: number
+              description: string
+              payment: number
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              group_name: string
+              date: string
+              registered_by: string
+              member_ids: string[]
+              member_paids: boolean[]
+              member_amounts: number[]
+              payer_id: string
+              category_id: number
+              description: string
+              payment: number
+            }
+            Returns: undefined
+          }
     }
     Enums: {
       [_ in never]: never
