@@ -19,7 +19,7 @@ interface TransactionProps {
 export const TransactionCard = ({ expense }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
-    navigate("/history/1");
+    navigate(`/history/${expense.id}`);
   };
   return (
     <TransactionCardWrapper elevation={0}>
@@ -40,7 +40,7 @@ export const TransactionCard = ({ expense }: TransactionProps) => {
           </DiscriptionContainer>
           <AnountContainer>
             <Typography gutterBottom component="div">
-              ${expense.payment.toString()}
+              {expense.payment.toLocaleString()}
             </Typography>
           </AnountContainer>
         </ContentWrapper>
