@@ -13,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
+import { Category, CategoryIcon } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -29,22 +29,23 @@ import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
 import { Expense } from "../components/TransactionCard";
 
-interface Dammy {
-  id: number;
-  firstName: string;
-  splitBill: number;
-}
-
-interface CategoryIcon {
-  id: number;
-  category: string;
-  icon: React.ReactElement;
-}
-
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+
+const categoryIcons: CategoryIcon[] = [
+  { id: 1, category: "None", icon: <HorizontalRuleIcon /> },
+  { id: 2, category: "Food", icon: <RestaurantIcon /> },
+  { id: 3, category: "Entertainment", icon: <MusicNoteIcon /> },
+  { id: 4, category: "Transportation", icon: <DirectionsTransitIcon /> },
+  { id: 5, category: "Cost of Living", icon: <HouseIcon /> },
+  { id: 6, category: "Utility", icon: <LightIcon /> },
+  { id: 7, category: "Health", icon: <MonitorHeartIcon /> },
+  { id: 8, category: "Beauty", icon: <Face3Icon /> },
+  { id: 9, category: "Cloth", icon: <ShoppingCartIcon /> },
+  { id: 10, category: "Others", icon: <HelpOutlineIcon /> },
+];
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -69,19 +70,6 @@ export const HistoryDetailPage = () => {
   };
 
   const navigate = useNavigate();
-
-  const categoryIcons: CategoryIcon[] = [
-    { id: 1, category: "None", icon: <HorizontalRuleIcon /> },
-    { id: 2, category: "Food", icon: <RestaurantIcon /> },
-    { id: 3, category: "Entertainment", icon: <MusicNoteIcon /> },
-    { id: 4, category: "Transportation", icon: <DirectionsTransitIcon /> },
-    { id: 5, category: "Cost of Living", icon: <HouseIcon /> },
-    { id: 6, category: "Utility", icon: <LightIcon /> },
-    { id: 7, category: "Health", icon: <MonitorHeartIcon /> },
-    { id: 8, category: "Beauty", icon: <Face3Icon /> },
-    { id: 9, category: "Cloth", icon: <ShoppingCartIcon /> },
-    { id: 10, category: "Others", icon: <HelpOutlineIcon /> },
-  ];
 
   const handleGoBack = () => {
     navigate("/history");
