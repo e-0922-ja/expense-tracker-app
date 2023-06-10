@@ -3,13 +3,22 @@ import styled from "styled-components";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
 
-interface Expense {
+export interface Expense {
   id: string;
   categoryId: number;
+  categoryName: string;
+  payer: string;
+  payerFirstName: string;
+  payerLastName: string;
   description: string;
   payment: number;
   date: string;
   registeredAt: string;
+  userIds: string[];
+  firstNames: string[];
+  lastNames: string[];
+  paids: boolean[];
+  amounts: number[];
 }
 
 interface TransactionProps {
@@ -19,7 +28,7 @@ interface TransactionProps {
 export const TransactionCard = ({ expense }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
-    navigate(`/history/${expense.id}`);
+    navigate(`/history/${expense.id}`, { state: { expense } });
   };
   return (
     <TransactionCardWrapper elevation={0}>

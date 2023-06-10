@@ -15,7 +15,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { GobackButton } from "../components/GobackButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
@@ -27,15 +27,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
-
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+import { Expense } from "../components/TransactionCard";
 
 interface Dammy {
   id: number;
@@ -44,9 +36,15 @@ interface Dammy {
 }
 
 interface CategoryIcon {
+  id: number;
   category: string;
   icon: React.ReactElement;
 }
+
+const supabase = createClient<Database>(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,22 +52,17 @@ export const HistoryDetailPage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-
   const [checked, setChecked] = useState(false);
+  const location = useLocation();
+  const expense: Expense = location.state.expense;
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
-
   const handlegoback = () => {
     navigate("/history");
   };
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -77,59 +70,18 @@ export const HistoryDetailPage = () => {
 
   const navigate = useNavigate();
 
-  const transactionHistory: TransactionHistory = {
-    id: 1,
-    paidPerson: "Yuki",
-    category: "Food",
-    dispription: "starbucks",
-    amount: 123,
-    date: "5/23",
-  };
-
-  const dammy: Dammy[] = [
-    { id: 1, firstName: "Max", splitBill: 100 },
-    { id: 2, firstName: "Bob", splitBill: 200 },
-    { id: 3, firstName: "Anna", splitBill: 300 },
-  ];
-
   const categoryIcons: CategoryIcon[] = [
-    { category: "Food", icon: <RestaurantIcon /> },
-    { category: "Entertainment", icon: <MusicNoteIcon /> },
-    { category: "Transportation", icon: <DirectionsTransitIcon /> },
-    { category: "Cost of Living", icon: <HouseIcon /> },
-    { category: "Utility", icon: <LightIcon /> },
-    { category: "Health", icon: <MonitorHeartIcon /> },
-    { category: "Beauty", icon: <Face3Icon /> },
-    { category: "Cloth", icon: <ShoppingCartIcon /> },
-    { category: "Others", icon: <HelpOutlineIcon /> },
-    { category: "None", icon: <HorizontalRuleIcon /> },
+    { id: 1, category: "None", icon: <HorizontalRuleIcon /> },
+    { id: 2, category: "Food", icon: <RestaurantIcon /> },
+    { id: 3, category: "Entertainment", icon: <MusicNoteIcon /> },
+    { id: 4, category: "Transportation", icon: <DirectionsTransitIcon /> },
+    { id: 5, category: "Cost of Living", icon: <HouseIcon /> },
+    { id: 6, category: "Utility", icon: <LightIcon /> },
+    { id: 7, category: "Health", icon: <MonitorHeartIcon /> },
+    { id: 8, category: "Beauty", icon: <Face3Icon /> },
+    { id: 9, category: "Cloth", icon: <ShoppingCartIcon /> },
+    { id: 10, category: "Others", icon: <HelpOutlineIcon /> },
   ];
-
-  useEffect(() => {
-    getCategories();
-  });
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories)
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-    console.error(error)
-  };
 
   const handleGoBack = () => {
     navigate("/history");
@@ -169,7 +121,7 @@ export const HistoryDetailPage = () => {
           <GobackButton onClick={handleGoBack} />
           <DetailBox>
             <Section>
-              <Title>{transactionHistory.dispription}</Title>
+              <Title>{expense.description}</Title>
             </Section>
             <Section>
               <FormContainer>
@@ -177,13 +129,13 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <TopicTitle>Amount</TopicTitle>
                     <StyledBox>
-                      <Data>{transactionHistory.amount}</Data>
+                      <Data>{expense.payment.toLocaleString()}</Data>
                     </StyledBox>
                   </SubInputsWrapper>
                   <SubInputsWrapper>
                     <TopicTitle>Who paid?</TopicTitle>
                     <StyledBox>
-                      <Data>{transactionHistory.paidPerson}</Data>
+                      <Data>{`${expense.payerFirstName} ${expense.payerLastName}`}</Data>
                     </StyledBox>
                   </SubInputsWrapper>
                 </InputsWrapper>
@@ -191,7 +143,9 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <TopicTitle>Date</TopicTitle>
                     <StyledBox>
-                      <Data>{transactionHistory.date}</Data>
+                      <Data>
+                        {expense.date.toLocaleString().substring(0, 10)}
+                      </Data>
                     </StyledBox>
                     <TopicTitle>Categories</TopicTitle>
                     <StyledBox>
@@ -200,32 +154,35 @@ export const HistoryDetailPage = () => {
                           <IconCircle>
                             {
                               categoryIcons.find(
-                                (item) =>
-                                  item.category === transactionHistory.category
+                                (item) => item.id === expense.categoryId
                               )?.icon
                             }
                           </IconCircle>
                         </IconContainer>
-                        {transactionHistory.category}
+                        {expense.categoryName}
                       </CategoryData>
                     </StyledBox>
                   </SubInputsWrapper>
                   <SubInputsWrapper>
                     <InputSelectTitle>Already Have Returned?</InputSelectTitle>
                     <SplitterContainer>
-                      {dammy.map((friend) => {
+                      {expense.userIds.map((friend, index) => {
                         return (
-                          <div key={friend.id}>
+                          <div key={friend}>
                             <SplitWrapper>
                               <Checkbox
                                 checked={checked}
                                 onChange={handleToggle}
                                 inputProps={{ "aria-label": "controlled" }}
                               />
-                              <SplitterName>{friend.firstName}</SplitterName>
+                              <SplitterName>
+                                {`${expense.firstNames[index]} ${expense.lastNames[index]}`}
+                              </SplitterName>
                               <SplitterBox>
                                 <StyledBox>
-                                  <Data>${friend.splitBill}</Data>
+                                  <Data>
+                                    ${expense.amounts[index].toLocaleString()}
+                                  </Data>
                                 </StyledBox>
                               </SplitterBox>
                             </SplitWrapper>
