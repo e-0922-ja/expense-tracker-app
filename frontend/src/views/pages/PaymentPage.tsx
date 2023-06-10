@@ -49,18 +49,6 @@ const supabase = createClient<Database>(
 export const PaymentPage = () => {
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  // const [expense, setExpense] = useState<Database["public"]["Functions"]["insert_expense"]["Args"] | null>(null);
-  // const [expense, setExpense] = useState<ExpenseArgs>({
-  //   group_name: "",
-  //   registered_by: "",
-  //   member_ids: [],
-  //   member_paids: [],
-  //   member_amounts: [],
-  //   payer_id: "",
-  //   category_id: 0,
-  //   description: "",
-  //   payment: 0,
-  // });
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -138,9 +126,7 @@ export const PaymentPage = () => {
 
   const insertExpense = async () => {
     const memberIds = memberExpense.map((member) => member.id.toString());
-    const memberPaids = memberExpense.map(
-      (member) => member.id === account.user?.id
-    );
+    const memberPaids = memberExpense.map((member) => member.id === payer);
     const memberAmounts = memberExpense.map((member) =>
       parseFloat(member.amount)
     );
@@ -162,7 +148,6 @@ export const PaymentPage = () => {
         setError(error.message);
       } else {
         console.log(data);
-        // setTransactionHistory(data);
       }
     } catch (error: any) {
       setError(error.message);
@@ -190,14 +175,6 @@ export const PaymentPage = () => {
     });
     setMemberExpense(updatedEachAmount);
   };
-
-  // const handleInputChange = (event: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-  //   const { name, value } = event.target;
-  //   setExpense((prevExpenseData: ExpenseArgs) => ({
-  //     ...prevExpenseData,
-  //     [name]: value,
-  //   }));
-  // };
 
   return (
     <MainContainer>
