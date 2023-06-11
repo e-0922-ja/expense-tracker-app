@@ -313,12 +313,23 @@ export interface Database {
         }
         Returns: undefined
       }
+      update_members_paid: {
+        Args: {
+          update_by: string
+          expense_id: string
+          checked_members: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      checked_member_type: {
+        user_id: string
+        paid: boolean
+      }
     }
   }
 }

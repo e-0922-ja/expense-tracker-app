@@ -108,6 +108,8 @@ alter table "public"."Groups" validate constraint "Groups_updatedBy_fkey";
 
 set check_function_bodies = off;
 
+create type "public"."checked_member_type" as ("user_id" uuid, "paid" boolean);
+
 CREATE OR REPLACE FUNCTION public.get_borrowed_money_total(user_id uuid)
  RETURNS void
  LANGUAGE plpgsql
@@ -233,6 +235,35 @@ BEGIN
    INSERT INTO public."ExpenseStatus" ("expenseId", "userId", "paid", "amount", "updatedBy")
        VALUES (expense_id, member_ids[i], member_paids[i], member_amounts[i], registered_by);
     END LOOP;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.update_members_paid(update_by uuid, expense_id uuid, checked_members text)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+  member_data record;
+  all_paid boolean := true;
+BEGIN
+  FOR member_data IN
+    SELECT * FROM jsonb_to_recordset(checked_members::jsonb) AS x("userId" uuid, "paid" boolean)
+  LOOP
+    UPDATE "ExpenseStatus"
+    SET "paid" = member_data."paid", "updatedBy" = update_by, "updatedAt" = now() 
+    WHERE "expenseId" = expense_id AND "userId" = member_data."userId";
+
+   IF NOT member_data."paid" THEN
+      all_paid := false;
+    END IF;
+    
+  END LOOP;
+  
+  UPDATE "Expenses"
+  SET "settled" = all_paid, "updatedBy" = update_by, "updatedAt" = now()
+  WHERE "id" = expense_id;
 
 END;
 $function$

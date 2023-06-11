@@ -28,6 +28,14 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
 import { Expense } from "../components/TransactionCard";
+import { UUID } from "crypto";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
+
+interface Checked {
+  userId: string;
+  paid: boolean;
+}
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -53,16 +61,36 @@ export const HistoryDetailPage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [checked, setChecked] = useState(false);
+  const account = useSelector(selectUser);
+  const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
+  const initialCheckedIds = expense.userIds.map((id, index) => ({
+    userId: id,
+    paid: expense.paids[index],
+  }));
+  const [checkedMembers, setCheckedMembers] =
+    useState<Checked[]>(initialCheckedIds);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    const userId = event.target.id;
+    setCheckedMembers((prevMembers) => {
+      const updatedChecked = prevMembers.map((member) => {
+        if (member.userId === userId) {
+          return {
+            ...member,
+            paid: !member.paid,
+          };
+        }
+        return member;
+      });
+      return updatedChecked;
+    });
   };
 
   const handlegoback = () => {
-    navigate("/history");
+    updateMemberPaidStatus();
+    // navigate("/history");
   };
 
   const handleDrawerToggle = () => {
@@ -73,6 +101,27 @@ export const HistoryDetailPage = () => {
 
   const handleGoBack = () => {
     navigate("/history");
+  };
+
+  const updateMemberPaidStatus = async () => {
+    try {
+      const { data, error } = await supabase.rpc("update_members_paid", {
+        expense_id: expense.id,
+        checked_members: JSON.stringify(checkedMembers),
+        update_by: userId,
+      });
+      console.log(expense.id);
+      console.log(JSON.stringify(checkedMembers));
+      if (error) {
+        setError(error.message);
+        console.log(error);
+      } else {
+        console.log(data);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      console.log(error);
+    }
   };
 
   return (
@@ -154,14 +203,20 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <InputSelectTitle>Already Have Returned?</InputSelectTitle>
                     <SplitterContainer>
-                      {expense.userIds.map((friend, index) => {
+                      {expense.userIds.map((id, index) => {
                         return (
-                          <div key={friend}>
+                          <div key={id}>
                             <SplitWrapper>
                               <Checkbox
-                                checked={checked}
+                                id={id}
+                                checked={
+                                  checkedMembers.find(
+                                    (member) => member.userId === id
+                                  )?.paid
+                                }
                                 onChange={handleToggle}
                                 inputProps={{ "aria-label": "controlled" }}
+                                disabled={expense.payer === id}
                               />
                               <SplitterName>
                                 {`${expense.firstNames[index]} ${expense.lastNames[index]}`}
