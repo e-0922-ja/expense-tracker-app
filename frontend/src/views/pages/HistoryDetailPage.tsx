@@ -88,9 +88,14 @@ export const HistoryDetailPage = () => {
     });
   };
 
-  const handlegoback = () => {
-    updateMemberPaidStatus();
-    // navigate("/history");
+  const handlesave = () => {
+    updateMembersPaidStatus();
+    navigate("/history");
+  };
+
+  const handledelete = () => {
+    deleteExpense();
+    navigate("/history");
   };
 
   const handleDrawerToggle = () => {
@@ -103,15 +108,31 @@ export const HistoryDetailPage = () => {
     navigate("/history");
   };
 
-  const updateMemberPaidStatus = async () => {
+  const updateMembersPaidStatus = async () => {
     try {
       const { data, error } = await supabase.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
       });
-      console.log(expense.id);
-      console.log(JSON.stringify(checkedMembers));
+      if (error) {
+        setError(error.message);
+        console.log(error);
+      } else {
+        console.log(data);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      console.log(error);
+    }
+  };
+
+  const deleteExpense = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("Expenses")
+        .delete()
+        .eq("id", expense.id);
       if (error) {
         setError(error.message);
         console.log(error);
@@ -234,7 +255,10 @@ export const HistoryDetailPage = () => {
                       })}
                     </SplitterContainer>
                     <ButtonContainer>
-                      <SubButton title={"save"} onClick={handlegoback} />
+                      <SubButton title={"save"} onClick={handlesave} />
+                    </ButtonContainer>
+                    <ButtonContainer>
+                      <SubButton title={"delete"} onClick={handledelete} />
                     </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>
