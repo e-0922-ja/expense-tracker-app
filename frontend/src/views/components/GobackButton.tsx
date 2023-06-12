@@ -1,5 +1,6 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
+import styled from "styled-components";
 
 interface GobackButtonProps {
   onClick: () => void;
@@ -7,8 +8,14 @@ interface GobackButtonProps {
 
 export const GobackButton = ({ onClick }: GobackButtonProps) => {
   return (
-    <IconButton onClick={onClick}>
+    <StyledIconButton onClick={onClick}>
       <ArrowBackIcon />
-    </IconButton>
+    </StyledIconButton>
   );
 };
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+`;

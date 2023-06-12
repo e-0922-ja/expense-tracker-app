@@ -4,7 +4,6 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
 
 interface Transaction {
-
   category: string;
   dispription: string;
   amount: number;
@@ -33,9 +32,7 @@ export const TransactionCard = ({ item }: TransactionProps) => {
             <Typography gutterBottom component="div" style={{ margin: "0" }}>
               {item.dispription}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {item.date}
-            </Typography>
+            <Typography variant="body2">{item.date}</Typography>
           </DiscriptionContainer>
           <AnountContainer>
             <Typography gutterBottom component="div">
@@ -52,6 +49,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -73,7 +72,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const DiscriptionContainer = styled.div`

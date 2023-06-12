@@ -36,4 +36,7 @@ const StyledChips = styled(Chip)`
   border-radius: 4px !important;
   padding: 0 10px !important;
   margin: 0 10px 10px 0 !important;
+  background: ${({ theme }) => theme.palette.primary.light}!important;
+  border: 1px solid ${({ theme }) => theme.palette.secondary.main}!important;
+  color: ${({ theme }) => theme.palette.secondary.main}!important;
 `;

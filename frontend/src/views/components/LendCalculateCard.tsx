@@ -37,6 +37,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const InsideWrapper = styled.div`
