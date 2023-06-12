@@ -1,13 +1,14 @@
-import styled from 'styled-components';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import TopImage from "../../images/topimage.png";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
-
   const handleNavigateLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -33,7 +34,9 @@ export const HomePage = () => {
             </StyledButton>
           </ButtonWrapper>
         </HeroContainer>
-        <HeroContainer></HeroContainer>
+        <ImageContainer>
+          <ImageTag src={TopImage} alt="topimage" />
+        </ImageContainer>
       </HeroSection>
       <SubSection>
         <FeatContainer>
@@ -96,6 +99,16 @@ const HeroContainer = styled.div`
   height: 100%;
 `;
 
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-item: center;
+  width: 50%;
+  height: 100%;
+`;
+
+const ImageTag = styled.img``;
+
 const SubSection = styled.div`
   gap: 30px;
   display: flex;
@@ -117,6 +130,7 @@ const FeatContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const StyledButton = styled(Button)`
