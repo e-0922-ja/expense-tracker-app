@@ -107,7 +107,7 @@ export const HistoryPage = () => {
 
   useEffect(() => {
     getCategories();
-  });
+  }, []);
 
   // get categories from a table
   const getCategories = async () => {
@@ -121,15 +121,14 @@ export const HistoryPage = () => {
         return false;
       } else {
         setCategories(data);
-        console.log(categories)
+        console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-
   };
-  console.log(error)
+  console.log(error);
 
   const [value, setValue] = useState("1");
 
@@ -170,13 +169,13 @@ export const HistoryPage = () => {
         <SubBox>
           <TabContext value={value}>
             <StyledBox>
-              <TabList
+              <StyledTabList
                 onChange={handleChange}
                 aria-label="lab API tabs example"
               >
-                <Tab label="ALL" value="1" />
-                <Tab label="Friends" value="2" />
-              </TabList>
+                <StyledTab label="ALL" value="1" />
+                <StyledTab label="Friends" value="2" />
+              </StyledTabList>
             </StyledBox>
             <TabPanel value="1">
               <Title>Summary for you</Title>
@@ -277,4 +276,16 @@ const SubBox = styled(Box)`
 
 const StyledBox = styled.div`
   border-bottom: 1px solid #000;
+`;
+
+const StyledTab = styled(Tab)`
+  &&.MuiTab-textColorPrimary.Mui-selected {
+    color: ${({ theme }) => theme.palette.secondary.main};
+  }
+`;
+
+const StyledTabList = styled(TabList)`
+  .MuiTabs-indicator {
+    background-color: ${({ theme }) => theme.palette.secondary.main} !important;
+  }
 `;
