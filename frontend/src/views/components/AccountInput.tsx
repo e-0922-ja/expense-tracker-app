@@ -1,12 +1,25 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Box, OutlinedInput } from "@mui/material";
+import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
-import { useDispatch } from "react-redux";
-import { update } from "../../reducer/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser, update } from "../../reducer/userSlice";
 import { createClient } from "@supabase/supabase-js";
+import { useForm } from "react-hook-form";
+import {
+  emailRegex,
+  errEmail,
+  errFirstName,
+  errLastName,
+} from "../../constants/regexPattern";
 
 interface AccountInputProps {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
+interface FormData {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -17,38 +30,35 @@ export const AccountInput = ({
   lastName,
   email,
 }: AccountInputProps) => {
-  console.log(email, "email");
-  console.log(firstName, "firstName");
-  console.log(lastName, "lastName");
-
+  const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL as string,
+    process.env.REACT_APP_SUPABASE_ANON_KEY as string
+  );
   const dispatch = useDispatch();
-
   const [editStatus, setEditStatus] = useState(false);
-  const [userData, setUserData] = useState({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-  });
+
+  const {
+    register: registerUpdatedUser,
+    handleSubmit: handleSubmitUpdatedUser,
+    formState: { errors: errorsUpdatedUser },
+  } = useForm<FormData>();
+
+  const account = useSelector(selectUser);
 
   const handleEdit = () => {
     setEditStatus(true);
   };
 
-  const handleSave = async () => {
-    const supabase = createClient(
-      process.env.REACT_APP_SUPABASE_URL as string,
-      process.env.REACT_APP_SUPABASE_ANON_KEY as string
-    );
+  const handleSave = async (formData: FormData) => {
+    const { firstName, lastName, email } = formData;
 
     const updatedMetaData = {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
+      firstName: firstName,
+      lastName: lastName,
     };
 
-    console.log(userData.email, "previous email");
-
     const { data, error } = await supabase.auth.updateUser({
-      email: userData.email,
+      email: email,
       data: updatedMetaData,
     });
     if (error) {
@@ -57,6 +67,7 @@ export const AccountInput = ({
 
     if (data.user) {
       const fetchedUserInfoBySupabase = {
+        id: data.user.id,
         firstName: data.user.user_metadata.firstName,
         lastName: data.user.user_metadata.lastName,
         email: data.user.email,
@@ -67,68 +78,98 @@ export const AccountInput = ({
     setEditStatus(false);
   };
 
-  const handleChangePass = () => {
-    console.log("hello");
+  const handleSendEmail = async () => {
+    const currentEmail = account.user?.email;
+    if (!currentEmail) {
+      alert("Email not defined");
+      return;
+    }
+    try {
+      const { error: sendEmailError } =
+        await supabase.auth.resetPasswordForEmail(currentEmail, {
+          redirectTo: "http://localhost:3000/passwordReset",
+        });
+      if (sendEmailError) {
+        throw sendEmailError;
+      }
+      alert("Please check your email");
+    } catch (error) {
+      alert("Something went wrong");
+    }
   };
 
   return (
     <div>
       <Title>User Info</Title>
       <InfoContainer>
-        <InputTitle>First Name</InputTitle>
-        <StyledBox>
-          {editStatus ? (
-            <StyledOutlinedInput
-              value={userData.firstName}
-              onChange={(e) =>
-                setUserData({ ...userData, firstName: e.target.value })
-              }
-              fullWidth
-            />
-          ) : (
-            <Data>{userData.firstName}</Data>
-          )}
-        </StyledBox>
-        <InputTitle>Last Name</InputTitle>
-        <StyledBox>
-          {editStatus ? (
-            <StyledOutlinedInput
-              value={userData.lastName}
-              onChange={(e) =>
-                setUserData({ ...userData, lastName: e.target.value })
-              }
-              fullWidth
-            />
-          ) : (
-            <Data>{userData.lastName}</Data>
-          )}
-        </StyledBox>
-        <InputTitle>Email</InputTitle>
-        <StyledBox>
-          {editStatus ? (
-            <StyledOutlinedInput
-              value={userData.email}
-              onChange={(e) =>
-                setUserData({ ...userData, email: e.target.value })
-              }
-              fullWidth
-            />
-          ) : (
-            <Data>{userData.email}</Data>
-          )}
-        </StyledBox>
-        <ButtonContainer>
-          {editStatus ? (
-            <SubButton title={"save"} onClick={handleSave} />
-          ) : (
-            <SubButton title={"edit"} onClick={handleEdit} />
-          )}
-        </ButtonContainer>
+        <StyledFormBox
+          component="form"
+          onSubmit={handleSubmitUpdatedUser(handleSave)}
+        >
+          <InputTitle>First Name</InputTitle>
+          <StyledBox>
+            {editStatus ? (
+              <StyledOutlinedInput
+                {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
+                defaultValue={firstName} // use defaultValue instead of value
+                fullWidth
+              />
+            ) : (
+              <Data>{account.user?.firstName}</Data>
+            )}
+          </StyledBox>
+          {errorsUpdatedUser.firstName && <ErrorText>{errFirstName}</ErrorText>}
+          <InputTitle>Last Name</InputTitle>
+          <StyledBox>
+            {editStatus ? (
+              <StyledOutlinedInput
+                type="text"
+                {...registerUpdatedUser("lastName", { required: true })} // if firstName is required
+                defaultValue={lastName} // use defaultValue instead of value
+                fullWidth
+              />
+            ) : (
+              <Data>{account.user?.lastName}</Data>
+            )}
+          </StyledBox>
+          {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
+          <InputTitle>Email</InputTitle>
+          <StyledBox>
+            {editStatus ? (
+              <StyledOutlinedInput
+                {...registerUpdatedUser("email", {
+                  required: true,
+                  pattern: emailRegex,
+                })}
+                defaultValue={email}
+                fullWidth
+              />
+            ) : (
+              <Data>{account.user?.email}</Data>
+            )}
+          </StyledBox>
+          {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}
+          <ButtonContainer>
+            {editStatus ? (
+              <StyledButton variant="contained" disableRipple type="submit">
+                save
+              </StyledButton>
+            ) : (
+              <SubButton title={"edit"} onClick={handleEdit} />
+            )}
+          </ButtonContainer>
+        </StyledFormBox>
         <Title>Reset Password</Title>
-        <StyledOutlinedInput value={userData.email} fullWidth />
-        <ButtonContainer>
-          <SubButton title={"Send Message"} onClick={handleChangePass} />
-        </ButtonContainer>
+
+        <SubButtonWrapper>
+          <StyledButton
+            variant="contained"
+            disableRipple
+            onClick={handleSendEmail}
+          >
+            send
+          </StyledButton>
+        </SubButtonWrapper>
       </InfoContainer>
     </div>
   );
@@ -146,6 +187,7 @@ const InputTitle = styled.div`
 
 const StyledBox = styled(Box)`
   margin-top: 8px;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const Data = styled.div`
@@ -161,8 +203,26 @@ const ButtonContainer = styled.div`
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
-  && .MuiInputBase-input.MuiOutlinedInput-input {
-    padding: 14px;
+  &.MuiOutlinedInput-root {
+    /* Change the background color */
+    background-color: ${({ theme }) => theme.palette.primary.light};
+    color: ${({ theme }) => theme.palette.info.light};
+
+    .MuiInputBase-input.MuiOutlinedInput-input {
+      padding: 14px;
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+
+    &:not(:hover) .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+  }
+
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
@@ -170,4 +230,35 @@ const Title = styled.h2`
   margin-top: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const SubButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+`;
+
+const StyledFormBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margintop: 2rem;
+`;
+
+const ErrorText = styled.div`
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #ff908d;
+`;
+
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.palette.secondary.main} !important;
+  border: 0;
+  color: white;
+  width: 100% !important;
+  height: 40px !important;
+  fontsize: 1rem !important;
+  padding: 0 30px !important;
+  border-radius: 24px !important;
 `;

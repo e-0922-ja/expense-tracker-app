@@ -24,7 +24,8 @@ export const AccountPage = () => {
   };
 
   const { user } = useSelector(selectUser);
-  console.log(user, "user");
+
+  console.log(user, "pagefrom reducer");
 
   return (
     <Wrapper>
@@ -59,7 +60,11 @@ export const AccountPage = () => {
         <SubBox>
           <DetailBox>
             <Section>
-              <AccountInput firstName={user?.firstName} lastName={user?.lastName} email={user?.email} />
+              <AccountInput
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+                email={user?.email}
+              />
             </Section>
           </DetailBox>
         </SubBox>
@@ -115,12 +120,6 @@ const MainBox = styled.div`
   @media (min-width: 600px) {
     width: calc(100% - ${drawerWidth}px);
   }
-`;
-
-const Title = styled.h2`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Section = styled.div`
