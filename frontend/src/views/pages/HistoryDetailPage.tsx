@@ -27,6 +27,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
+import { CheckBox } from "@mui/icons-material";
 
 interface TransactionHistory {
   id: number;
@@ -60,7 +61,6 @@ export const HistoryDetailPage = () => {
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
-
 
   const handlegoback = () => {
     navigate("/history");
@@ -107,7 +107,7 @@ export const HistoryDetailPage = () => {
 
   useEffect(() => {
     getCategories();
-  });
+  }, []);
 
   // get categories from a table
   const getCategories = async () => {
@@ -122,13 +122,13 @@ export const HistoryDetailPage = () => {
         return false;
       } else {
         setCategories(data);
-        console.log(categories)
+        console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-    console.error(error)
+    console.error(error);
   };
 
   const handleGoBack = () => {
@@ -217,11 +217,13 @@ export const HistoryDetailPage = () => {
                         return (
                           <div key={friend.id}>
                             <SplitWrapper>
-                              <Checkbox
-                                checked={checked}
-                                onChange={handleToggle}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
+                              <CheckboxWrapper>
+                                <Checkbox
+                                  checked={checked}
+                                  onChange={handleToggle}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              </CheckboxWrapper>
                               <SplitterName>{friend.firstName}</SplitterName>
                               <SplitterBox>
                                 <StyledBox>
@@ -324,6 +326,7 @@ const SubInputsWrapper = styled.div`
 
 const TopicTitle = styled.div`
   margin-top: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const InputSelectTitle = styled.div`
@@ -351,6 +354,7 @@ const SplitterName = styled.div`
   width: 30%;
   display: flex;
   padding-left: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SplitterBox = styled(Box)`
@@ -365,6 +369,7 @@ const Data = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
 `;
 
@@ -392,7 +397,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const ButtonContainer = styled.div`
@@ -401,4 +407,11 @@ const ButtonContainer = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
+  }
 `;

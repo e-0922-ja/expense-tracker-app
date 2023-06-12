@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   IconButton,
   Toolbar,
@@ -31,7 +31,7 @@ interface TransactionHistory {
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -91,21 +91,21 @@ export const FriendsHistoryPage = () => {
 
   useEffect(() => {
     getCategories();
-  });
+  }, []);
 
   // get categories from a table
   const getCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from('Categories')
-        .select('*')
-        .order('sequence', { ascending: true });
+        .from("Categories")
+        .select("*")
+        .order("sequence", { ascending: true });
       if (error) {
         setError(error.message);
         return false;
       } else {
         setCategories(data);
-        console.log(categories)
+        console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);
@@ -116,8 +116,8 @@ export const FriendsHistoryPage = () => {
   const handleGoBack = () => {
     navigate("/history");
   };
-  
-  console.log(error)
+
+  console.log(error);
 
   return (
     <Wrapper>
