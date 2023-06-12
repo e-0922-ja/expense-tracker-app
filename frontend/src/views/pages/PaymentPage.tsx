@@ -6,6 +6,7 @@ import { Category } from "../../types";
 import {
   Box,
   Button,
+  Checkbox,
   InputAdornment,
   MenuItem,
   OutlinedInput,
@@ -39,6 +40,7 @@ interface CategoryIcon {
 
 interface EachAmount extends Friend {
   amount: string;
+  paid: boolean;
 }
 
 const supabase = createClient<Database>(
@@ -63,6 +65,7 @@ export const PaymentPage = () => {
   const memberWithAmount = splitters.map((member) => ({
     ...member,
     amount: "",
+    paid: member.id === account.user?.id,
   }));
   const [memberExpense, setMemberExpense] =
     useState<EachAmount[]>(memberWithAmount);
@@ -74,6 +77,14 @@ export const PaymentPage = () => {
 
   const handleChangePayer = (event: SelectChangeEvent) => {
     setPayer(event.target.value);
+    const updatedPaid = memberExpense.map((member) => {
+      if (member.id.toString() === event.target.value) {
+        return { ...member, paid: true };
+      } else {
+        return member;
+      }
+    });
+    setMemberExpense(updatedPaid);
   };
 
   const handlesubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -126,7 +137,7 @@ export const PaymentPage = () => {
 
   const insertExpense = async () => {
     const memberIds = memberExpense.map((member) => member.id.toString());
-    const memberPaids = memberExpense.map((member) => member.id === payer);
+    const memberPaids = memberExpense.map((member) => member.paid);
     const memberAmounts = memberExpense.map((member) =>
       parseFloat(member.amount)
     );
@@ -156,24 +167,37 @@ export const PaymentPage = () => {
 
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
+    const eachAmount =
+      Math.floor((parseFloat(event.target.value) / splitters.length) * 100) /
+      100;
+    const updatedEachAmount = memberExpense.map((member) => {
+      return { ...member, amount: eachAmount.toFixed(2) };
+    });
+    setMemberExpense(updatedEachAmount);
   };
+
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userId = event.target.id;
+    setMemberExpense((prevMembers) => {
+      const updatedChecked = prevMembers.map((member) => {
+        if (member.id === userId) {
+          return {
+            ...member,
+            paid: !member.paid,
+          };
+        }
+        return member;
+      });
+      return updatedChecked;
+    });
+  };
+
   const handleChangeDate = (newValue: Dayjs | null) => {
     setDate(newValue);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
-  };
-
-  const handleChangeEachAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedEachAmount = memberExpense.map((member) => {
-      if (member.id.toString() === event.target.id) {
-        return { ...member, amount: event.target.value };
-      } else {
-        return member;
-      }
-    });
-    setMemberExpense(updatedEachAmount);
   };
 
   return (
@@ -280,7 +304,7 @@ export const PaymentPage = () => {
                 </LocalizationProvider>
               </SubInputsWrapper>
               <SubInputsWrapper>
-                <InputSelectTitle>How will you guys split?</InputSelectTitle>
+                <InputSelectTitle>Amount per member</InputSelectTitle>
                 <SplitterContainer>
                   {memberExpense.map((member, index) => {
                     return (
@@ -291,7 +315,6 @@ export const PaymentPage = () => {
                             <StyledOutlinedNumberInput
                               id={member.id}
                               value={member.amount}
-                              onChange={handleChangeEachAmount}
                               placeholder="0.0"
                               type="number"
                               startAdornment={
@@ -300,8 +323,20 @@ export const PaymentPage = () => {
                                 </InputAdornment>
                               }
                               fullWidth
+                              disabled={true}
                             />
                           </SplitterBox>
+                          <Checkbox
+                            id={member.id}
+                            checked={
+                              memberExpense.find(
+                                (user) => user.id === member.id
+                              )?.paid
+                            }
+                            onChange={handleToggle}
+                            inputProps={{ "aria-label": "controlled" }}
+                            disabled={payer === member.id}
+                          />
                         </SplitWrapper>
                       </div>
                     );

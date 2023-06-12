@@ -40,11 +40,11 @@ alter table "public"."Expenses" drop column "methodId";
 
 alter table "public"."Expenses" add column "date" timestamp with time zone default now();
 
-alter table "public"."Expenses" alter column "id" set default gen_random_uuid();
-
 alter table "public"."Expenses" alter column "id" drop identity;
 
-alter table "public"."Expenses" alter column "id" set data type uuid using "id"::uuid;
+alter table "public"."Expenses" drop column "id";
+
+alter table "public"."Expenses" add column "id" uuid  PRIMARY KEY default gen_random_uuid();
 
 alter table "public"."Expenses" alter column "settled" set default false;
 
