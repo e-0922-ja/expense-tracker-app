@@ -75,7 +75,7 @@ export const TransactionCard = ({ expense }: TransactionProps) => {
           </DiscriptionContainer>
           <AnountContainer>
             <Typography gutterBottom component="div">
-              {expense.payment.toLocaleString()}
+              {expense.payment.toFixed(2).toLocaleString()}
             </Typography>
           </AnountContainer>
         </ContentWrapper>
