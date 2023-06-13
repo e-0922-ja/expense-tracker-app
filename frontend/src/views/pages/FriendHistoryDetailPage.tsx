@@ -180,8 +180,14 @@ export const FriendHistoryDetailPage = () => {
           <DetailBox>
             <Section>
               <PageTitle>
-                Expense with<Span>Kota</Span>
-                <Span>Hana</Span>
+                Expense with
+                {expense.userIds.map((id, index) => {
+                  if (id !== userId) {
+                    return <Span>{expense.firstNames[index]}</Span>;
+                  } else {
+                    return null;
+                  }
+                })}
               </PageTitle>
             </Section>
             <Section>
