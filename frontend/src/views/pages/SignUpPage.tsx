@@ -1,8 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
-import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { IconButton, InputBase, Paper } from "@mui/material";
+
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,6 +17,7 @@ import {
   passwordRegex,
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -34,6 +34,25 @@ interface NewUser {
 
 export const SignUpPage = () => {
   const [authError, setAuthError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+
+  const handleMouseDownConfirmPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const {
     register,
@@ -73,10 +92,10 @@ export const SignUpPage = () => {
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
+            <InputPaper elevation={0}>
+              <IconContainer>
                 <AccountCircle />
-              </InputAdornment>
+              </IconContainer>
               <InputBase
                 placeholder="First Name"
                 type="text"
@@ -86,10 +105,10 @@ export const SignUpPage = () => {
             {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
+            <InputPaper elevation={0}>
+              <IconContainer>
                 <AccountCircle />
-              </InputAdornment>
+              </IconContainer>
               <InputBase
                 placeholder="Last Name"
                 type="text"
@@ -99,10 +118,10 @@ export const SignUpPage = () => {
             {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
+            <InputPaper elevation={0}>
+              <IconContainer>
                 <MailOutlineIcon />
-              </InputAdornment>
+              </IconContainer>
               <InputBase
                 placeholder="Email"
                 type="email"
@@ -115,35 +134,44 @@ export const SignUpPage = () => {
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <LockOutlinedIcon />
-              </InputAdornment>
+            <InputPaperPassword elevation={0}>
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+
               <InputBase
                 placeholder="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: true,
                   pattern: passwordRegex,
                 })}
               />
-            </InputPaper>
+            </InputPaperPassword>
             {errors.password && <ErrorText>{errPassword}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <LockIcon />
-              </InputAdornment>
+            <InputPaperPassword elevation={0}>
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowConfirmPassword}
+                onMouseDown={handleMouseDownConfirmPassword}
+              >
+                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
               <InputBase
                 placeholder="Confirm Password"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword", {
                   required: true,
                   validate: (value) => value === getValues("password"),
                 })}
               />
-            </InputPaper>
+            </InputPaperPassword>
             {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
           </InputWrapper>
 
@@ -158,7 +186,7 @@ export const SignUpPage = () => {
 };
 
 const ComponentWrapper = styled.div`
-  height: calc(100% - 64px);
+  height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,6 +223,13 @@ const InputPaper = styled(Paper)`
   align-items: center;
 `;
 
+const InputPaperPassword = styled(Paper)`
+  margin: 15px 0 7px;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+`;
+
 const TitleWrapper = styled.div`
   color: ${({ theme }) => theme.palette.secondary.light};
   display: flex;
@@ -224,4 +259,9 @@ const ButtonWrapper = styled.div`
   margin-bottom: 7px;
   display: flex;
   justify-content: center;
+`;
+
+const IconContainer = styled.div`
+  padding: 8px;
+  color: rgba(0, 0, 0, 0.54);
 `;

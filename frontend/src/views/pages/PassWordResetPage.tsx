@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
-import { Box, OutlinedInput } from "@mui/material";
+import { Box, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
   errPassword,
@@ -9,6 +9,10 @@ import {
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
+import { selectTheme } from "../../reducer/colorModeSlice";
+import { useSelector } from "react-redux";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -21,6 +25,9 @@ interface PasswordData {
 }
 
 export const PassWordResetPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const theme = useSelector(selectTheme);
   const navigate = useNavigate();
   const {
     register,
@@ -44,6 +51,23 @@ export const PassWordResetPage = () => {
     }
   };
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+
+  const handleMouseDownConfirmPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
     <ComponentWrapper>
       <LoginWrapper>
@@ -59,7 +83,32 @@ export const PassWordResetPage = () => {
                 required: true,
                 pattern: passwordRegex,
               })}
+              type={showPassword ? "text" : "password"}
               fullWidth
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? (
+                      <VisibilityOff
+                        style={{
+                          color: theme.palette.info.light,
+                        }}
+                      />
+                    ) : (
+                      <Visibility
+                        style={{
+                          color: theme.palette.info.light,
+                        }}
+                      />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </StyledBox>
           {errors.password && <ErrorText>{errPassword}</ErrorText>}
@@ -70,7 +119,32 @@ export const PassWordResetPage = () => {
                 required: true,
                 validate: (value) => value === getValues("password"),
               })}
+              type={showConfirmPassword ? "text" : "password"}
               fullWidth
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowConfirmPassword}
+                    onMouseDown={handleMouseDownConfirmPassword}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? (
+                      <VisibilityOff
+                        style={{
+                          color: theme.palette.info.light,
+                        }}
+                      />
+                    ) : (
+                      <Visibility
+                        style={{
+                          color: theme.palette.info.light,
+                        }}
+                      />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </StyledBox>
           {errors.confPassword && <ErrorText>{errPasswordConf}</ErrorText>}
@@ -151,7 +225,7 @@ const StyledOutlinedInput = styled(OutlinedInput)`
     color: ${({ theme }) => theme.palette.info.light};
 
     .MuiInputBase-input.MuiOutlinedInput-input {
-      padding: 7px;
+      padding: 14px;
     }
 
     &:hover .MuiOutlinedInput-notchedOutline {

@@ -1,11 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
-import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
+import { IconButton, InputAdornment, InputBase, Paper } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
@@ -17,6 +17,8 @@ import {
   passwordRegex,
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import colorModeSlice from "../../reducer/colorModeSlice";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -32,6 +34,7 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [authError, setAuthError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -67,6 +70,14 @@ export const LoginPage = () => {
     navigate("/history");
   };
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
     <ComponentWrapper>
       <LoginWrapper>
@@ -77,10 +88,10 @@ export const LoginPage = () => {
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(handleloginWithEmail)}>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
+            <InputPaper elevation={0}>
+              <IconContainer>
                 <MailOutlineIcon />
-              </InputAdornment>
+              </IconContainer>
               <InputBase
                 placeholder="Email"
                 type="email"
@@ -93,13 +104,17 @@ export const LoginPage = () => {
             {errors.email && <ErrorText>{errEmail}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <LockOutlinedIcon />
-              </InputAdornment>
+            <InputPaper elevation={0}>
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
               <InputBase
                 placeholder="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: true,
                   pattern: passwordRegex,
@@ -119,7 +134,7 @@ export const LoginPage = () => {
 };
 
 const ComponentWrapper = styled.div`
-  height: calc(100% - 64px);
+  height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -185,4 +200,9 @@ const ButtonWrapper = styled.div`
   margin-bottom: 7px;
   display: flex;
   justify-content: center;
+`;
+
+const IconContainer = styled.div`
+  padding: 8px;
+  color: rgba(0, 0, 0, 0.54);
 `;
