@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   const handleNavigateLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
