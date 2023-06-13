@@ -18,3 +18,21 @@ export interface CategoryIcon {
   category: string;
   icon: React.ReactElement;
 }
+
+export interface Expense {
+  id: string;
+  categoryId: number;
+  categoryName: string;
+  payer: string;
+  payerFirstName: string;
+  payerLastName: string;
+  description: string;
+  payment: number;
+  date: string;
+  registeredAt: string;
+  userIds: string[];
+  firstNames: string[];
+  lastNames: string[];
+  paids: boolean[];
+  amounts: number[];
+}

@@ -11,25 +11,7 @@ import Face3Icon from "@mui/icons-material/Face3";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import { CategoryIcon } from "../../types";
-
-export interface Expense {
-  id: string;
-  categoryId: number;
-  categoryName: string;
-  payer: string;
-  payerFirstName: string;
-  payerLastName: string;
-  description: string;
-  payment: number;
-  date: string;
-  registeredAt: string;
-  userIds: string[];
-  firstNames: string[];
-  lastNames: string[];
-  paids: boolean[];
-  amounts: number[];
-}
+import { CategoryIcon, Expense } from "../../types";
 
 interface TransactionProps {
   expense: Expense;

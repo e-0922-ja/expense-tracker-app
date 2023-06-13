@@ -54,7 +54,7 @@ const categoryIcons: CategoryIcon[] = [
   { id: 10, category: "Others", icon: <HelpOutlineIcon /> },
 ];
 
-export const HistoryDetailPage = () => {
+export const FriendHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
@@ -72,6 +72,7 @@ export const HistoryDetailPage = () => {
     useState<Checked[]>(initialCheckedIds);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const friendFirstNames = expense.firstNames.filter((member) => !member);
     const userId = event.target.id;
     setCheckedMembers((prevMembers) => {
       const updatedChecked = prevMembers.map((member) => {
@@ -177,6 +178,12 @@ export const HistoryDetailPage = () => {
         <SubBox>
           <GobackButton onClick={handleGoBack} />
           <DetailBox>
+            <Section>
+              <PageTitle>
+                Expense with<Span>Kota</Span>
+                <Span>Hana</Span>
+              </PageTitle>
+            </Section>
             <Section>
               <Title>{expense.description}</Title>
             </Section>
@@ -427,4 +434,15 @@ const ButtonContainer = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const PageTitle = styled.h2`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const Span = styled.span`
+  color: ${({ theme }) => theme.palette.secondary.light};
+  margin-left: 0.5rem;
 `;

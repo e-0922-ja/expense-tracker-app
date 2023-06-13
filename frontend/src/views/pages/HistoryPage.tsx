@@ -18,11 +18,11 @@ import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
-import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
+import { FriendsCard } from "../components/FriendsCard";
 
 interface Name {
   id: number;
@@ -57,13 +57,13 @@ export const HistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const friendList: Name[] = [
-    { id: 1, firstName: "yuki" },
-    { id: 2, firstName: "anna" },
-    { id: 3, firstName: "max" },
-    { id: 4, firstName: "tom" },
-    { id: 5, firstName: "Bob" },
-  ];
+  // const friendList: Name[] = [
+  //   { id: 1, firstName: "yuki" },
+  //   { id: 2, firstName: "anna" },
+  //   { id: 3, firstName: "max" },
+  //   { id: 4, firstName: "tom" },
+  //   { id: 5, firstName: "Bob" },
+  // ];
 
   // ------------------------------------------------------------------------------------------
   const getTotalLentAmount = async () => {
@@ -212,8 +212,8 @@ export const HistoryPage = () => {
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
-              {friendList.map((item) => (
-                <FriendsCard key={item.id} friendName={item.firstName} />
+              {expenses.map((expense) => (
+                <FriendsCard key={expense.id} expense={expense} />
               ))}
             </TabPanel>
           </TabContext>
