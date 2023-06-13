@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   IconButton,
   Toolbar,
@@ -8,25 +8,25 @@ import {
   useTheme,
   Box,
   Checkbox,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { DrawerContents } from '../components/DrawerContents';
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../../../../supabase/schema';
-import { Category } from '../../types';
-import { GobackButton } from '../components/GobackButton';
-import { useNavigate } from 'react-router-dom';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
-import HouseIcon from '@mui/icons-material/House';
-import LightIcon from '@mui/icons-material/Light';
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
-import Face3Icon from '@mui/icons-material/Face3';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import { SubButton } from '../components/SubButton';
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { DrawerContents } from "../components/DrawerContents";
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "../../../../supabase/schema";
+import { Category } from "../../types";
+import { GobackButton } from "../components/GobackButton";
+import { useNavigate } from "react-router-dom";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
+import HouseIcon from "@mui/icons-material/House";
+import LightIcon from "@mui/icons-material/Light";
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
+import Face3Icon from "@mui/icons-material/Face3";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
+import { SubButton } from "../components/SubButton";
 
 interface TransactionHistory {
   id: number;
@@ -51,8 +51,8 @@ interface CategoryIcon {
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
-  const [error, setError] = useState('');
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [checked, setChecked] = useState(false);
@@ -62,7 +62,7 @@ export const HistoryDetailPage = () => {
   };
 
   const handlegoback = () => {
-    navigate('/history');
+    navigate("/history");
   };
 
   const supabase = createClient<Database>(
@@ -78,30 +78,30 @@ export const HistoryDetailPage = () => {
 
   const transactionHistory: TransactionHistory = {
     id: 1,
-    paidPerson: 'Yuki',
-    category: 'Food',
-    dispription: 'starbucks',
+    paidPerson: "Yuki",
+    category: "Food",
+    dispription: "starbucks",
     amount: 123,
-    date: '5/23',
+    date: "5/23",
   };
 
   const dammy: Dammy[] = [
-    { id: 1, firstName: 'Max', splitBill: 100 },
-    { id: 2, firstName: 'Bob', splitBill: 200 },
-    { id: 3, firstName: 'Anna', splitBill: 300 },
+    { id: 1, firstName: "Max", splitBill: 100 },
+    { id: 2, firstName: "Bob", splitBill: 200 },
+    { id: 3, firstName: "Anna", splitBill: 300 },
   ];
 
   const categoryIcons: CategoryIcon[] = [
-    { category: 'Food', icon: <RestaurantIcon /> },
-    { category: 'Entertainment', icon: <MusicNoteIcon /> },
-    { category: 'Transportation', icon: <DirectionsTransitIcon /> },
-    { category: 'Cost of Living', icon: <HouseIcon /> },
-    { category: 'Utility', icon: <LightIcon /> },
-    { category: 'Health', icon: <MonitorHeartIcon /> },
-    { category: 'Beauty', icon: <Face3Icon /> },
-    { category: 'Cloth', icon: <ShoppingCartIcon /> },
-    { category: 'Others', icon: <HelpOutlineIcon /> },
-    { category: 'None', icon: <HorizontalRuleIcon /> },
+    { category: "Food", icon: <RestaurantIcon /> },
+    { category: "Entertainment", icon: <MusicNoteIcon /> },
+    { category: "Transportation", icon: <DirectionsTransitIcon /> },
+    { category: "Cost of Living", icon: <HouseIcon /> },
+    { category: "Utility", icon: <LightIcon /> },
+    { category: "Health", icon: <MonitorHeartIcon /> },
+    { category: "Beauty", icon: <Face3Icon /> },
+    { category: "Cloth", icon: <ShoppingCartIcon /> },
+    { category: "Others", icon: <HelpOutlineIcon /> },
+    { category: "None", icon: <HorizontalRuleIcon /> },
   ];
 
   useEffect(() => {
@@ -112,9 +112,9 @@ export const HistoryDetailPage = () => {
   const getCategories = async () => {
     try {
       const { data, error } = await supabase
-        .from('Categories')
-        .select('*')
-        .order('sequence', { ascending: true });
+        .from("Categories")
+        .select("*")
+        .order("sequence", { ascending: true });
       if (error) {
         setError(error.message);
 
@@ -131,7 +131,7 @@ export const HistoryDetailPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate('/history');
+    navigate("/history");
   };
 
   return (
@@ -219,7 +219,7 @@ export const HistoryDetailPage = () => {
                               <Checkbox
                                 checked={checked}
                                 onChange={handleToggle}
-                                inputProps={{ 'aria-label': 'controlled' }}
+                                inputProps={{ "aria-label": "controlled" }}
                               />
                               <SplitterName>{friend.firstName}</SplitterName>
                               <SplitterBox>
@@ -233,7 +233,7 @@ export const HistoryDetailPage = () => {
                       })}
                     </SplitterContainer>
                     <ButtonContainer>
-                      <SubButton title={'save'} onClick={handlegoback} />
+                      <SubButton title={"save"} onClick={handlegoback} />
                     </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>

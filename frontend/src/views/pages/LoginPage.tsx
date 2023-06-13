@@ -63,7 +63,7 @@ export const LoginPage = () => {
 
     dispatch(login(userInfo));
 
-    navigate('/history');
+    navigate("/history");
   };
 
   return (

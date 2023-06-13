@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useCallback, useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   IconButton,
   Toolbar,
@@ -7,17 +7,17 @@ import {
   useMediaQuery,
   useTheme,
   Box,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { DrawerContents } from '../components/DrawerContents';
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../../../../supabase/schema';
-import { Category } from '../../types';
-import { TransactionCard } from '../components/TransactionCard';
-import { GobackButton } from '../components/GobackButton';
-import { useNavigate } from 'react-router-dom';
-import { BorrowCalculateCard } from '../components/BorrowCalculateCard';
-import { LendCalculateCard } from '../components/LendCalculateCard';
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { DrawerContents } from "../components/DrawerContents";
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "../../../../supabase/schema";
+import { Category } from "../../types";
+import { TransactionCard } from "../components/TransactionCard";
+import { GobackButton } from "../components/GobackButton";
+import { useNavigate } from "react-router-dom";
+import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
+import { LendCalculateCard } from "../components/LendCalculateCard";
 
 interface TransactionHistory {
   id: number;
@@ -36,8 +36,8 @@ const supabase = createClient<Database>(
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
-  const [error, setError] = useState('');
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const [error, setError] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -50,43 +50,43 @@ export const FriendsHistoryPage = () => {
   const transactionHistory: TransactionHistory[] = [
     {
       id: 1,
-      paidPerson: 'Yuki',
-      category: 'Food',
-      dispription: 'starbucks',
+      paidPerson: "Yuki",
+      category: "Food",
+      dispription: "starbucks",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 2,
-      paidPerson: 'Hana',
-      category: 'Food',
-      dispription: 'Korean',
+      paidPerson: "Hana",
+      category: "Food",
+      dispription: "Korean",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 3,
-      paidPerson: 'Kota',
-      category: 'Food',
-      dispription: 'Chinese',
+      paidPerson: "Kota",
+      category: "Food",
+      dispription: "Chinese",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 4,
-      paidPerson: 'Haruka',
-      category: 'Food',
-      dispription: 'Itarian',
+      paidPerson: "Haruka",
+      category: "Food",
+      dispription: "Itarian",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 5,
-      paidPerson: 'Akito',
-      category: 'Food',
-      dispription: 'French',
+      paidPerson: "Akito",
+      category: "Food",
+      dispription: "French",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
   ];
 
@@ -94,9 +94,9 @@ export const FriendsHistoryPage = () => {
   const getCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('Categories')
-        .select('*')
-        .order('sequence', { ascending: true });
+        .from("Categories")
+        .select("*")
+        .order("sequence", { ascending: true });
       if (error) {
         setError(error.message);
         return false;
@@ -115,7 +115,7 @@ export const FriendsHistoryPage = () => {
   }, [getCategories]);
 
   const handleGoBack = () => {
-    navigate('/history');
+    navigate("/history");
   };
 
   console.log(error);
@@ -163,12 +163,12 @@ export const FriendsHistoryPage = () => {
               <Title>Summary for this group</Title>
               <CalculateCardContainer>
                 <BorrowCalculateCard
-                  name={'Megan'}
+                  name={"Megan"}
                   amount={200}
                   totalAmount={300}
                 />
                 <LendCalculateCard
-                  name={'Megan'}
+                  name={"Megan"}
                   amount={200}
                   totalAmount={300}
                 />

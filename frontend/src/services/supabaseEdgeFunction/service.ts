@@ -3,7 +3,7 @@ class _supabaseEdgeFunctionService {
 
   constructor() {
     if (!process.env.REACT_APP_SUPABASE_ENDPOINT)
-      throw new Error('Missing SUPABASE_ENDPOINT env var');
+      throw new Error("Missing SUPABASE_ENDPOINT env var");
 
     this.endpoint = process.env.REACT_APP_SUPABASE_ENDPOINT;
   }
@@ -15,9 +15,9 @@ class _supabaseEdgeFunctionService {
       headers: {
         // Will implements JWT auth later
         // Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
+      method: "POST",
     });
     return response;
   }
