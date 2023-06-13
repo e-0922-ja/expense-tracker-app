@@ -13,20 +13,20 @@ import { DrawerContents } from "../components/DrawerContents";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
 import { Category } from "../../types";
-import { TransactionCard } from "../components/TransactionCard";
+// import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
-import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
-import { LendCalculateCard } from "../components/LendCalculateCard";
+// import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
+// import { LendCalculateCard } from "../components/LendCalculateCard";
 
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+// interface TransactionHistory {
+//   id: number;
+//   paidPerson: string;
+//   category: string;
+//   dispription: string;
+//   amount: number;
+//   date: string;
+// }
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -47,48 +47,48 @@ export const FriendsHistoryPage = () => {
 
   const navigate = useNavigate();
 
-  const transactionHistory: TransactionHistory[] = [
-    {
-      id: 1,
-      paidPerson: "Yuki",
-      category: "Food",
-      dispription: "starbucks",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 2,
-      paidPerson: "Hana",
-      category: "Food",
-      dispription: "Korean",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 3,
-      paidPerson: "Kota",
-      category: "Food",
-      dispription: "Chinese",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 4,
-      paidPerson: "Haruka",
-      category: "Food",
-      dispription: "Itarian",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 5,
-      paidPerson: "Akito",
-      category: "Food",
-      dispription: "French",
-      amount: 123,
-      date: "5/23",
-    },
-  ];
+  // const transactionHistory: TransactionHistory[] = [
+  //   {
+  //     id: 1,
+  //     paidPerson: "Yuki",
+  //     category: "Food",
+  //     dispription: "starbucks",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 2,
+  //     paidPerson: "Hana",
+  //     category: "Food",
+  //     dispription: "Korean",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 3,
+  //     paidPerson: "Kota",
+  //     category: "Food",
+  //     dispription: "Chinese",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 4,
+  //     paidPerson: "Haruka",
+  //     category: "Food",
+  //     dispription: "Itarian",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 5,
+  //     paidPerson: "Akito",
+  //     category: "Food",
+  //     dispription: "French",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  // ];
 
   // get categories from a table
   const getCategories = useCallback(async () => {

@@ -24,11 +24,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
 
-interface Name {
-  id: number;
-  firstName: string;
-}
-
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
@@ -45,8 +40,6 @@ export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const account = useSelector(selectUser);
   const userId = account.user?.id!;
   const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
@@ -57,41 +50,21 @@ export const HistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // get categories from a table
-  const getCategories = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  }, []);
-
   const getTotalLentAmount = useCallback(async () => {
     try {
       const { data, error } = await supabase.rpc("get_total_lent_amount", {
         user_id: userId,
       });
       if (error) {
-        console.error(error.message);
+        console.log(error);
       } else {
         console.log("lent", data);
         setLent(data);
       }
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error) {
+      console.log(error);
     }
-  }, []);
+  }, [userId]);
 
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
@@ -99,15 +72,15 @@ export const HistoryPage = () => {
         user_id: userId,
       });
       if (error) {
-        console.error(error.message);
+        console.log(error);
       } else {
         console.log("borrowed", data);
         setBorrowed(data);
       }
     } catch (error: any) {
-      console.error(error.message);
+      console.log(error);
     }
-  }, []);
+  }, [userId]);
 
   const getExpenses = useCallback(async () => {
     try {
@@ -115,19 +88,15 @@ export const HistoryPage = () => {
         user_id: userId,
       });
       if (error) {
-        console.error(error.message);
+        console.log(error);
       } else {
         console.log("histories", data);
         setExpenses(data);
       }
     } catch (error: any) {
-      console.error(error.message);
+      console.log(error);
     }
-  }, []);
-
-  useEffect(() => {
-    getCategories();
-  }, [getCategories]);
+  }, [userId]);
 
   useEffect(() => {
     getTotalLentAmount();
@@ -140,8 +109,6 @@ export const HistoryPage = () => {
   useEffect(() => {
     getExpenses();
   }, [getExpenses]);
-
-  console.log(error);
 
   const [value, setValue] = useState("1");
 

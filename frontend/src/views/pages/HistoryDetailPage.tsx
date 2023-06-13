@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -13,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
-import { Category, CategoryIcon, Expense } from "../../types";
+import { CategoryIcon, Expense } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -27,7 +27,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
-import { UUID } from "crypto";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 
@@ -58,8 +57,6 @@ export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const account = useSelector(selectUser);
   const userId = account.user?.id!;
   const location = useLocation();
@@ -115,13 +112,11 @@ export const HistoryDetailPage = () => {
         update_by: userId,
       });
       if (error) {
-        setError(error.message);
         console.log(error);
       } else {
         console.log(data);
       }
     } catch (error: any) {
-      setError(error.message);
       console.log(error);
     }
   };
@@ -133,13 +128,11 @@ export const HistoryDetailPage = () => {
         .delete()
         .eq("id", expense.id);
       if (error) {
-        setError(error.message);
         console.log(error);
       } else {
         console.log(data);
       }
     } catch (error: any) {
-      setError(error.message);
       console.log(error);
     }
   };

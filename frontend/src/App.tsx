@@ -11,7 +11,7 @@ import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
 import { PaymentPage } from "./views/pages/PaymentPage";
-import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
+// import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
 import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
