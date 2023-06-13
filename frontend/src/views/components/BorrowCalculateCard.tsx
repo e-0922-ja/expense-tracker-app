@@ -55,7 +55,7 @@ const Container = styled.div`
 
 const BorrowTitle = styled.h3`
   margin: 0 0 1rem 0;
-  color: blue;
+  color: #a196ee;
 `;
 
 const CalculateContainer = styled.div`
@@ -74,5 +74,5 @@ const CalculateAmount = styled.div`
 `;
 
 const BorrowTotal = styled.div`
-  color: blue;
+  color: #a196ee;
 `;

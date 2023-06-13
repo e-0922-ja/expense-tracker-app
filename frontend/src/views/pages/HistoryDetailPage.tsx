@@ -379,6 +379,7 @@ const CategoryData = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
   gap: 10px;
 `;

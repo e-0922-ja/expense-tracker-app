@@ -45,7 +45,7 @@ export const Header = () => {
           variant="h5"
           component="div"
         >
-          Expense Tracker
+          SpendShare
         </Typography>
         <AppBarNavWrapper>
           <StyledIconButton size="large" onClick={handleChangeMode}>
@@ -70,6 +70,9 @@ const AppBarWrapper = styled(AppBar)<AppBarProps>`
 
 const StyledToolbar = styled(Toolbar)`
   padding: 0 70px !important;
+  @media (max-width: 768px) {
+    padding: 0 20px !important;
+  }
 `;
 
 const AppBarNavWrapper = styled(Box)`

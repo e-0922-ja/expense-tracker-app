@@ -275,10 +275,13 @@ const SubBox = styled(Box)`
 `;
 
 const StyledBox = styled.div`
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.info.light};
 `;
 
 const StyledTab = styled(Tab)`
+  &&.MuiButtonBase-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   &&.MuiTab-textColorPrimary.Mui-selected {
     color: ${({ theme }) => theme.palette.secondary.main};
   }

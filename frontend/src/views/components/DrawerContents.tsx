@@ -15,25 +15,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectTheme } from "../../reducer/colorModeSlice";
 import { logout, selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
+import { useState } from "react";
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
   const theme = useSelector(selectTheme);
   const account = useSelector(selectUser);
   const dispatch: AppDispatch = useDispatch();
+  const [selectedId, setSelectedId] = useState(0);
 
   const navigateHistory = () => {
     navigate("/history");
+    setSelectedId(1);
   };
 
   const navigateAccount = () => {
     navigate("/account");
+    setSelectedId(2);
   };
 
   const handleLogput = () => {
     if (account.isLogin) {
       dispatch(logout());
       navigate("/");
+      setSelectedId(3);
     }
   };
 
@@ -66,7 +71,11 @@ export const DrawerContents = () => {
       <StyledList>
         {toolbarItems.map((item) => (
           <ListItem key={item.id} disablePadding>
-            <StyledListItemButton onClick={item.onClick} disableRipple>
+            <StyledListItemButton
+              onClick={item.onClick}
+              selected={item.id === selectedId}
+              disableRipple
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </StyledListItemButton>
@@ -95,6 +104,16 @@ const StyledList = styled(List)`
   padding-top: 1rem !important;
 `;
 
-const StyledListItemButton = styled(ListItemButton)`
+const StyledListItemButton = styled(ListItemButton)<{ selected: boolean }>`
   padding: 0.5rem 3.5rem !important;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.main} !important;
+  }
+
+  ${(props) =>
+    props.selected &&
+    `
+    background-color: ${props.theme.palette.primary.main} !important;
+  `}
 `;
