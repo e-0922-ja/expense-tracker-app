@@ -14,6 +14,7 @@ import { PaymentPage } from "./views/pages/PaymentPage";
 import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
+import { PassWordResetPage } from "./views/pages/PassWordResetPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -33,6 +34,7 @@ function App() {
           <Route path="/history/:id" element={<HistoryDetailPage />} />
           <Route path="/history/group/:id" element={<FriendsHistoryPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/passwordReset" element={<PassWordResetPage />} />
         </Routes>
       </ThemeProvider>
     </div>
