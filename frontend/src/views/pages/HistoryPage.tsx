@@ -16,7 +16,6 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
