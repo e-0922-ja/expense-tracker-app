@@ -1,5 +1,5 @@
-import { client } from './client';
-import { CreateAuthUserRequest, CreateUserRequest } from './type';
+import { client } from "./client";
+import { CreateAuthUserRequest, CreateUserRequest } from "./type";
 
 class _supabaseService {
   createAuthUser = async ({
@@ -18,27 +18,27 @@ class _supabaseService {
     }
     return {
       isError: false,
-      message: 'Sucess!',
+      message: "Sucess!",
       user: {
-        id: data.user?.id || '',
-        firstName: `${data.user?.user_metadata.firstName || ''}`,
-        lastName: `${data.user?.user_metadata.lastName || ''}`,
-        email: data.user?.email || '',
+        id: data.user?.id || "",
+        firstName: `${data.user?.user_metadata.firstName || ""}`,
+        lastName: `${data.user?.user_metadata.lastName || ""}`,
+        email: data.user?.email || "",
       },
     };
   };
 
   fetchUsers = async () => {
-    const { data, error } = await client.from('Users').select('*');
+    const { data, error } = await client.from("Users").select("*");
     console.log(error);
     console.log(data);
   };
 
   findUserByEmail = async (email: string) => {
     const { data, error } = await client
-      .from('Users')
-      .select('*')
-      .eq('email', email);
+      .from("Users")
+      .select("*")
+      .eq("email", email);
     console.log(data);
     if (error) {
       console.log(error);
@@ -63,7 +63,7 @@ class _supabaseService {
     firstName,
     lastName,
   }: CreateUserRequest) => {
-    const { error } = await client.from('Users').insert([
+    const { error } = await client.from("Users").insert([
       {
         id,
         firstName,
@@ -77,7 +77,7 @@ class _supabaseService {
       console.log(error);
       return { isError: true, message: error.message };
     }
-    return { isError: false, message: 'Success!' };
+    return { isError: false, message: "Success!" };
   };
 }
 

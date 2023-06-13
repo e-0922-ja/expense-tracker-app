@@ -25,9 +25,9 @@ const supabase = createClient(
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
-  const [selectedError, setSelectedError] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [selectedError, setSelectedError] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const {
     register,
     handleSubmit,
@@ -38,7 +38,6 @@ export const FriendsListPage = () => {
   const userState = useSelector((state: RootState) => state.user);
   const userId = userState.user?.id;
   const userEmail = userState.user?.email;
-
 
   const navigate = useNavigate();
 
@@ -53,7 +52,7 @@ export const FriendsListPage = () => {
 
   const sendFriendRequest = async (email: string) => {
     if (email === userEmail) {
-      setError('You cannot send a friend request to your email address.');
+      setError("You cannot send a friend request to your email address.");
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(email);
       if (resultCountFriendShipByEmail > 0) {
@@ -74,7 +73,7 @@ export const FriendsListPage = () => {
             const resultGetUserFriendsById = await getUserFriendsById();
             if (resultGetUserFriendsById) {
               reset();
-              setError('');
+              setError("");
             }
             setSuccess(
               `You have successfully sent a friend request to ${email}!`
@@ -118,7 +117,7 @@ export const FriendsListPage = () => {
   // check if a user has already sent a friend request to the input email address
   const countFriendShipByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase.rpc('check_friendship', {
+      const { data, error } = await supabase.rpc("check_friendship", {
         user_id: userId,
         friend_email: email,
       });
@@ -135,9 +134,9 @@ export const FriendsListPage = () => {
   const getFriendByEmail = async (email: string) => {
     try {
       const { data, error } = await supabase
-        .from('Users')
-        .select('*')
-        .eq('email', email);
+        .from("Users")
+        .select("*")
+        .eq("email", email);
       if (error) {
         setError(error.message);
         return false;
@@ -163,7 +162,7 @@ export const FriendsListPage = () => {
 
     try {
       const { error } = await supabase
-        .from('Friendships')
+        .from("Friendships")
         .insert(friendshipsData);
       if (error) {
         setError(error.message);
@@ -179,15 +178,15 @@ export const FriendsListPage = () => {
 
   const getUserFriendsById = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_user_friends', {
+      const { data, error } = await supabase.rpc("get_user_friends", {
         user_id: userId,
       });
       if (error) {
         setError(error.message);
         return false;
       } else {
-        console.log(userId,"id")
-        console.log(data,"data")
+        console.log(userId, "id");
+        console.log(data, "data");
         setFriends(data);
         console.log(friends, "friends");
       }
@@ -204,7 +203,7 @@ export const FriendsListPage = () => {
         state: { selectedFriends },
       });
     } else {
-      setSelectedError('select friends from your friends list');
+      setSelectedError("select friends from your friends list");
     }
   };
 
@@ -221,7 +220,7 @@ export const FriendsListPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
-                {...register('email', {
+                {...register("email", {
                   required: true,
                   pattern: emailRegex,
                 })}
@@ -268,7 +267,7 @@ export const FriendsListPage = () => {
                   <ListItem>
                     {friend.firstName
                       ? `${friend.firstName}  ${friend.lastName}`
-                      : '-'}
+                      : "-"}
                   </ListItem>
                   <ListItem>{friend.email}</ListItem>
                 </Label>

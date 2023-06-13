@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useCallback, useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   IconButton,
   Toolbar,
@@ -8,19 +8,19 @@ import {
   useTheme,
   Box,
   Tab,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { DrawerContents } from '../components/DrawerContents';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../../../../supabase/schema';
-import { Category } from '../../types';
-import { TransactionCard } from '../components/TransactionCard';
-import { FriendsCard } from '../components/FriendsCard';
-import { BorrowCalculateCard } from '../components/BorrowCalculateCard';
-import { LendCalculateCard } from '../components/LendCalculateCard';
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { DrawerContents } from "../components/DrawerContents";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "../../../../supabase/schema";
+import { Category } from "../../types";
+import { TransactionCard } from "../components/TransactionCard";
+import { FriendsCard } from "../components/FriendsCard";
+import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
+import { LendCalculateCard } from "../components/LendCalculateCard";
 
 interface TransactionHistory {
   id: number;
@@ -44,10 +44,10 @@ const supabase = createClient<Database>(
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
-  const isMobile = useMediaQuery(materialTheme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
 
   // const [date, setDate] = useState<Dayjs | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -56,61 +56,61 @@ export const HistoryPage = () => {
   const transactionHistory: TransactionHistory[] = [
     {
       id: 1,
-      paidPerson: 'Yuki',
-      category: 'Food',
-      dispription: 'starbucks',
+      paidPerson: "Yuki",
+      category: "Food",
+      dispription: "starbucks",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 2,
-      paidPerson: 'Hana',
-      category: 'Food',
-      dispription: 'Korean',
+      paidPerson: "Hana",
+      category: "Food",
+      dispription: "Korean",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 3,
-      paidPerson: 'Kota',
-      category: 'Food',
-      dispription: 'Chinese',
+      paidPerson: "Kota",
+      category: "Food",
+      dispription: "Chinese",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 4,
-      paidPerson: 'Haruka',
-      category: 'Food',
-      dispription: 'Itarian',
+      paidPerson: "Haruka",
+      category: "Food",
+      dispription: "Itarian",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
     {
       id: 5,
-      paidPerson: 'Akito',
-      category: 'Food',
-      dispription: 'French',
+      paidPerson: "Akito",
+      category: "Food",
+      dispription: "French",
       amount: 123,
-      date: '5/23',
+      date: "5/23",
     },
   ];
 
   const friendList: Name[] = [
-    { id: 1, firstName: 'yuki' },
-    { id: 2, firstName: 'anna' },
-    { id: 3, firstName: 'max' },
-    { id: 4, firstName: 'tom' },
-    { id: 5, firstName: 'Bob' },
+    { id: 1, firstName: "yuki" },
+    { id: 2, firstName: "anna" },
+    { id: 3, firstName: "max" },
+    { id: 4, firstName: "tom" },
+    { id: 5, firstName: "Bob" },
   ];
 
   // get categories from a table
   const getCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('Categories')
-        .select('*')
-        .order('sequence', { ascending: true });
+        .from("Categories")
+        .select("*")
+        .order("sequence", { ascending: true });
       if (error) {
         setError(error.message);
         return false;
@@ -127,7 +127,7 @@ export const HistoryPage = () => {
     getCategories();
   }, [getCategories]);
 
-  const [value, setValue] = useState('1');
+  const [value, setValue] = useState("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -178,12 +178,12 @@ export const HistoryPage = () => {
               <Title>Summary for you</Title>
               <CalculateCardContainer>
                 <BorrowCalculateCard
-                  name={'Megan'}
+                  name={"Megan"}
                   amount={200}
                   totalAmount={300}
                 />
                 <LendCalculateCard
-                  name={'Megan'}
+                  name={"Megan"}
                   amount={200}
                   totalAmount={300}
                 />
