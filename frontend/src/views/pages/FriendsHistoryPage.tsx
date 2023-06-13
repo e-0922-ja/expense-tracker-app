@@ -102,7 +102,6 @@ export const FriendsHistoryPage = () => {
         return false;
       } else {
         setCategories(data);
-        // console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);

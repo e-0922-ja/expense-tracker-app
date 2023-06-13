@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -57,82 +57,8 @@ export const HistoryPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // const friendList: Name[] = [
-  //   { id: 1, firstName: "yuki" },
-  //   { id: 2, firstName: "anna" },
-  //   { id: 3, firstName: "max" },
-  //   { id: 4, firstName: "tom" },
-  //   { id: 5, firstName: "Bob" },
-  // ];
-
-  // ------------------------------------------------------------------------------------------
-  const getTotalLentAmount = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_total_lent_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.error(error.message);
-      } else {
-        console.log("lent", data);
-        setLent(data);
-      }
-    } catch (error: any) {
-      console.error(error.message);
-    }
-  };
-
-  const getTotalBorrowedAmount = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.error(error.message);
-      } else {
-        console.log("borrowed", data);
-        setBorrowed(data);
-      }
-    } catch (error: any) {
-      console.error(error.message);
-    }
-  };
-
-  const getExpenses = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_expenses", {
-        user_id: userId,
-      });
-      if (error) {
-        console.error(error.message);
-      } else {
-        console.log("histories", data);
-        setExpenses(data);
-      }
-    } catch (error: any) {
-      console.error(error.message);
-    }
-  };
-  // ------------------------------------------------------------------------------------------
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  useEffect(() => {
-    getTotalLentAmount();
-  }, []);
-
-  useEffect(() => {
-    getTotalBorrowedAmount();
-  }, []);
-
-  useEffect(() => {
-    getExpenses();
-  }, []);
-
   // get categories from a table
-  const getCategories = async () => {
+  const getCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("Categories")
@@ -149,7 +75,72 @@ export const HistoryPage = () => {
       setError(error.message);
       return false;
     }
-  };
+  }, []);
+
+  const getTotalLentAmount = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_lent_amount", {
+        user_id: userId,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("lent", data);
+        setLent(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  }, []);
+
+  const getTotalBorrowedAmount = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
+        user_id: userId,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("borrowed", data);
+        setBorrowed(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  }, []);
+
+  const getExpenses = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_expenses", {
+        user_id: userId,
+      });
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("histories", data);
+        setExpenses(data);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
+  useEffect(() => {
+    getTotalLentAmount();
+  }, [getTotalLentAmount]);
+
+  useEffect(() => {
+    getTotalBorrowedAmount();
+  }, [getTotalBorrowedAmount]);
+
+  useEffect(() => {
+    getExpenses();
+  }, [getExpenses]);
+
   console.log(error);
 
   const [value, setValue] = useState("1");

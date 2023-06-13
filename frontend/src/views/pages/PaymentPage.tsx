@@ -1,7 +1,13 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Category } from "../../types";
 import {
   Box,
@@ -95,12 +101,8 @@ export const PaymentPage = () => {
 
   console.log(error);
 
-  useEffect(() => {
-    getCategories();
-  }, []);
-
   // get categories from a table
-  const getCategories = async () => {
+  const getCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("Categories")
@@ -121,7 +123,12 @@ export const PaymentPage = () => {
       setError(error.message);
       return false;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
   const categoryIcons: CategoryIcon[] = [
     { category: "Food", icon: <RestaurantIcon /> },
     { category: "Entertainment", icon: <MusicNoteIcon /> },
