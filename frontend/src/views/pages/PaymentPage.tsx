@@ -64,11 +64,11 @@ export const PaymentPage = () => {
   };
 
   const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     navigate("/history");
   };
 
-  console.log(error)
+  console.log(error);
 
   useEffect(() => {
     getCategories();
@@ -108,8 +108,6 @@ export const PaymentPage = () => {
     { category: "Others", icon: <HelpOutlineIcon /> },
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
-
-
 
   return (
     <MainContainer>
@@ -242,12 +240,9 @@ export const PaymentPage = () => {
             </InputsWrapper>
 
             <ButtonContainer>
-            <StyledButton
-              variant="contained"
-              disableRipple
-            >
-              create
-            </StyledButton>
+              <StyledButton variant="contained" disableRipple>
+                create
+              </StyledButton>
             </ButtonContainer>
           </FormContainer>
         </Section>

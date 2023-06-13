@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
 
-
 interface SubButtonProps {
   title: string;
   onClick: () => void;

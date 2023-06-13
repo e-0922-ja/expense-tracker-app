@@ -61,7 +61,6 @@ export const HistoryDetailPage = () => {
     setChecked(event.target.checked);
   };
 
-
   const handlegoback = () => {
     navigate("/history");
   };
@@ -122,13 +121,13 @@ export const HistoryDetailPage = () => {
         return false;
       } else {
         setCategories(data);
-        console.log(categories)
+        console.log(categories);
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-    console.error(error)
+    console.error(error);
   };
 
   const handleGoBack = () => {

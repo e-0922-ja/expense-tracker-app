@@ -5,16 +5,16 @@ import {
   IconButton,
   Toolbar,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { selectTheme, toggleTheme } from '../../reducer/colorModeSlice';
-import { logout, selectUser } from '../../reducer/userSlice';
-import { AppDispatch } from '../../store/store';
-import { DarkModeButton } from './DarkModeButton';
-import { LightModeButton } from './LightModeButton';
-import styled from 'styled-components';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
+import { logout, selectUser } from "../../reducer/userSlice";
+import { AppDispatch } from "../../store/store";
+import { DarkModeButton } from "./DarkModeButton";
+import { LightModeButton } from "./LightModeButton";
+import styled from "styled-components";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const Header = () => {
   const account = useSelector(selectUser);
 
   const handleNavigateHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleChangeMode = () => {
@@ -33,9 +33,9 @@ export const Header = () => {
   const handleLogInOut = () => {
     if (account.isLogin) {
       dispatch(logout());
-      navigate('/');
+      navigate("/");
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -58,7 +58,7 @@ export const Header = () => {
         </Typography>
         <AppBarNavWrapper>
           <StyledIconButton size="large" onClick={handleChangeMode}>
-            {theme.palette.mode === 'light' ? (
+            {theme.palette.mode === "light" ? (
               <DarkModeButton />
             ) : (
               <LightModeButton />
@@ -66,10 +66,10 @@ export const Header = () => {
           </StyledIconButton>
           <Text>
             <button onClick={handleLogInOut}>
-              {account.isLogin ? 'LogOut' : 'LogIn'}
+              {account.isLogin ? "LogOut" : "LogIn"}
             </button>
           </Text>
-          <Text>{account.isLogin ? account.user?.firstName : 'Person'}</Text>
+          <Text>{account.isLogin ? account.user?.firstName : "Person"}</Text>
         </AppBarNavWrapper>
       </StyledToolbar>
     </AppBarWrapper>
