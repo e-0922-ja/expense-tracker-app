@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
@@ -5,11 +6,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { UseFormRegister, ValidationRule, useForm } from "react-hook-form";
 import { SupabaseService } from "../../services/supabase";
 import {
-  emailRegex,
   errEmail,
   errFirstName,
   errLastName,
@@ -64,6 +63,9 @@ export const SignUpPage = () => {
     navigate("/login");
   };
 
+  const isConfirmPasswordSame = (value: string) =>
+    value === getValues("password");
+
   return (
     <ComponentWrapper>
       <SignUpWrapper>
@@ -73,81 +75,48 @@ export const SignUpPage = () => {
           <Link to="/login">Login</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
-          <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <AccountCircle />
-              </InputAdornment>
-              <InputBase
-                placeholder="First Name"
-                type="text"
-                {...register("firstName", { required: true })}
-              />
-            </InputPaper>
-            {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <AccountCircle />
-              </InputAdornment>
-              <InputBase
-                placeholder="Last Name"
-                type="text"
-                {...register("lastName", { required: true })}
-              />
-            </InputPaper>
-            {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <MailOutlineIcon />
-              </InputAdornment>
-              <InputBase
-                placeholder="Email"
-                type="email"
-                {...register("email", {
-                  required: true,
-                  pattern: emailRegex,
-                })}
-              />
-            </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <LockOutlinedIcon />
-              </InputAdornment>
-              <InputBase
-                placeholder="Password"
-                type="password"
-                {...register("password", {
-                  required: true,
-                  pattern: passwordRegex,
-                })}
-              />
-            </InputPaper>
-            {errors.password && <ErrorText>{errPassword}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper>
-              <InputAdornment position="start">
-                <LockIcon />
-              </InputAdornment>
-              <InputBase
-                placeholder="Confirm Password"
-                type="password"
-                {...register("confirmPassword", {
-                  required: true,
-                  validate: (value) => value === getValues("password"),
-                })}
-              />
-            </InputPaper>
-            {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
-          </InputWrapper>
-
+          <FormInputItem
+            placeholder={"First Name"}
+            inputType={"text"}
+            register={register}
+            valueName={"firstName"}
+            required={true}
+          />
+          {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
+          <FormInputItem
+            placeholder={"Last Name"}
+            inputType={"text"}
+            register={register}
+            valueName={"lastName"}
+            required={true}
+          />
+          {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
+          <FormInputItem
+            placeholder={"Email"}
+            inputType={"email"}
+            register={register}
+            valueName={"email"}
+            required={true}
+          />
+          {errors.email && <ErrorText>{errEmail}</ErrorText>}
+          <FormInputItem
+            placeholder={"Password"}
+            inputType={"password"}
+            register={register}
+            valueName={"password"}
+            required={true}
+            pattern={passwordRegex}
+          />
+          {errors.password && <ErrorText>{errPassword}</ErrorText>}
+          <FormInputItem
+            placeholder={"Confirm Password"}
+            inputType={"password"}
+            register={register}
+            valueName={"confirmPassword"}
+            required={true}
+            validate={isConfirmPasswordSame}
+          />
+          {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
           <ButtonWrapper>
             <Button type="submit" variant="contained" disableRipple>
               submit
@@ -157,6 +126,69 @@ export const SignUpPage = () => {
         </FormWrapper>
       </SignUpWrapper>
     </ComponentWrapper>
+  );
+};
+
+interface FormInputItemProps {
+  placeholder:
+    | "First Name"
+    | "Last Name"
+    | "Email"
+    | "Password"
+    | "Confirm Password";
+  inputType: "text" | "email" | "password";
+  register: UseFormRegister<NewUser>;
+  valueName:
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "password"
+    | "confirmPassword";
+  required: boolean;
+  pattern?: ValidationRule<RegExp>;
+  validate?: (value: string) => boolean;
+  // errors?: FieldErrors<NewUser>;
+}
+
+const FormInputItem = ({
+  placeholder,
+  inputType,
+  register,
+  valueName,
+  required,
+  pattern,
+  validate,
+}: // errors,
+FormInputItemProps) => {
+  const Icon = () => (
+    <>
+      {(valueName === "firstName" || valueName === "lastName") && (
+        <AccountCircle />
+      )}
+      {valueName === "email" && <MailOutlineIcon />}
+      {valueName === "password" && <LockOutlinedIcon />}
+      {valueName === "confirmPassword" && <LockIcon />}
+    </>
+  );
+  return (
+    <InputWrapper>
+      <InputPaper>
+        <InputAdornment position="start">
+          <Icon />
+        </InputAdornment>
+        <InputBase
+          placeholder={placeholder}
+          type={inputType}
+          {...register(valueName, {
+            required,
+            pattern,
+            validate,
+          })}
+        />
+      </InputPaper>
+      {/* TODO: Consider how to show error statements */}
+      {/* {errors?.[valueName] && <ErrorText>{errPasswordConf}</ErrorText>} */}
+    </InputWrapper>
   );
 };
 
