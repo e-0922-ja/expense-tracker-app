@@ -93,6 +93,7 @@ export const LoginPage = () => {
                 <MailOutlineIcon />
               </IconContainer>
               <InputBase
+                fullWidth
                 placeholder="Email"
                 type="email"
                 {...register("email", {
@@ -113,6 +114,7 @@ export const LoginPage = () => {
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
               <InputBase
+                fullWidth
                 placeholder="Password"
                 type={showPassword ? "text" : "password"}
                 {...register("password", {

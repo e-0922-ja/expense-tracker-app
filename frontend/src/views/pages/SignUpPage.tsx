@@ -97,6 +97,7 @@ export const SignUpPage = () => {
                 <AccountCircle />
               </IconContainer>
               <InputBase
+                fullWidth
                 placeholder="First Name"
                 type="text"
                 {...register("firstName", { required: true })}
@@ -110,6 +111,7 @@ export const SignUpPage = () => {
                 <AccountCircle />
               </IconContainer>
               <InputBase
+                fullWidth
                 placeholder="Last Name"
                 type="text"
                 {...register("lastName", { required: true })}
@@ -123,6 +125,7 @@ export const SignUpPage = () => {
                 <MailOutlineIcon />
               </IconContainer>
               <InputBase
+                fullWidth
                 placeholder="Email"
                 type="email"
                 {...register("email", {
@@ -144,6 +147,7 @@ export const SignUpPage = () => {
               </IconButton>
 
               <InputBase
+                fullWidth
                 placeholder="Password"
                 type={showPassword ? "text" : "password"}
                 {...register("password", {
@@ -164,6 +168,7 @@ export const SignUpPage = () => {
                 {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
               <InputBase
+                fullWidth
                 placeholder="Confirm Password"
                 type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword", {
