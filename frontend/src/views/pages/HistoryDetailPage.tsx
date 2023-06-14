@@ -290,10 +290,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 
@@ -318,10 +319,17 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 30px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0;
+  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const TopicTitle = styled.div`

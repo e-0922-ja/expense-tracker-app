@@ -178,6 +178,9 @@ export const AccountInput = ({
 const InfoContainer = styled.div`
   width: 70%;
   margin: 3rem 0;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const InputTitle = styled.div`

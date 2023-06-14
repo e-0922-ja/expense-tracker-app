@@ -251,10 +251,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 

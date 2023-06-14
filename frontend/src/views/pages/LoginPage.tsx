@@ -143,12 +143,15 @@ const ComponentWrapper = styled.div`
 
 const LoginWrapper = styled.div`
   padding: 20px 0;
-  width: 30%;
+  width: 35%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 600px) {
+    width: 70%;
+  }
 `;
 
 const FormWrapper = styled.form`

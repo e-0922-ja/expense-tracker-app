@@ -258,10 +258,8 @@ const MainContainer = styled.div`
   width: 100%;
   overflow: auto;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 20px;
   background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
@@ -272,6 +270,11 @@ const SubContainer = styled.div`
   height: 95%;
   width: 45%;
   background-color: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+    padding: 0 20px;
+  }
 `;
 
 const Title = styled.h2`
@@ -295,10 +298,17 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  @media (max-width: 600px) {
+    gap: 0x;
+    flex-direction: column;
+  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const InputTitle = styled.div`

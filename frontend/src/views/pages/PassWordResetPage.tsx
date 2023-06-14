@@ -11,8 +11,6 @@ import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { selectTheme } from "../../reducer/colorModeSlice";
-import { useSelector } from "react-redux";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -27,7 +25,7 @@ interface PasswordData {
 export const PassWordResetPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const theme = useSelector(selectTheme);
+
   const navigate = useNavigate();
   const {
     register,
@@ -70,7 +68,7 @@ export const PassWordResetPage = () => {
 
   return (
     <ComponentWrapper>
-      <LoginWrapper>
+      <PassResetWrapper>
         <TitleWrapper>
           <Title>Reset Password</Title>
           <Text>Please register your new password </Text>
@@ -94,17 +92,9 @@ export const PassWordResetPage = () => {
                     edge="end"
                   >
                     {showPassword ? (
-                      <VisibilityOff
-                        style={{
-                          color: theme.palette.info.light,
-                        }}
-                      />
+                      <StyledVisibilityOff />
                     ) : (
-                      <Visibility
-                        style={{
-                          color: theme.palette.info.light,
-                        }}
-                      />
+                      <StyledVisibility />
                     )}
                   </IconButton>
                 </InputAdornment>
@@ -130,17 +120,9 @@ export const PassWordResetPage = () => {
                     edge="end"
                   >
                     {showConfirmPassword ? (
-                      <VisibilityOff
-                        style={{
-                          color: theme.palette.info.light,
-                        }}
-                      />
+                      <StyledVisibilityOff />
                     ) : (
-                      <Visibility
-                        style={{
-                          color: theme.palette.info.light,
-                        }}
-                      />
+                      <StyledVisibility />
                     )}
                   </IconButton>
                 </InputAdornment>
@@ -152,7 +134,7 @@ export const PassWordResetPage = () => {
             <FormButton title="Register" />
           </ButtonWrapper>
         </FormWrapper>
-      </LoginWrapper>
+      </PassResetWrapper>
     </ComponentWrapper>
   );
 };
@@ -165,14 +147,17 @@ const ComponentWrapper = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const LoginWrapper = styled.div`
+const PassResetWrapper = styled.div`
   padding: 20px 0;
-  width: 40%;
+  width: 35%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 600px) {
+    width: 70%;
+  }
 `;
 
 const FormWrapper = styled.form`
@@ -245,4 +230,12 @@ const StyledOutlinedInput = styled(OutlinedInput)`
 const InputTitle = styled.div`
   margin-top: 1rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const StyledVisibilityOff = styled(VisibilityOff)`
+  color: ${({ theme }) => theme.palette.info.light};
+`;
+
+const StyledVisibility = styled(Visibility)`
+  color: ${({ theme }) => theme.palette.info.light};
 `;
