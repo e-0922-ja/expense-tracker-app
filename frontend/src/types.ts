@@ -15,8 +15,7 @@ export interface Category {
 
 export interface Expense {
   id: string;
-  categoryId: number;
-  categoryName: string;
+  category: string;
   payer: string;
   payerFirstName: string;
   payerLastName: string;

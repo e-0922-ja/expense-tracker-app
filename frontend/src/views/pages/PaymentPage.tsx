@@ -35,9 +35,8 @@ const supabase = createClient<Database>(
 
 export const PaymentPage = () => {
   const [error, setError] = useState("");
-  // const [categories, setCategories] = useState<Category[]>([]);
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(categories[0].name);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState<Dayjs | null>(null);
   const navigate = useNavigate();
@@ -62,17 +61,15 @@ export const PaymentPage = () => {
 
   const handleChangePayer = (event: SelectChangeEvent) => {
     setPayer(event.target.value);
-    const updatedPaid = memberExpense.map((member) => {
-      if (member.id.toString() === event.target.value) {
-        return { ...member, paid: true };
-      } else {
-        return member;
-      }
-    });
+    const updatedPaid = memberExpense.map((member) => ({
+      ...member,
+      paid: member.id.toString() === event.target.value,
+    }));
+
     setMemberExpense(updatedPaid);
   };
 
-  const handlesubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     insertExpense();
     navigate("/history");
@@ -88,6 +85,7 @@ export const PaymentPage = () => {
     );
 
     try {
+      console.log(category);
       const { data, error } = await supabase.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
@@ -96,7 +94,7 @@ export const PaymentPage = () => {
         member_paids: memberPaids,
         member_amounts: memberAmounts,
         payer_id: payer,
-        category_id: parseInt(category),
+        category: category,
         description: description,
         payment: parseFloat(amount),
       });
@@ -155,7 +153,7 @@ export const PaymentPage = () => {
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <FormContainer onSubmit={handlesubmit}>
+          <FormContainer onSubmit={handleSubmit}>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
@@ -175,7 +173,7 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Who paid?</InputSelectTitle>
                 <Select
-                  value={payer || (splitters.length > 0 ? splitters[0].id : "")}
+                  value={payer}
                   onChange={handleChangePayer}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
@@ -202,7 +200,7 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Categories</InputSelectTitle>
                 <Select
-                  value={category ? category : categories[0].name}
+                  value={category}
                   onChange={handleChangeCategory}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}

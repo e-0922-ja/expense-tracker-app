@@ -45,7 +45,7 @@ export const FriendHistoryDetailPage = () => {
   }));
   const [checkedMembers, setCheckedMembers] =
     useState<Checked[]>(initialCheckedIds);
-  const CategoryIcon = getCategoryIcon(expense.categoryName);
+  const CategoryIcon = getCategoryIcon(expense.category);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const userId = event.target.id;
@@ -196,7 +196,7 @@ export const FriendHistoryDetailPage = () => {
                             <CategoryIcon />
                           </IconCircle>
                         </IconContainer>
-                        {expense.categoryName}
+                        {expense.category}
                       </CategoryData>
                     </StyledBox>
                   </SubInputsWrapper>

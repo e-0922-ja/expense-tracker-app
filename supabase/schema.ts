@@ -28,7 +28,7 @@ export interface Database {
       }
       Expenses: {
         Row: {
-          categoryId: number | null
+          category: string | null
           date: string | null
           description: string | null
           groupId: string | null
@@ -42,7 +42,7 @@ export interface Database {
           updatedBy: string | null
         }
         Insert: {
-          categoryId?: number | null
+          category?: string | null
           date?: string | null
           description?: string | null
           groupId?: string | null
@@ -56,7 +56,7 @@ export interface Database {
           updatedBy?: string | null
         }
         Update: {
-          categoryId?: number | null
+          category?: string | null
           date?: string | null
           description?: string | null
           groupId?: string | null
@@ -249,8 +249,7 @@ export interface Database {
         }
         Returns: {
           id: string
-          categoryId: number
-          categoryName: string
+          category: string
           payer: string
           payerFirstName: string
           payerLastName: string
@@ -307,7 +306,7 @@ export interface Database {
           member_paids: boolean[]
           member_amounts: number[]
           payer_id: string
-          category_id: number
+          category: string
           description: string
           payment: number
         }

@@ -13,7 +13,7 @@ export const TransactionCard = ({ expense }: TransactionProps) => {
   const handleGoToDetail = () => {
     navigate(`/history/${expense.id}`, { state: { expense } });
   };
-  const CategoryIcon = getCategoryIcon(expense.categoryName);
+  const CategoryIcon = getCategoryIcon(expense.category);
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={handleGoToDetail}>
