@@ -13,22 +13,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
-import { CategoryIcon, Expense } from "../../types";
+import { Expense } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
-import HouseIcon from "@mui/icons-material/House";
-import LightIcon from "@mui/icons-material/Light";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
-import Face3Icon from "@mui/icons-material/Face3";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
+import { getCategoryIcon } from "../../utils/categoryUtils";
 
 interface Checked {
   userId: string;
@@ -39,19 +30,6 @@ const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
-
-const categoryIcons: CategoryIcon[] = [
-  { id: 1, category: "None", icon: <HorizontalRuleIcon /> },
-  { id: 2, category: "Food", icon: <RestaurantIcon /> },
-  { id: 3, category: "Entertainment", icon: <MusicNoteIcon /> },
-  { id: 4, category: "Transportation", icon: <DirectionsTransitIcon /> },
-  { id: 5, category: "Cost of Living", icon: <HouseIcon /> },
-  { id: 6, category: "Utility", icon: <LightIcon /> },
-  { id: 7, category: "Health", icon: <MonitorHeartIcon /> },
-  { id: 8, category: "Beauty", icon: <Face3Icon /> },
-  { id: 9, category: "Cloth", icon: <ShoppingCartIcon /> },
-  { id: 10, category: "Others", icon: <HelpOutlineIcon /> },
-];
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -67,6 +45,7 @@ export const HistoryDetailPage = () => {
   }));
   const [checkedMembers, setCheckedMembers] =
     useState<Checked[]>(initialCheckedIds);
+  const CategoryIcon = getCategoryIcon(expense.categoryName);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const userId = event.target.id;
@@ -202,11 +181,7 @@ export const HistoryDetailPage = () => {
                       <CategoryData>
                         <IconContainer>
                           <IconCircle>
-                            {
-                              categoryIcons.find(
-                                (item) => item.id === expense.categoryId
-                              )?.icon
-                            }
+                            <CategoryIcon />
                           </IconCircle>
                         </IconContainer>
                         {expense.categoryName}

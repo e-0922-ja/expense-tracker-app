@@ -1,3 +1,4 @@
+import { SvgIconProps } from "@mui/material/SvgIcon";
 import { UUID } from "crypto";
 
 export interface Friend {
@@ -8,15 +9,8 @@ export interface Friend {
 }
 
 export interface Category {
-  id: number;
-  name: string | null;
-  sequence: number | null;
-}
-
-export interface CategoryIcon {
-  id: number;
-  category: string;
-  icon: React.ReactElement;
+  name: string;
+  icon: React.ComponentType<SvgIconProps>;
 }
 
 export interface Expense {

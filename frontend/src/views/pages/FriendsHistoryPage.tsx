@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -89,29 +89,6 @@ export const FriendsHistoryPage = () => {
   //     date: "5/23",
   //   },
   // ];
-
-  // get categories from a table
-  const getCategories = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  }, []);
-
-  useEffect(() => {
-    getCategories();
-  }, [getCategories]);
 
   const handleGoBack = () => {
     navigate("/history");

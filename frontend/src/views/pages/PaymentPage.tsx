@@ -1,14 +1,7 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { Category } from "../../types";
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   Box,
   Button,
@@ -19,16 +12,6 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
-import HouseIcon from "@mui/icons-material/House";
-import LightIcon from "@mui/icons-material/Light";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
-import Face3Icon from "@mui/icons-material/Face3";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useSelector } from "react-redux";
@@ -38,11 +21,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
 import { Database } from "../../../../supabase/schema";
-
-interface CategoryIcon {
-  category: string;
-  icon: React.ReactElement;
-}
+import { categories } from "../../constants/categoryIcons";
 
 interface EachAmount extends Friend {
   amount: string;
@@ -56,7 +35,7 @@ const supabase = createClient<Database>(
 
 export const PaymentPage = () => {
   const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -100,47 +79,6 @@ export const PaymentPage = () => {
   };
 
   console.log(error);
-
-  // get categories from a table
-  const getCategories = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        console.log(data, "data");
-        if (data) {
-          console.log(data);
-          setCategories(data as Category[]);
-          setCategory(data[0].id.toString());
-        }
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  }, []);
-
-  useEffect(() => {
-    getCategories();
-  }, [getCategories]);
-
-  const categoryIcons: CategoryIcon[] = [
-    { category: "Food", icon: <RestaurantIcon /> },
-    { category: "Entertainment", icon: <MusicNoteIcon /> },
-    { category: "Transportation", icon: <DirectionsTransitIcon /> },
-    { category: "Cost of Living", icon: <HouseIcon /> },
-    { category: "Utility", icon: <LightIcon /> },
-    { category: "Health", icon: <MonitorHeartIcon /> },
-    { category: "Beauty", icon: <Face3Icon /> },
-    { category: "Cloth", icon: <ShoppingCartIcon /> },
-    { category: "Others", icon: <HelpOutlineIcon /> },
-    { category: "None", icon: <HorizontalRuleIcon /> },
-  ];
 
   const insertExpense = async () => {
     const memberIds = memberExpense.map((member) => member.id.toString());
@@ -264,13 +202,7 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Categories</InputSelectTitle>
                 <Select
-                  value={
-                    category
-                      ? category
-                      : categories.length > 0
-                      ? categories[0].id.toString()
-                      : ""
-                  }
+                  value={category ? category : categories[0].name}
                   onChange={handleChangeCategory}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
@@ -281,15 +213,11 @@ export const PaymentPage = () => {
                     },
                   }}
                 >
-                  {categories.map((item, index) => (
-                    <MenuItem value={item.id} key={index}>
+                  {categories.map((category, index) => (
+                    <MenuItem value={category.name} key={index}>
                       <MenuItemContainer>
-                        {
-                          categoryIcons.find(
-                            (icon) => icon.category === item.name
-                          )?.icon
-                        }
-                        {item.name}
+                        <category.icon />
+                        {category.name}
                       </MenuItemContainer>
                     </MenuItem>
                   ))}
