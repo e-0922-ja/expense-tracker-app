@@ -32,7 +32,7 @@ export const FriendCard = ({ firstName, lastName, email }: Friend) => {
 };
 
 const FriendAproveCardWrapper = styled(Card)`
-  width: 70%;
+  width: 75%;
   margin-bottom: 20px;
   border-radius: 10px !important;
   background: ${({ theme }) => theme.palette.primary.light} !important;

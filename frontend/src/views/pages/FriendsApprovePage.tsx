@@ -12,7 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-import { Friend } from "../../types";
+import { Friend, Friendship, Users } from "../../types";
 import { createClient } from "@supabase/supabase-js";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
@@ -28,6 +28,11 @@ export const FriendsApprovePage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [requestFriendsFromFriendship, setRequestFriendsFromFriendship] =
+    useState<Friendship[]>([]);
+  const [requestFriendsFromUsers, setRequestFriendsFromUsers] = useState<
+    Users[]
+  >([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -38,6 +43,7 @@ export const FriendsApprovePage = () => {
 
   useEffect(() => {
     getUserFriendsById();
+    getRequestFriendsFromFriendShip();
   }, []);
 
   const getUserFriendsById = async () => {
@@ -49,9 +55,9 @@ export const FriendsApprovePage = () => {
         setError(error.message);
         return false;
       } else {
-        console.log(data, "data");
+        // console.log(data, "data");
         setFriends(data);
-        console.log(friends, "friends");
+        // console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
@@ -59,9 +65,69 @@ export const FriendsApprovePage = () => {
     }
   };
 
-  const getRequestFriends = async () => {
-    // get requested friends
+  const getRequestFriendsFromFriendShip = async () => {
+    try {
+      const { data, error }: { data: any; error: any } = await supabase
+        .from("Friendships")
+        .select("*")
+        .eq("friendId", userId)
+        .neq("userId", userId)
+        .eq("statusId", 1);
+
+      if (error) {
+        console.log("Error: ", error);
+      } else {
+        setRequestFriendsFromFriendship(data);
+        getRequestFriendsFromUsers(data); // Call here after setting the state
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
+
+  const getRequestFriendsFromUsers = async (
+    friendsFromFriendship: Friendship[]
+  ) => {
+    try {
+      const ids = friendsFromFriendship.map((user) => user.userId);
+      console.log(ids, "ids");
+      const { data, error }: { data: any; error: any } = await supabase
+        .from("Users")
+        .select("*")
+        .in("id", ids);
+      if (error) {
+        console.log("Error: ", error);
+      } else {
+        console.log(data, "hello");
+        setRequestFriendsFromUsers(data);
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
+
+  const requestFriendsIdsFromFriendship = requestFriendsFromFriendship.map(
+    (item) => {
+      return { userId: item.userId };
+    }
+  );
+
+  console.log(requestFriendsIdsFromFriendship, "a");
+  console.log(requestFriendsFromUsers, "b");
+
+  const requestedPeople = requestFriendsIdsFromFriendship.flatMap(
+    (item: { userId: string }) => {
+      const matchedUsers = requestFriendsFromUsers.filter(
+        (user) => user.id === item.userId
+      );
+      if (matchedUsers.length > 0) {
+        return matchedUsers;
+      }
+      return [];
+    }
+  );
+
+  console.log(requestedPeople, "Who");
 
   return (
     <Wrapper>
@@ -100,24 +166,27 @@ export const FriendsApprovePage = () => {
               <SubTitle>Friend Request</SubTitle>
               <hr />
               <UnorderedList>
-                <FriendApproveCard
-                  id="d74bb52e-9648-4b73-a2f2-9b9224a22a0c"
-                  firstName="alex"
-                  lastName="max"
-                  email="alex@gmail.com"
-                />
+                {requestedPeople.map((person) => (
+                  <FriendApproveCard
+                    id={person.id}
+                    firstName={person.firstName}
+                    lastName={person.lastName}
+                    email={person.email}
+                    key={person.id}
+                  />
+                ))}
               </UnorderedList>
               <SubTitle>All friends</SubTitle>
               <hr />
               <UnorderedList>
-                {friends!.map((friend) => {
+                {friends!.map((friend, index) => {
                   return (
                     <FriendCard
                       id={friend.id}
                       firstName={friend.firstName}
                       lastName={friend.lastName}
                       email={friend.email}
-                      key={friend.id}
+                      key={index}
                     />
                   );
                 })}
@@ -174,7 +243,6 @@ const MainBox = styled.div`
   padding: 50px 120px;
   width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;
@@ -198,7 +266,6 @@ const UnorderedList = styled.ul`
   padding: 0px;
   height: 100%;
   width: 100%;
-  overflow: auto;
 `;
 
 const Title = styled.h2`
