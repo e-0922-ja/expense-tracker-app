@@ -173,6 +173,9 @@ export const FriendsApprovePage = () => {
                     lastName={person.lastName}
                     email={person.email}
                     key={person.id}
+                    getRequestFriendsFromFriendShip={
+                      getRequestFriendsFromFriendShip
+                    }
                   />
                 ))}
               </UnorderedList>

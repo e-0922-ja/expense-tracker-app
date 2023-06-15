@@ -32,3 +32,11 @@ export interface Users {
   registeredAt: string;
   updatedAt: string;
 }
+
+export interface PropsFriendApproveCard {
+  id: UUID;
+  firstName: string;
+  lastName: string;
+  email: string;
+  getRequestFriendsFromFriendShip: () => void;
+}

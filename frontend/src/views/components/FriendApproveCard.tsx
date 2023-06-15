@@ -1,10 +1,9 @@
 import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-import { Friend } from "../../types";
+import { PropsFriendApproveCard } from "../../types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -12,35 +11,78 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
-export const FriendApproveCard = ({ firstName, lastName, email }: Friend) => {
+export const FriendApproveCard = ({
+  id,
+  firstName,
+  lastName,
+  email,
+  getRequestFriendsFromFriendShip,
+}: PropsFriendApproveCard) => {
   const { user } = useSelector(selectUser);
-  // const { friendship, setfriendship } = useState();
-
   const userId = user?.id;
 
-  const getRequestFriendsFromFriendShip = async () => {
+  const handleApprove = async () => {
     try {
       const { data, error }: { data: any; error: any } = await supabase
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
+        .eq("userId", id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
         console.log(data, "aprovecard");
+        if (data && data.length > 0) {
+          const { data: updatedData, error: updateError } = await supabase
+            .from("Friendships")
+            .update({ statusId: 2, updatedAt: new Date() })
+            .match({ id: data[0].id });
+
+          if (updateError) {
+            console.error("Error updating statusId: ", updateError);
+          }
+          getRequestFriendsFromFriendShip();
+        } else {
+          console.log("No data to update");
+        }
       }
     } catch (error) {
       console.error("Error: ", error);
     }
   };
 
-  const handleApprove = () => {
-    // change the status 1 to 2 in friends table
-  };
-  const handleReject = () => {
-    // remove row from friends table
+  const handleReject = async () => {
+    try {
+      const { data, error }: { data: any; error: any } = await supabase
+        .from("Friendships")
+        .select("*")
+        .eq("friendId", userId)
+        .eq("userId", id)
+        .eq("statusId", 1);
+
+      if (error) {
+        console.log("Error: ", error);
+      } else {
+        console.log(data, "aprovecard");
+        if (data && data.length > 0) {
+          const { data: deletedData, error: updateError } = await supabase
+            .from("Friendships")
+            .delete()
+            .match({ id: data[0].id });
+          if (updateError) {
+            console.error("Error deleting statusId: ", updateError);
+          }
+          console.log("Deleted record:", deletedData);
+          getRequestFriendsFromFriendShip();
+        } else {
+          console.log("No data to Delete");
+        }
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
 
   return (
