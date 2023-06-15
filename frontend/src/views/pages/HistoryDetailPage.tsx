@@ -13,18 +13,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../../../../supabase/schema";
-import { Expense } from "../../types";
+import { CheckedMember, Expense } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
-
-interface Checked {
-  userId: string;
-  paid: boolean;
-}
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -39,19 +34,19 @@ export const HistoryDetailPage = () => {
   const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
-  const initialCheckedIds = expense.userIds.map((id, index) => ({
-    userId: id,
-    paid: expense.paids[index],
-  }));
-  const [checkedMembers, setCheckedMembers] =
-    useState<Checked[]>(initialCheckedIds);
+  const initialCheckedMembers = expense.members.map((member) => {
+    return { id: member.id, paid: member.paid };
+  });
+  const [checkedMembers, setCheckedMembers] = useState<CheckedMember[]>(
+    initialCheckedMembers
+  );
   const CategoryIcon = getCategoryIcon(expense.category);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const userId = event.target.id;
+    const targetId = event.target.id;
     setCheckedMembers((prevMembers) => {
       const updatedChecked = prevMembers.map((member) => {
-        if (member.userId === userId) {
+        if (member.id === targetId) {
           return {
             ...member,
             paid: !member.paid,
@@ -191,31 +186,29 @@ export const HistoryDetailPage = () => {
                   <SubInputsWrapper>
                     <InputSelectTitle>Already Have Returned?</InputSelectTitle>
                     <SplitterContainer>
-                      {expense.userIds.map((id, index) => {
+                      {expense.members.map((member) => {
                         return (
-                          <div key={id}>
+                          <div key={member.id}>
                             <SplitWrapper>
                               <Checkbox
-                                id={id}
+                                id={member.id}
                                 checked={
                                   checkedMembers.find(
-                                    (member) => member.userId === id
+                                    (checkedMember) =>
+                                      checkedMember.id === member.id
                                   )?.paid
                                 }
                                 onChange={handleToggle}
                                 inputProps={{ "aria-label": "controlled" }}
-                                disabled={expense.payer === id}
+                                disabled={expense.payer === member.id}
                               />
                               <SplitterName>
-                                {`${expense.firstNames[index]} ${expense.lastNames[index]}`}
+                                {`${member.firstName} ${member.lastName}`}
                               </SplitterName>
                               <SplitterBox>
                                 <StyledBox>
                                   <Data>
-                                    $
-                                    {expense.amounts[index]
-                                      .toFixed(2)
-                                      .toLocaleString()}
+                                    ${member.amount.toFixed(2).toLocaleString()}
                                   </Data>
                                 </StyledBox>
                               </SplitterBox>

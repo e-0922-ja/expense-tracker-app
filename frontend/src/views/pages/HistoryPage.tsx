@@ -15,13 +15,14 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
+import { Database, Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
+import { Expense } from "../../types";
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -43,7 +44,7 @@ export const HistoryPage = () => {
   const userId = account.user?.id!;
   const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
   const [lent, setLent] = useState<LentAmountReturns>([]);
-  const [expenses, setExpenses] = useState<ExpensesReturns>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -90,7 +91,10 @@ export const HistoryPage = () => {
         console.log(error);
       } else {
         console.log("histories", data);
-        setExpenses(data);
+        const parsedExpenses: Expense[] = data.map((expense: Json) =>
+          JSON.parse(JSON.stringify(expense))
+        );
+        setExpenses(parsedExpenses);
       }
     } catch (error: any) {
       console.log(error);
@@ -164,7 +168,7 @@ export const HistoryPage = () => {
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {expenses.map((expense) => (
-                <TransactionCard key={expense.id} expense={expense} />
+                <TransactionCard key={expense?.id} expense={expense} />
               ))}
             </TabPanel>
             <TabPanel value="2">

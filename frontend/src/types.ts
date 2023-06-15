@@ -13,6 +13,14 @@ export interface Category {
   icon: React.ComponentType<SvgIconProps>;
 }
 
+export interface Member {
+  id: string;
+  firstName: string;
+  lastName: string;
+  paid: boolean;
+  amount: number;
+}
+
 export interface Expense {
   id: string;
   category: string;
@@ -22,10 +30,11 @@ export interface Expense {
   description: string;
   payment: number;
   date: string;
-  registeredAt: string;
-  userIds: string[];
-  firstNames: string[];
-  lastNames: string[];
-  paids: boolean[];
-  amounts: number[];
+  settled: boolean;
+  members: Member[];
+}
+
+export interface CheckedMember {
+  id: string;
+  paid: boolean;
 }

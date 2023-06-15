@@ -24,7 +24,7 @@ export const FriendsCard = ({ expense }: FriendsCardProps) => {
           </IconContainer>
           <NameWrapper>
             <Typography variant="body1">
-              {expense.firstNames.join(", ")}
+              {expense.members.map(({ firstName }) => firstName).join(", ")}
             </Typography>
           </NameWrapper>
         </ContentWrapper>

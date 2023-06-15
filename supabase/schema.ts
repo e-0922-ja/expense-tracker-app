@@ -26,6 +26,17 @@ export interface Database {
           sequence?: number | null
         }
       }
+      expense_data: {
+        Row: {
+          jsonb_agg: Json | null
+        }
+        Insert: {
+          jsonb_agg?: Json | null
+        }
+        Update: {
+          jsonb_agg?: Json | null
+        }
+      }
       Expenses: {
         Row: {
           category: string | null
@@ -237,32 +248,11 @@ export interface Database {
         }
         Returns: number
       }
-      get_borrowed_money_total: {
-        Args: {
-          user_id: string
-        }
-        Returns: undefined
-      }
       get_expenses: {
         Args: {
           user_id: string
         }
-        Returns: {
-          id: string
-          category: string
-          payer: string
-          payerFirstName: string
-          payerLastName: string
-          description: string
-          payment: number
-          date: string
-          registeredAt: string
-          userIds: string[]
-          firstNames: string[]
-          lastNames: string[]
-          paids: boolean[]
-          amounts: number[]
-        }[]
+        Returns: Json[]
       }
       get_total_borrowed_amount: {
         Args: {
@@ -314,9 +304,9 @@ export interface Database {
       }
       update_members_paid: {
         Args: {
-          update_by: string
           expense_id: string
           checked_members: string
+          update_by: string
         }
         Returns: undefined
       }
