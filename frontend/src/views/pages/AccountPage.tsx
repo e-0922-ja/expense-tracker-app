@@ -25,8 +25,6 @@ export const AccountPage = () => {
 
   const { user } = useSelector(selectUser);
 
-  console.log(user, "pagefrom reducer");
-
   return (
     <Wrapper>
       <NavBox>
@@ -136,3 +134,4 @@ const DetailBox = styled.div`
 const SubBox = styled(Box)`
   width: 100%;
 `;
+

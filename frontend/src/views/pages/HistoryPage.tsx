@@ -268,7 +268,7 @@ const CalculateCardContainer = styled.div`
 const Title = styled.h3`
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SubBox = styled(Box)`

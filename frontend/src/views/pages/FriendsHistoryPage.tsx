@@ -234,14 +234,14 @@ const MainBox = styled.div`
 
 const PageTitle = styled.h2`
   margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  padding-bottom: 2rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const Title = styled.h3`
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const Section = styled.div`
