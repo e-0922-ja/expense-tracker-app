@@ -31,7 +31,6 @@ export const userSlice = createSlice({
         email: action.payload.email,
       };
       state.isLogin = true;
-
     },
     logout: (state) => {
       state.user = null;
@@ -40,7 +39,6 @@ export const userSlice = createSlice({
     update: (state, action) => {
       state.user = action.payload;
       state.isLogin = true;
-      console.log(state.user, "new!");
     },
   },
 });
