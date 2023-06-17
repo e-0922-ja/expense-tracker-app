@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -40,10 +40,6 @@ export const FriendsListPage = () => {
   const userEmail = userState.user?.email;
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    getUserFriendsById();
-  }, []);
 
   const onSubmit = (data: FriendEmail) => {
     const { email } = data;
@@ -176,7 +172,7 @@ export const FriendsListPage = () => {
     }
   };
 
-  const getUserFriendsById = async () => {
+  const getUserFriendsById = useCallback(async () => {
     try {
       const { data, error } = await supabase.rpc("get_user_friends", {
         user_id: userId,
@@ -185,16 +181,17 @@ export const FriendsListPage = () => {
         setError(error.message);
         return false;
       } else {
-        console.log(userId, "id");
-        console.log(data, "data");
         setFriends(data);
-        console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    getUserFriendsById();
+  }, [getUserFriendsById]);
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
