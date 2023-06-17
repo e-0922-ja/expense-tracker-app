@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -14,9 +14,6 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
@@ -36,19 +33,11 @@ interface Name {
   firstName: string;
 }
 
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
 
-  // const [date, setDate] = useState<Dayjs | null>(null);
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -104,29 +93,6 @@ export const HistoryPage = () => {
     { id: 5, firstName: "Bob" },
   ];
 
-  // get categories from a table
-  const getCategories = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  }, []);
-
-  useEffect(() => {
-    getCategories();
-  }, [getCategories]);
-
   const [value, setValue] = useState("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -166,13 +132,13 @@ export const HistoryPage = () => {
         <SubBox>
           <TabContext value={value}>
             <StyledBox>
-              <TabList
+              <StyledTabList
                 onChange={handleChange}
                 aria-label="lab API tabs example"
               >
-                <Tab label="ALL" value="1" />
-                <Tab label="Friends" value="2" />
-              </TabList>
+                <StyledTab label="ALL" value="1" />
+                <StyledTab label="Friends" value="2" />
+              </StyledTabList>
             </StyledBox>
             <TabPanel value="1">
               <Title>Summary for you</Title>
@@ -248,10 +214,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 
@@ -272,5 +239,20 @@ const SubBox = styled(Box)`
 `;
 
 const StyledBox = styled.div`
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.info.light};
+`;
+
+const StyledTab = styled(Tab)`
+  &&.MuiButtonBase-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  &&.MuiTab-textColorPrimary.Mui-selected {
+    color: ${({ theme }) => theme.palette.secondary.main};
+  }
+`;
+
+const StyledTabList = styled(TabList)`
+  .MuiTabs-indicator {
+    background-color: ${({ theme }) => theme.palette.secondary.main} !important;
+  }
 `;

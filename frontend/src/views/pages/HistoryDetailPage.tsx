@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -11,9 +11,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -52,8 +49,6 @@ export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const [checked, setChecked] = useState(false);
 
@@ -64,11 +59,6 @@ export const HistoryDetailPage = () => {
   const handlegoback = () => {
     navigate("/history");
   };
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -103,32 +93,6 @@ export const HistoryDetailPage = () => {
     { category: "Others", icon: <HelpOutlineIcon /> },
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
-
-  useEffect(() => {
-    getCategories();
-  });
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-    console.error(error);
-  };
 
   const handleGoBack = () => {
     navigate("/history");
@@ -216,11 +180,13 @@ export const HistoryDetailPage = () => {
                         return (
                           <div key={friend.id}>
                             <SplitWrapper>
-                              <Checkbox
-                                checked={checked}
-                                onChange={handleToggle}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
+                              <CheckboxWrapper>
+                                <Checkbox
+                                  checked={checked}
+                                  onChange={handleToggle}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              </CheckboxWrapper>
                               <SplitterName>{friend.firstName}</SplitterName>
                               <SplitterBox>
                                 <StyledBox>
@@ -287,10 +253,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 
@@ -315,14 +282,22 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 30px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0;
+  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const TopicTitle = styled.div`
   margin-top: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const InputSelectTitle = styled.div`
@@ -350,6 +325,7 @@ const SplitterName = styled.div`
   width: 30%;
   display: flex;
   padding-left: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SplitterBox = styled(Box)`
@@ -364,6 +340,7 @@ const Data = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
 `;
 
@@ -373,6 +350,7 @@ const CategoryData = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
   gap: 10px;
 `;
@@ -391,7 +369,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const ButtonContainer = styled.div`
@@ -400,4 +379,11 @@ const ButtonContainer = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
+  }
 `;

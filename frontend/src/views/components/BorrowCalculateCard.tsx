@@ -37,6 +37,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const InsideWrapper = styled.div`
@@ -53,7 +55,7 @@ const Container = styled.div`
 
 const BorrowTitle = styled.h3`
   margin: 0 0 1rem 0;
-  color: blue;
+  color: #a196ee;
 `;
 
 const CalculateContainer = styled.div`
@@ -72,5 +74,5 @@ const CalculateAmount = styled.div`
 `;
 
 const BorrowTotal = styled.div`
-  color: blue;
+  color: #a196ee;
 `;
