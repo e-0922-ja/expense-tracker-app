@@ -1,11 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
-import { IconButton, InputAdornment, InputBase, Paper } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
@@ -18,7 +17,6 @@ import {
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import colorModeSlice from "../../reducer/colorModeSlice";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
