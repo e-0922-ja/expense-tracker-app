@@ -190,18 +190,20 @@ export const HistoryDetailPage = () => {
                         return (
                           <div key={member.id}>
                             <SplitWrapper>
-                              <Checkbox
-                                id={member.id}
-                                checked={
-                                  checkedMembers.find(
-                                    (checkedMember) =>
-                                      checkedMember.id === member.id
-                                  )?.paid
-                                }
-                                onChange={handleToggle}
-                                inputProps={{ "aria-label": "controlled" }}
-                                disabled={expense.payer === member.id}
-                              />
+                              <CheckboxWrapper>
+                                <Checkbox
+                                  id={member.id}
+                                  checked={
+                                    checkedMembers.find(
+                                      (checkedMember) =>
+                                        checkedMember.id === member.id
+                                    )?.paid
+                                  }
+                                  onChange={handleToggle}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                  disabled={expense.payer === member.id}
+                                />
+                              </CheckboxWrapper>
                               <SplitterName>
                                 {`${member.firstName} ${member.lastName}`}
                               </SplitterName>
@@ -275,10 +277,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 
@@ -303,14 +306,22 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 30px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 0;
+  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const TopicTitle = styled.div`
   margin-top: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const InputSelectTitle = styled.div`
@@ -338,6 +349,7 @@ const SplitterName = styled.div`
   width: 30%;
   display: flex;
   padding-left: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SplitterBox = styled(Box)`
@@ -352,6 +364,7 @@ const Data = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
 `;
 
@@ -361,6 +374,7 @@ const CategoryData = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
   gap: 10px;
 `;
@@ -379,7 +393,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const ButtonContainer = styled.div`
@@ -388,4 +403,11 @@ const ButtonContainer = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
+  }
 `;

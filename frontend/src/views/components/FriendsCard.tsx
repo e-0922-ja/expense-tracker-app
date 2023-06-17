@@ -37,6 +37,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const NameWrapper = styled.div`
@@ -65,5 +67,6 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;

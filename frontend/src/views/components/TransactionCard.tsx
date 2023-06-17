@@ -27,7 +27,7 @@ export const TransactionCard = ({ expense }: TransactionProps) => {
             <Typography gutterBottom component="div" style={{ margin: "0" }}>
               {expense.description}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2">
               {expense.date.toLocaleString().substring(0, 10)}
             </Typography>
           </DiscriptionContainer>
@@ -46,6 +46,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -67,7 +69,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const DiscriptionContainer = styled.div`

@@ -55,12 +55,12 @@ export const PaymentPage = () => {
     useState<EachAmount[]>(memberWithAmount);
   const [payer, setPayer] = useState(splitters[0].id.toString());
 
-  const handleChangeCategory = (event: SelectChangeEvent) => {
-    setCategory(event.target.value);
+  const handleChangeCategory = (event: SelectChangeEvent<unknown>) => {
+    setCategory(event.target.value as string);
   };
 
-  const handleChangePayer = (event: SelectChangeEvent) => {
-    setPayer(event.target.value);
+  const handleChangePayer = (event: SelectChangeEvent<unknown>) => {
+    setPayer(event.target.value as string);
     const updatedPaid = memberExpense.map((member) => ({
       ...member,
       paid: member.id.toString() === event.target.value,
@@ -107,7 +107,6 @@ export const PaymentPage = () => {
       setError(error.message);
     }
   };
-
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
     const eachAmount =
@@ -164,7 +163,9 @@ export const PaymentPage = () => {
                     type="number"
                     placeholder="0.0"
                     startAdornment={
-                      <InputAdornment position="start">$</InputAdornment>
+                      <StyledInputAdornment position="start">
+                        $
+                      </StyledInputAdornment>
                     }
                     fullWidth
                   />
@@ -172,17 +173,13 @@ export const PaymentPage = () => {
               </SubInputsWrapper>
               <SubInputsWrapper>
                 <InputSelectTitle>Who paid?</InputSelectTitle>
-                <Select
+                <StyledSelect
                   value={payer}
                   onChange={handleChangePayer}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                   fullWidth
-                  sx={{
-                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                      padding: "14px", // Adjust the padding value according to your needs
-                    },
-                  }}
+                  variant="outlined"
                 >
                   {splitters.map((member, index) => {
                     return (
@@ -193,23 +190,18 @@ export const PaymentPage = () => {
                       </MenuItem>
                     );
                   })}
-                </Select>
+                </StyledSelect>
               </SubInputsWrapper>
             </InputsWrapper>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputSelectTitle>Categories</InputSelectTitle>
-                <Select
+                <StyledSelect
                   value={category}
                   onChange={handleChangeCategory}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                   fullWidth
-                  sx={{
-                    "& .MuiInputBase-input.MuiOutlinedInput-input": {
-                      padding: "14px", // Adjust the padding value according to your needs
-                    },
-                  }}
                 >
                   {categories.map((category, index) => (
                     <MenuItem value={category.name} key={index}>
@@ -219,7 +211,7 @@ export const PaymentPage = () => {
                       </MenuItemContainer>
                     </MenuItem>
                   ))}
-                </Select>
+                </StyledSelect>
                 <InputTitle>Description</InputTitle>
                 <StyledBox>
                   <StyledOutlinedInput
@@ -232,7 +224,9 @@ export const PaymentPage = () => {
                 <InputTitle>Date</InputTitle>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
-                    <DatePicker value={date} onChange={handleChangeDate} />
+                    <DatePickerWrapper>
+                      <DatePicker value={date} onChange={handleChangeDate} />
+                    </DatePickerWrapper>
                   </DemoContainer>
                 </LocalizationProvider>
               </SubInputsWrapper>
@@ -251,9 +245,9 @@ export const PaymentPage = () => {
                               placeholder="0.0"
                               type="number"
                               startAdornment={
-                                <InputAdornment position="start">
+                                <StyledInputAdornment position="start">
                                   $
-                                </InputAdornment>
+                                </StyledInputAdornment>
                               }
                               fullWidth
                               disabled={true}
@@ -277,9 +271,8 @@ export const PaymentPage = () => {
                 </SplitterContainer>
               </SubInputsWrapper>
             </InputsWrapper>
-
             <ButtonContainer>
-              <StyledButton variant="contained" disableRipple type="submit">
+              <StyledButton variant="contained" disableRipple>
                 create
               </StyledButton>
             </ButtonContainer>
@@ -295,10 +288,8 @@ const MainContainer = styled.div`
   width: 100%;
   overflow: auto;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 20px;
   background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
@@ -309,6 +300,11 @@ const SubContainer = styled.div`
   height: 95%;
   width: 45%;
   background-color: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+    padding: 0 20px;
+  }
 `;
 
 const Title = styled.h2`
@@ -332,10 +328,17 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  @media (max-width: 600px) {
+    gap: 0x;
+    flex-direction: column;
+  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const InputTitle = styled.div`
@@ -378,6 +381,7 @@ const SplitterName = styled.div`
   width: 30%;
   display: flex;
   padding-left: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SplitterBox = styled(Box)`
@@ -385,8 +389,26 @@ const SplitterBox = styled(Box)`
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
-  && .MuiInputBase-input.MuiOutlinedInput-input {
-    padding: 14px;
+  &.MuiOutlinedInput-root {
+    /* Change the background color */
+    background-color: ${({ theme }) => theme.palette.primary.light};
+    color: ${({ theme }) => theme.palette.info.light};
+
+    .MuiInputBase-input.MuiOutlinedInput-input {
+      padding: 14px;
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+
+    &:not(:hover) .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+  }
+
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
@@ -413,4 +435,64 @@ const MenuItemContainer = styled.div`
 
 const StyledButton = styled(Button)`
   background: ${({ theme }) => theme.palette.secondary.main} !important;
+`;
+
+const StyledSelect = styled(Select)`
+  &.MuiOutlinedInput-root {
+    /* Change the background color */
+    background-color: ${({ theme }) => theme.palette.primary.light};
+    color: ${({ theme }) => theme.palette.info.light};
+
+    .MuiInputBase-input.MuiOutlinedInput-input {
+      padding: 14px;
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+
+    &:not(:hover) .MuiOutlinedInput-notchedOutline {
+      border-color: ${({ theme }) => theme.palette.info.light};
+    }
+  }
+
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.info.light};
+  }
+`;
+
+const StyledInputAdornment = styled(InputAdornment)`
+  .MuiTypography-root.MuiTypography-body1.css-1pnmrwp-MuiTypography-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+`;
+
+const DatePickerWrapper = styled.div`
+  .MuiOutlinedInput-root {
+    background-color: ${({ theme }) => theme.palette.primary.light};
+    color: ${({ theme }) => theme.palette.info.light};
+
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: ${(props) => props.theme.palette.info.light};
+    }
+
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: ${(props) => props.theme.palette.info.light};
+    }
+
+    & .MuiOutlinedInput-notchedOutline {
+      border-color: ${(props) => props.theme.palette.info.light};
+    }
+    .MuiButtonBase-root.MuiIconButton-root.MuiIconButton-edgeEnd.MuiIconButton-sizeMedium.css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root {
+      color: ${(props) => props.theme.palette.info.light};
+
+      &:hover {
+        color: ${(props) => props.theme.palette.info.dark};
+      }
+
+      &:active {
+        color: ${(props) => props.theme.palette.info.dark};
+      }
+    }
+  }
 `;

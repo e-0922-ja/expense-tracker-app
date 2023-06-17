@@ -287,11 +287,13 @@ const MainContainer = styled.div`
   width: 100%;
   overflow: auto;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const SubContainer = styled(Box)`
@@ -302,6 +304,10 @@ const SubContainer = styled(Box)`
   width: 35%;
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const Title = styled.h1`

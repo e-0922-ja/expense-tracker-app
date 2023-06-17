@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store/store';
-import { UUID } from 'crypto';
+import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
+import { UUID } from "crypto";
 
 interface UserInfo {
   id: UUID;
@@ -20,7 +20,7 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     login: (state, action) => {
@@ -36,11 +36,15 @@ export const userSlice = createSlice({
       state.user = null;
       state.isLogin = false;
     },
+    update: (state, action) => {
+      state.user = action.payload;
+      state.isLogin = true;
+    },
   },
 });
 
 export const selectUser = (state: RootState) => state.user;
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, update } = userSlice.actions;
 
 export default userSlice.reducer;

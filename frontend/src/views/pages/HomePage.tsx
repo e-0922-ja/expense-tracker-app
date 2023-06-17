@@ -1,13 +1,14 @@
-import styled from 'styled-components';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import TopImage from "../../images/topimage.png";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
-
   const handleNavigateLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -33,7 +34,9 @@ export const HomePage = () => {
             </StyledButton>
           </ButtonWrapper>
         </HeroContainer>
-        <HeroContainer></HeroContainer>
+        <ImageContainer>
+          <ImageTag src={TopImage} alt="topimage" />
+        </ImageContainer>
       </HeroSection>
       <SubSection>
         <FeatContainer>
@@ -73,6 +76,9 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   font-size: 4rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+  @media (max-width: 600px) {
+    font-size: 2rem;
+  }
 `;
 
 const Text = styled.p`
@@ -85,6 +91,16 @@ const HeroSection = styled.div`
   align-items: center;
   height: 60%;
   padding: 0 70px;
+  gap: 30px;
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+    padding: 0 20px;
+    gap: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 `;
 
 const HeroContainer = styled.div`
@@ -93,17 +109,45 @@ const HeroContainer = styled.div`
   justify-content: center;
   align-item: center;
   width: 50%;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-item: center;
+  width: 50%;
   height: 100%;
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
+  }
+`;
+
+const ImageTag = styled.img`
+  @media (max-width: 600px) {
+    height: 30%;
+  }
 `;
 
 const SubSection = styled.div`
-  gap: 30px;
+  gap: 50px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 40%;
   padding: 0 70px;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    gap: 0;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 20px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -117,6 +161,7 @@ const FeatContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const StyledButton = styled(Button)`

@@ -11,10 +11,11 @@ import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
 import { PaymentPage } from "./views/pages/PaymentPage";
-// import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
 import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
+import { PassWordResetPage } from "./views/pages/PassWordResetPage";
+import ProtectedRoute from "./constants/ProtectedRoute";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -28,16 +29,31 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/expenses/friendslist" element={<FriendsListPage />} />
-          <Route path="/expenses/payment" element={<PaymentPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/history/:id" element={<HistoryDetailPage />} />
-          {/* <Route path="/history/group/:id" element={<FriendsHistoryPage />} /> */}
+          <Route
+            path="/expenses/friendslist"
+            element={<ProtectedRoute element={<FriendsListPage />} />}
+          />
+          <Route
+            path="/expenses/payment"
+            element={<ProtectedRoute element={<PaymentPage />} />}
+          />
+          <Route
+            path="/history"
+            element={<ProtectedRoute element={<HistoryPage />} />}
+          />
+          <Route
+            path="/history/:id"
+            element={<ProtectedRoute element={<HistoryDetailPage />} />}
+          />
           <Route
             path="/history/group/:id"
-            element={<FriendHistoryDetailPage />}
+            element={<ProtectedRoute element={<FriendHistoryDetailPage />} />}
           />
-          <Route path="/account" element={<AccountPage />} />
+          <Route
+            path="/account"
+            element={<ProtectedRoute element={<AccountPage />} />}
+          />
+          <Route path="/passwordReset" element={<PassWordResetPage />} />
         </Routes>
       </ThemeProvider>
     </div>

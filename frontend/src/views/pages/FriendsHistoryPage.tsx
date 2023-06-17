@@ -28,18 +28,10 @@ import { useNavigate } from "react-router-dom";
 //   date: string;
 // }
 
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -93,8 +85,6 @@ export const FriendsHistoryPage = () => {
   const handleGoBack = () => {
     navigate("/history");
   };
-
-  console.log(error);
 
   return (
     <Wrapper>
@@ -182,7 +172,6 @@ const DeskTopDrawer = styled(Drawer)`
     box-sizing: border-box;
     width: ${drawerWidth}px;
   }
-
   @media (min-width: 600px) {
     display: block;
   }
@@ -194,7 +183,6 @@ const MobileDrawer = styled(Drawer)`
     box-sizing: border-box;
     width: ${drawerWidth}px;
   }
-
   @media (min-width: 600px) {
     display: none;
   }
@@ -203,10 +191,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0px 20px;
   }
 `;
 

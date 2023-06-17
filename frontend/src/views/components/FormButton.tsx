@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
 
-interface SubButtonProps {
+interface FormButtonProps {
   title: string;
-  onClick: () => void;
 }
 
-export const SubButton = ({ title, onClick }: SubButtonProps) => {
+export const FormButton = ({ title }: FormButtonProps) => {
   return (
-    <MyButton variant="contained" disableRipple onClick={onClick} type="submit">
+    <MyButton variant="contained" disableRipple type="submit">
       {title}
     </MyButton>
   );
@@ -17,7 +16,6 @@ export const SubButton = ({ title, onClick }: SubButtonProps) => {
 const MyButton = styled(Button)`
   background: ${({ theme }) => theme.palette.secondary.main} !important;
   border: 0;
-  border-radius: 24px !important;
   color: white;
   width: 100% !important;
   height: 40px !important;

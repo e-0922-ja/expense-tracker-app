@@ -152,13 +152,13 @@ export const HistoryPage = () => {
         <SubBox>
           <TabContext value={value}>
             <StyledBox>
-              <TabList
+              <StyledTabList
                 onChange={handleChange}
                 aria-label="lab API tabs example"
               >
-                <Tab label="ALL" value="1" />
-                <Tab label="Friends" value="2" />
-              </TabList>
+                <StyledTab label="ALL" value="1" />
+                <StyledTab label="Friends" value="2" />
+              </StyledTabList>
             </StyledBox>
             <TabPanel value="1">
               <Title>Summary for you</Title>
@@ -226,10 +226,11 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
   }
 `;
 
@@ -250,5 +251,20 @@ const SubBox = styled(Box)`
 `;
 
 const StyledBox = styled.div`
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.info.light};
+`;
+
+const StyledTab = styled(Tab)`
+  &&.MuiButtonBase-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  &&.MuiTab-textColorPrimary.Mui-selected {
+    color: ${({ theme }) => theme.palette.secondary.main};
+  }
+`;
+
+const StyledTabList = styled(TabList)`
+  .MuiTabs-indicator {
+    background-color: ${({ theme }) => theme.palette.secondary.main} !important;
+  }
 `;
