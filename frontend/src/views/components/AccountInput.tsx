@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Box, Button, OutlinedInput } from "@mui/material";
+import { Alert, Box, Button, OutlinedInput, Snackbar } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
@@ -36,7 +36,13 @@ export const AccountInput = ({
   email,
 }: AccountInputProps) => {
   const dispatch = useDispatch();
+  const account = useSelector(selectUser);
   const [editStatus, setEditStatus] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState<
+    "error" | "info" | "success" | "warning"
+  >("info");
 
   const {
     register: registerUpdatedUser,
@@ -44,10 +50,18 @@ export const AccountInput = ({
     formState: { errors: errorsUpdatedUser },
   } = useForm<FormData>();
 
-  const account = useSelector(selectUser);
-
   const handleEdit = () => {
     setEditStatus(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   const handleSave = async (formData: FormData) => {
@@ -64,8 +78,17 @@ export const AccountInput = ({
     });
     if (error) {
       console.error("Error updating user email and metadata:", error);
+      setAlertMessage(
+        "Error has occured during updating user email and metadata"
+      );
+      setAlertSeverity("error");
+      setSnackbarOpen(true);
     }
-
+    setAlertMessage(
+      "Save succes! If you change the email address, we sent a message to you. Please check your email box!"
+    );
+    setAlertSeverity("success");
+    setSnackbarOpen(true);
     if (data.user) {
       const fetchedUserInfoBySupabase = {
         id: data.user.id,
@@ -75,14 +98,15 @@ export const AccountInput = ({
       };
       dispatch(update(fetchedUserInfoBySupabase));
     }
-
     setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
     const currentEmail = account.user?.email;
     if (!currentEmail) {
-      alert("Email not defined");
+      setAlertMessage("Email not defined");
+      setAlertSeverity("error");
+      setSnackbarOpen(true);
       return;
     }
     try {
@@ -93,9 +117,14 @@ export const AccountInput = ({
       if (sendEmailError) {
         throw sendEmailError;
       }
-      alert("Please check your email");
+
+      setAlertMessage("We sent a message to you. Please check your email box!");
+      setAlertSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
-      alert("Something went wrong");
+      setAlertMessage("Something went wrong");
+      setAlertSeverity("error");
+      setSnackbarOpen(true);
     }
   };
 
@@ -164,16 +193,29 @@ export const AccountInput = ({
         </StyledFormBox>
       </InfoContainer>
       <SubTitle>Reset Password</SubTitle>
-
       <SubButtonWrapper>
         <StyledButton
           variant="contained"
           disableRipple
           onClick={handleSendEmail}
         >
-          send
+          send Email
         </StyledButton>
       </SubButtonWrapper>
+      <StyledSnackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </StyledSnackbar>
     </div>
   );
 };
@@ -245,7 +287,7 @@ const SubTitle = styled.h3`
 `;
 
 const SubButtonWrapper = styled.div`
-  width: 100%;
+  width: 70%;
   display: flex;
   flex-direction: column;
   margin-top: 30px;
@@ -275,3 +317,6 @@ const StyledButton = styled(Button)`
   border-radius: 24px !important;
 `;
 
+const StyledSnackbar = styled(Snackbar)`
+  z-index: 9999 !important; // Adjust this value as needed
+`;
