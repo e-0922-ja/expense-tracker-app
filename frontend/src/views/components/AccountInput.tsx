@@ -78,14 +78,12 @@ export const AccountInput = ({
     });
     if (error) {
       console.error("Error updating user email and metadata:", error);
-      setAlertMessage(
-        "Error has occured during updating user email and metadata"
-      );
+      setAlertMessage("Error has occured during updating user email and name");
       setAlertSeverity("error");
       setSnackbarOpen(true);
     }
     setAlertMessage(
-      "Save succes! If you change the email address, we sent a message to you. Please check your email box!"
+      "Changes saved! Check your inbox if you updated your email."
     );
     setAlertSeverity("success");
     setSnackbarOpen(true);
@@ -118,7 +116,9 @@ export const AccountInput = ({
         throw sendEmailError;
       }
 
-      setAlertMessage("We sent a message to you. Please check your email box!");
+      setAlertMessage(
+        "We have sent you a message. Please check your email inbox!"
+      );
       setAlertSeverity("success");
       setSnackbarOpen(true);
     } catch (error) {
