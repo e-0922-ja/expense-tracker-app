@@ -12,6 +12,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Friend } from "../../types";
 import { UUID } from "crypto";
 import { SubButton } from "../components/SubButton";
+import { GobackButton } from "../components/GobackButton";
 
 interface FriendEmail {
   email: string;
@@ -207,93 +208,116 @@ export const FriendsListPage = () => {
     }
   };
 
-  return (
-    <MainContainer>
-      <SubContainer>
-        <Title>Add new friends</Title>
-        <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
-          <InputWrapper>
-            <InputPaper elevation={0}>
-              <InputAdornment position="start">
-                <MailOutlineIcon />
-              </InputAdornment>
-              <InputBase
-                placeholder="Email"
-                type="email"
-                {...register("email", {
-                  required: true,
-                  pattern: emailRegex,
-                })}
-              />
-            </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
-          </InputWrapper>
-          <SubButtonWrapper>
-            <SubButton title={"send"} onClick={handleSendEmail} />
-            {error ? (
-              <ErrorText>{error}</ErrorText>
-            ) : success ? (
-              <SuccessText>{success}</SuccessText>
-            ) : null}
-          </SubButtonWrapper>
-        </StyledBox>
-      </SubContainer>
-      <SubContainer>
-        <Title>Friendslist</Title>
-        <UnorderedList>
-          {friends!.map((friend: Friend, index) => {
-            return (
-              <List key={index}>
-                <CheckBox
-                  type="checkbox"
-                  id={index.toString()}
-                  checked={
-                    !!selectedFriends.find(
-                      (selectedFriend) => selectedFriend.email === friend.email
-                    )
-                  }
-                  onChange={(event) =>
-                    handleCheckedChange(
-                      friend.id,
-                      friend.email,
-                      friend.firstName,
-                      friend.lastName,
-                      event.target.checked
-                    )
-                  }
-                  disabled={!friend.id}
-                />
-                <Label htmlFor={index.toString()}>
-                  <ListItem>
-                    {friend.firstName
-                      ? `${friend.firstName}  ${friend.lastName}`
-                      : "-"}
-                  </ListItem>
-                  <ListItem>{friend.email}</ListItem>
-                </Label>
-              </List>
-            );
-          })}
-        </UnorderedList>
+  const handleGoBack = () => {
+    navigate("/history");
+  };
 
-        <ButtonContainer>
-          <SubButton title={"create"} onClick={handleClick} />
-        </ButtonContainer>
-        {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
-      </SubContainer>
-    </MainContainer>
+  return (
+    <Wrapper>
+      <TopContainer>
+        <GobackButton onClick={handleGoBack} />
+      </TopContainer>
+      <MainContainer>
+        <SubContainer>
+          <Title>Add new friends</Title>
+          <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
+            <InputWrapper>
+              <InputPaper elevation={0}>
+                <InputAdornment position="start">
+                  <MailOutlineIcon />
+                </InputAdornment>
+                <InputBase
+                  placeholder="Email"
+                  type="email"
+                  fullWidth
+                  {...register("email", {
+                    required: true,
+                    pattern: emailRegex,
+                  })}
+                />
+              </InputPaper>
+              {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            </InputWrapper>
+            <SubButtonWrapper>
+              <SubButton title={"send"} onClick={handleSendEmail} />
+              {error ? (
+                <ErrorText>{error}</ErrorText>
+              ) : success ? (
+                <SuccessText>{success}</SuccessText>
+              ) : null}
+            </SubButtonWrapper>
+          </StyledBox>
+        </SubContainer>
+        <SubContainer>
+          <Title>Friendslist</Title>
+          <UnorderedList>
+            {friends!.map((friend: Friend, index) => {
+              return (
+                <List key={index}>
+                  <CheckBox
+                    type="checkbox"
+                    id={index.toString()}
+                    checked={
+                      !!selectedFriends.find(
+                        (selectedFriend) =>
+                          selectedFriend.email === friend.email
+                      )
+                    }
+                    onChange={(event) =>
+                      handleCheckedChange(
+                        friend.id,
+                        friend.email,
+                        friend.firstName,
+                        friend.lastName,
+                        event.target.checked
+                      )
+                    }
+                    disabled={!friend.id}
+                  />
+                  <Label htmlFor={index.toString()}>
+                    <ListItem>
+                      {friend.firstName
+                        ? `${friend.firstName}  ${friend.lastName}`
+                        : "-"}
+                    </ListItem>
+                    <ListItem>{friend.email}</ListItem>
+                  </Label>
+                </List>
+              );
+            })}
+          </UnorderedList>
+
+          <ButtonContainer>
+            <SubButton title={"create"} onClick={handleClick} />
+          </ButtonContainer>
+          {selectedFriends.length === 0 && (
+            <ErrorText>{selectedError}</ErrorText>
+          )}
+        </SubContainer>
+      </MainContainer>
+    </Wrapper>
   );
 };
 
-const MainContainer = styled.div`
+const Wrapper = styled.div`
   height: calc(100% - 64px);
-  width: 100%;
   overflow: auto;
+  background-color: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const TopContainer = styled.div`
+  height: 7%;
+  padding-left: 70px;
+  display: flex;
+  align-items: center;
+`;
+
+const MainContainer = styled.div`
+  height: 93%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  background: ${({ theme }) => theme.palette.primary.main};
   @media (max-width: 600px) {
     flex-direction: column;
   }
@@ -392,6 +416,10 @@ const SubButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 30px;
+`;
+
+const GoBackButtonWrapper = styled.div`
+  width: 70%;
 `;
 
 const StyledBox = styled(Box)`

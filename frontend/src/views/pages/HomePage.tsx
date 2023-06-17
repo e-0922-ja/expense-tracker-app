@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import TopImage from "../../images/topimage.png";
+import TopImage from "../../images/diagram.png";
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -109,7 +109,6 @@ const HeroContainer = styled.div`
   justify-content: center;
   align-item: center;
   width: 50%;
-
   @media (max-width: 600px) {
     width: 100%;
   }
@@ -122,7 +121,6 @@ const ImageContainer = styled.div`
   width: 50%;
   height: 100%;
   @media (max-width: 600px) {
-    width: 100%;
     padding: 0 20px;
   }
 `;

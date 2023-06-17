@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { AccountInput } from "../components/AccountInput";
 
+
 export const AccountPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
@@ -134,4 +135,3 @@ const DetailBox = styled.div`
 const SubBox = styled(Box)`
   width: 100%;
 `;
-

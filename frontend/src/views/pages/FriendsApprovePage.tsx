@@ -179,7 +179,7 @@ export const FriendsApprovePage = () => {
                   />
                 ))}
               </UnorderedList>
-              <SubTitle>All friends</SubTitle>
+              <ThirdTitle>All friends</ThirdTitle>
               <hr />
               <UnorderedList>
                 {friends!.map((friend, index) => {
@@ -279,6 +279,12 @@ const Title = styled.h2`
 
 const SubTitle = styled.h3`
   margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
+`;
+
+const ThirdTitle = styled.h3`
+  margin-top: 2rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.info.light};
 `;

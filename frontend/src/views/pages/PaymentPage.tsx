@@ -30,6 +30,7 @@ import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
+import { GobackButton } from "../components/GobackButton";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -120,147 +121,166 @@ export const PaymentPage = () => {
     setDate(newValue);
   };
 
+  const handleGoBack = () => {
+    navigate("/expenses/friendslist");
+  };
+
   return (
-    <MainContainer>
-      <SubContainer>
-        <Section>
-          <Title>Create Expense</Title>
-          <PeopleSectionContainer>
-            <FriendIcon friends={splitters} />
-          </PeopleSectionContainer>
-        </Section>
-        <Section>
-          <FormContainer onSubmit={handlesubmit}>
-            <InputsWrapper>
-              <SubInputsWrapper>
-                <InputTitle>Amount</InputTitle>
-                <StyledBox>
-                  <StyledOutlinedInput
-                    placeholder="0.0"
-                    startAdornment={
-                      <StyledInputAdornment position="start">
-                        $
-                      </StyledInputAdornment>
+    <Wrapper>
+      <TopContainer>
+        <GobackButton onClick={handleGoBack} />
+      </TopContainer>
+      <MainContainer>
+        <SubContainer>
+          <Section>
+            <Title>Create Expense</Title>
+            <PeopleSectionContainer>
+              <FriendIcon friends={splitters} />
+            </PeopleSectionContainer>
+          </Section>
+          <Section>
+            <FormContainer onSubmit={handlesubmit}>
+              <InputsWrapper>
+                <SubInputsWrapper>
+                  <InputTitle>Amount</InputTitle>
+                  <StyledBox>
+                    <StyledOutlinedInput
+                      placeholder="0.0"
+                      startAdornment={
+                        <StyledInputAdornment position="start">
+                          $
+                        </StyledInputAdornment>
+                      }
+                      fullWidth
+                    />
+                  </StyledBox>
+                </SubInputsWrapper>
+                <SubInputsWrapper>
+                  <InputSelectTitle>Who paid?</InputSelectTitle>
+                  <StyledSelect
+                    value={
+                      payer || (splitters.length > 0 ? splitters[0].email : "")
                     }
+                    onChange={handleChangePayer}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
                     fullWidth
-                  />
-                </StyledBox>
-              </SubInputsWrapper>
-              <SubInputsWrapper>
-                <InputSelectTitle>Who paid?</InputSelectTitle>
-                <StyledSelect
-                  value={
-                    payer || (splitters.length > 0 ? splitters[0].email : "")
-                  }
-                  onChange={handleChangePayer}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  fullWidth
-                  variant="outlined"
-                >
-                  {splitters.map((item, index) => {
-                    return (
-                      <MenuItem value={item.email} key={index}>
-                        {item.id
-                          ? `${item.firstName} ${item.lastName}`
-                          : item.email}
+                    variant="outlined"
+                  >
+                    {splitters.map((item, index) => {
+                      return (
+                        <MenuItem value={item.email} key={index}>
+                          {item.id
+                            ? `${item.firstName} ${item.lastName}`
+                            : item.email}
+                        </MenuItem>
+                      );
+                    })}
+                  </StyledSelect>
+                </SubInputsWrapper>
+              </InputsWrapper>
+              <InputsWrapper>
+                <SubInputsWrapper>
+                  <InputSelectTitle>Categories</InputSelectTitle>
+                  <StyledSelect
+                    value={
+                      category
+                        ? category
+                        : categories.length > 0
+                        ? categories[0].id.toString()
+                        : ""
+                    }
+                    onChange={handleChangeCategory}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    fullWidth
+                  >
+                    {categories.map((item, index) => (
+                      <MenuItem value={item.id} key={index}>
+                        <MenuItemContainer>
+                          {
+                            categoryIcons.find(
+                              (icon) => icon.category === item.name
+                            )?.icon
+                          }
+                          {item.name}
+                        </MenuItemContainer>
                       </MenuItem>
-                    );
-                  })}
-                </StyledSelect>
-              </SubInputsWrapper>
-            </InputsWrapper>
-            <InputsWrapper>
-              <SubInputsWrapper>
-                <InputSelectTitle>Categories</InputSelectTitle>
-                <StyledSelect
-                  value={
-                    category
-                      ? category
-                      : categories.length > 0
-                      ? categories[0].id.toString()
-                      : ""
-                  }
-                  onChange={handleChangeCategory}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  fullWidth
-                >
-                  {categories.map((item, index) => (
-                    <MenuItem value={item.id} key={index}>
-                      <MenuItemContainer>
-                        {
-                          categoryIcons.find(
-                            (icon) => icon.category === item.name
-                          )?.icon
-                        }
-                        {item.name}
-                      </MenuItemContainer>
-                    </MenuItem>
-                  ))}
-                </StyledSelect>
-                <InputTitle>Description</InputTitle>
-                <StyledBox>
-                  <StyledOutlinedInput
-                    placeholder="Please enter text"
-                    fullWidth
-                  />
-                </StyledBox>
-                <InputTitle>Date</InputTitle>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePickerWrapper>
-                      <DatePicker value={date} onChange={handleChangeDate} />
-                    </DatePickerWrapper>
-                  </DemoContainer>
-                </LocalizationProvider>
-              </SubInputsWrapper>
-              <SubInputsWrapper>
-                <InputSelectTitle>How will you guys split?</InputSelectTitle>
-                <SplitterContainer>
-                  {splitters.map((friend, index) => {
-                    return (
-                      <div key={index}>
-                        <SplitWrapper>
-                          <SplitterName>{friend.firstName}</SplitterName>
-                          <SplitterBox>
-                            <StyledOutlinedInput
-                              placeholder="0.0"
-                              startAdornment={
-                                <StyledInputAdornment position="start">
-                                  $
-                                </StyledInputAdornment>
-                              }
-                              fullWidth
-                            />
-                          </SplitterBox>
-                        </SplitWrapper>
-                      </div>
-                    );
-                  })}
-                </SplitterContainer>
-              </SubInputsWrapper>
-            </InputsWrapper>
-            <ButtonContainer>
-              <StyledButton variant="contained" disableRipple>
-                create
-              </StyledButton>
-            </ButtonContainer>
-          </FormContainer>
-        </Section>
-      </SubContainer>
-    </MainContainer>
+                    ))}
+                  </StyledSelect>
+                  <InputTitle>Description</InputTitle>
+                  <StyledBox>
+                    <StyledOutlinedInput
+                      placeholder="Please enter text"
+                      fullWidth
+                    />
+                  </StyledBox>
+                  <InputTitle>Date</InputTitle>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DatePicker"]}>
+                      <DatePickerWrapper>
+                        <DatePicker value={date} onChange={handleChangeDate} />
+                      </DatePickerWrapper>
+                    </DemoContainer>
+                  </LocalizationProvider>
+                </SubInputsWrapper>
+                <SubInputsWrapper>
+                  <InputSelectTitle>How will you guys split?</InputSelectTitle>
+                  <SplitterContainer>
+                    {splitters.map((friend, index) => {
+                      return (
+                        <div key={index}>
+                          <SplitWrapper>
+                            <SplitterName>{friend.firstName}</SplitterName>
+                            <SplitterBox>
+                              <StyledOutlinedInput
+                                placeholder="0.0"
+                                startAdornment={
+                                  <StyledInputAdornment position="start">
+                                    $
+                                  </StyledInputAdornment>
+                                }
+                                fullWidth
+                              />
+                            </SplitterBox>
+                          </SplitWrapper>
+                        </div>
+                      );
+                    })}
+                  </SplitterContainer>
+                </SubInputsWrapper>
+              </InputsWrapper>
+              <ButtonContainer>
+                <StyledButton variant="contained" disableRipple>
+                  create
+                </StyledButton>
+              </ButtonContainer>
+            </FormContainer>
+          </Section>
+        </SubContainer>
+      </MainContainer>
+    </Wrapper>
   );
 };
 
-const MainContainer = styled.div`
+const Wrapper = styled.div`
   height: calc(100% - 64px);
-  width: 100%;
   overflow: auto;
+  background-color: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const TopContainer = styled.div`
+  height: 7%;
+  padding-left: 70px;
+  display: flex;
+  align-items: center;
+`;
+
+const MainContainer = styled.div`
+  height: 93%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.palette.primary.main};
 `;
 
 const SubContainer = styled.div`
@@ -390,6 +410,13 @@ const MenuItemContainer = styled.div`
 
 const StyledButton = styled(Button)`
   background: ${({ theme }) => theme.palette.secondary.main} !important;
+  border: 0;
+  border-radius: 24px !important;
+  color: white;
+  width: 100% !important;
+  height: 40px !important;
+  fontsize: 1rem !important;
+  padding: 0 30px !important;
 `;
 
 const StyledSelect = styled(Select)`

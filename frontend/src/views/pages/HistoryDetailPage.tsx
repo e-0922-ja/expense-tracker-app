@@ -27,7 +27,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
-import { CheckBox } from "@mui/icons-material";
 
 interface TransactionHistory {
   id: number;
