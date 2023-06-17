@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -11,9 +11,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -27,7 +24,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
-import { CheckBox } from "@mui/icons-material";
 
 interface TransactionHistory {
   id: number;
@@ -53,8 +49,6 @@ export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const [checked, setChecked] = useState(false);
 
@@ -65,11 +59,6 @@ export const HistoryDetailPage = () => {
   const handlegoback = () => {
     navigate("/history");
   };
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -104,32 +93,6 @@ export const HistoryDetailPage = () => {
     { category: "Others", icon: <HelpOutlineIcon /> },
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-    console.error(error);
-  };
 
   const handleGoBack = () => {
     navigate("/history");
