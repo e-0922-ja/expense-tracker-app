@@ -38,7 +38,6 @@ export const HistoryPage = () => {
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
 
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };

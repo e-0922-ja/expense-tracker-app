@@ -1,12 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
-
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { SupabaseService } from "../../services/supabase";
 import {
   emailRegex,
   errEmail,
@@ -18,11 +17,6 @@ import {
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
 
 interface NewUser {
   firstName: string;
@@ -65,20 +59,27 @@ export const SignUpPage = () => {
 
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
-    const { error } = await supabase.auth.signUp({
+
+    const { isError, message, user } = await SupabaseService.createAuthUser({
       email,
       password,
-      options: {
-        data: {
-          firstName,
-          lastName,
-        },
-      },
+      firstName,
+      lastName,
     });
-    if (error) {
-      setAuthError(error.message);
+    if (isError) {
+      setAuthError(message);
       return;
     }
+    if (!user) {
+      setAuthError("Something went wrong");
+      return;
+    }
+    const searcUuser = await SupabaseService.findUserByEmail(user.email);
+    if (searcUuser) {
+      setAuthError("User already exists");
+      return;
+    }
+    await SupabaseService.createUser(user);
     navigate("/login");
   };
 
