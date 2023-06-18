@@ -46,17 +46,18 @@ export const DrawerContents = () => {
       id: 1,
     },
     {
-      onClick: () => navigatePage("/account", 2),
-      text: "My Account",
-      icon: <PortraitIcon style={{ color: theme.palette.secondary.main }} />,
+      onClick: () => navigatePage("/friends", 2),
+      text: "Friends List",
+      icon: <GroupIcon style={{ color: theme.palette.secondary.main }} />,
       id: 2,
     },
     {
-      onClick: () => navigatePage("/friends", 3),
-      text: "Friends List",
-      icon: <GroupIcon style={{ color: theme.palette.secondary.main }} />,
+      onClick: () => navigatePage("/account", 3),
+      text: "My Account",
+      icon: <PortraitIcon style={{ color: theme.palette.secondary.main }} />,
       id: 3,
     },
+
     {
       onClick: handleLogput,
       text: "Logout",

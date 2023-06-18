@@ -11,12 +11,12 @@ import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
 import { PaymentPage } from "./views/pages/PaymentPage";
-import { FriendsHistoryPage } from "./views/pages/FriendsHistoryPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
 import { PassWordResetPage } from "./views/pages/PassWordResetPage";
 import ProtectedRoute from "./constants/ProtectedRoute";
 import { FriendsApprovePage } from "./views/pages/FriendsApprovePage";
+import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -48,7 +48,7 @@ function App() {
           />
           <Route
             path="/history/group/:id"
-            element={<ProtectedRoute element={<FriendsHistoryPage />} />}
+            element={<ProtectedRoute element={<FriendHistoryDetailPage />} />}
           />
           <Route
             path="/account"

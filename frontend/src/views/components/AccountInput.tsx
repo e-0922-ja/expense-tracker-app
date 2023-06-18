@@ -274,4 +274,3 @@ const StyledButton = styled(Button)`
   padding: 0 30px !important;
   border-radius: 24px !important;
 `;
-

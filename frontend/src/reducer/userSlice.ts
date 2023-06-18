@@ -40,7 +40,6 @@ export const userSlice = createSlice({
     update: (state, action) => {
       state.user = action.payload;
       state.isLogin = true;
-      console.log(state.user, "new!");
     },
   },
 });

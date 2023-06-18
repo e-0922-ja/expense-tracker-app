@@ -11,7 +11,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const location = useLocation();
 
   // If account or account.isLogin is undefined, return null
-  if (account === undefined || account.isLogin === undefined) {
+  if (!account || account.isLogin === undefined) {
     return null;
   }
 

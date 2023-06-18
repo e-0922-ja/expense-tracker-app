@@ -10,20 +10,20 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { TransactionCard } from "../components/TransactionCard";
+// import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
-import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
-import { LendCalculateCard } from "../components/LendCalculateCard";
+// import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
+// import { LendCalculateCard } from "../components/LendCalculateCard";
 
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+// interface TransactionHistory {
+//   id: number;
+//   paidPerson: string;
+//   category: string;
+//   dispription: string;
+//   amount: number;
+//   date: string;
+// }
 
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,48 +36,48 @@ export const FriendsHistoryPage = () => {
 
   const navigate = useNavigate();
 
-  const transactionHistory: TransactionHistory[] = [
-    {
-      id: 1,
-      paidPerson: "Yuki",
-      category: "Food",
-      dispription: "starbucks",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 2,
-      paidPerson: "Hana",
-      category: "Food",
-      dispription: "Korean",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 3,
-      paidPerson: "Kota",
-      category: "Food",
-      dispription: "Chinese",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 4,
-      paidPerson: "Haruka",
-      category: "Food",
-      dispription: "Itarian",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 5,
-      paidPerson: "Akito",
-      category: "Food",
-      dispription: "French",
-      amount: 123,
-      date: "5/23",
-    },
-  ];
+  // const transactionHistory: TransactionHistory[] = [
+  //   {
+  //     id: 1,
+  //     paidPerson: "Yuki",
+  //     category: "Food",
+  //     dispription: "starbucks",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 2,
+  //     paidPerson: "Hana",
+  //     category: "Food",
+  //     dispription: "Korean",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 3,
+  //     paidPerson: "Kota",
+  //     category: "Food",
+  //     dispription: "Chinese",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 4,
+  //     paidPerson: "Haruka",
+  //     category: "Food",
+  //     dispription: "Itarian",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  //   {
+  //     id: 5,
+  //     paidPerson: "Akito",
+  //     category: "Food",
+  //     dispription: "French",
+  //     amount: 123,
+  //     date: "5/23",
+  //   },
+  // ];
 
   const handleGoBack = () => {
     navigate("/history");
@@ -125,7 +125,7 @@ export const FriendsHistoryPage = () => {
             <TransactionCardContainer>
               <Title>Summary for this group</Title>
               <CalculateCardContainer>
-                <BorrowCalculateCard
+                {/* <BorrowCalculateCard
                   name={"Megan"}
                   amount={200}
                   totalAmount={300}
@@ -134,12 +134,12 @@ export const FriendsHistoryPage = () => {
                   name={"Megan"}
                   amount={200}
                   totalAmount={300}
-                />
+                /> */}
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item) => (
+              {/* {transactionHistory.map((item) => (
                 <TransactionCard key={item.id} item={item} />
-              ))}
+              ))} */}
             </TransactionCardContainer>
           </DetailBox>
         </SubBox>

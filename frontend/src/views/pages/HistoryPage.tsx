@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -14,84 +14,104 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { createClient } from "@supabase/supabase-js";
+import { Database, Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
-import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
+import { FriendsCard } from "../components/FriendsCard";
+import { Expense } from "../../types";
 
-interface TransactionHistory {
-  id: number;
-  paidPerson: string;
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+const supabase = createClient<Database>(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
 
-interface Name {
-  id: number;
-  firstName: string;
-}
+export type BorrowedAmountReturns =
+  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
+export type LentAmountReturns =
+  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
+export type ExpensesReturns =
+  Database["public"]["Functions"]["get_expenses"]["Returns"];
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const account = useSelector(selectUser);
+  const userId = account.user?.id!;
+  const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
+  const [lent, setLent] = useState<LentAmountReturns>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const transactionHistory: TransactionHistory[] = [
-    {
-      id: 1,
-      paidPerson: "Yuki",
-      category: "Food",
-      dispription: "starbucks",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 2,
-      paidPerson: "Hana",
-      category: "Food",
-      dispription: "Korean",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 3,
-      paidPerson: "Kota",
-      category: "Food",
-      dispription: "Chinese",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 4,
-      paidPerson: "Haruka",
-      category: "Food",
-      dispription: "Itarian",
-      amount: 123,
-      date: "5/23",
-    },
-    {
-      id: 5,
-      paidPerson: "Akito",
-      category: "Food",
-      dispription: "French",
-      amount: 123,
-      date: "5/23",
-    },
-  ];
+  const getTotalLentAmount = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_lent_amount", {
+        user_id: userId,
+      });
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("lent", data);
+        setLent(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userId]);
 
-  const friendList: Name[] = [
-    { id: 1, firstName: "yuki" },
-    { id: 2, firstName: "anna" },
-    { id: 3, firstName: "max" },
-    { id: 4, firstName: "tom" },
-    { id: 5, firstName: "Bob" },
-  ];
+  const getTotalBorrowedAmount = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
+        user_id: userId,
+      });
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("borrowed", data);
+        setBorrowed(data);
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  }, [userId]);
+
+  const getExpenses = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_expenses", {
+        user_id: userId,
+      });
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("histories", data);
+        const parsedExpenses: Expense[] = data.map((expense: Json) =>
+          JSON.parse(JSON.stringify(expense))
+        );
+        setExpenses(parsedExpenses);
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    getTotalLentAmount();
+  }, [getTotalLentAmount]);
+
+  useEffect(() => {
+    getTotalBorrowedAmount();
+  }, [getTotalBorrowedAmount]);
+
+  useEffect(() => {
+    getExpenses();
+  }, [getExpenses]);
 
   const [value, setValue] = useState("1");
 
@@ -143,26 +163,18 @@ export const HistoryPage = () => {
             <TabPanel value="1">
               <Title>Summary for you</Title>
               <CalculateCardContainer>
-                <BorrowCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
-                <LendCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
+                <BorrowCalculateCard borrowed={borrowed} />
+                <LendCalculateCard lent={lent} />
               </CalculateCardContainer>
               <Title>All Expenses</Title>
-              {transactionHistory.map((item) => (
-                <TransactionCard key={item.id} item={item} />
+              {expenses.map((expense) => (
+                <TransactionCard key={expense?.id} expense={expense} />
               ))}
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
-              {friendList.map((item) => (
-                <FriendsCard key={item.id} friendName={item.firstName} />
+              {expenses.map((expense) => (
+                <FriendsCard key={expense.id} expense={expense} />
               ))}
             </TabPanel>
           </TabContext>
