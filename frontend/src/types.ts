@@ -1,11 +1,14 @@
 import { SvgIconProps } from "@mui/material/SvgIcon";
-import { UUID } from "crypto";
 
 export interface Friend {
-  id: UUID;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
+}
+
+export interface FriendWithStatus extends Friend {
+  statusId: number;
 }
 
 export interface Category {
