@@ -1,27 +1,17 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { ReactNode, useEffect, useState } from "react";
-import { Category } from "../../types";
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   InputAdornment,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import DirectionsTransitIcon from "@mui/icons-material/DirectionsTransit";
-import HouseIcon from "@mui/icons-material/House";
-import LightIcon from "@mui/icons-material/Light";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
-import Face3Icon from "@mui/icons-material/Face3";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useSelector } from "react-redux";
@@ -30,94 +20,127 @@ import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
+import { Database } from "../../../../supabase/schema";
+import { categories } from "../../constants/categoryIcons";
 
-const supabase = createClient(
+interface EachAmount extends Friend {
+  amount: string;
+  paid: boolean;
+}
+
+const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
-interface CategoryIcon {
-  category: string;
-  icon: React.ReactElement;
-}
 export const PaymentPage = () => {
   const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState(categories[0].name);
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState<Dayjs | null>(null);
-  const [category, setCategory] = useState("");
-  const [payer, setPayer] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
   const account = useSelector(selectUser);
   const splitters =
-    account.isLogin && account.user
-      ? [account.user, ...selectedFriends]
-      : selectedFriends;
+    account.isLogin && account.user ? [account.user, ...selectedFriends] : [];
 
-  const handleChangeCategory = (
-    event: SelectChangeEvent<unknown>,
-    child: ReactNode
-  ) => {
+  const memberWithAmount = splitters.map((member) => ({
+    ...member,
+    amount: "",
+    paid: member.id === account.user?.id,
+  }));
+  const [memberExpense, setMemberExpense] =
+    useState<EachAmount[]>(memberWithAmount);
+  const [payer, setPayer] = useState(splitters[0].id.toString());
+
+  const handleChangeCategory = (event: SelectChangeEvent<unknown>) => {
     setCategory(event.target.value as string);
   };
 
-  const handleChangePayer = (
-    event: SelectChangeEvent<unknown>,
-    child: ReactNode
-  ) => {
+  const handleChangePayer = (event: SelectChangeEvent<unknown>) => {
     setPayer(event.target.value as string);
+    const updatedPaid = memberExpense.map((member) => ({
+      ...member,
+      paid: member.id.toString() === event.target.value,
+    }));
+
+    setMemberExpense(updatedPaid);
   };
 
-  const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("hello");
+    insertExpense();
     navigate("/history");
   };
 
   console.log(error);
 
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const insertExpense = async () => {
+    const memberIds = memberExpense.map((member) => member.id.toString());
+    const memberPaids = memberExpense.map((member) => member.paid);
+    const memberAmounts = memberExpense.map((member) =>
+      parseFloat(member.amount)
+    );
 
-  // get categories from a table
-  const getCategories = async () => {
     try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
+      console.log(category);
+      const { data, error } = await supabase.rpc("insert_expense", {
+        group_name: "",
+        date: date?.toISOString()!,
+        registered_by: account.user!.id, // think about the user data handling later
+        member_ids: memberIds,
+        member_paids: memberPaids,
+        member_amounts: memberAmounts,
+        payer_id: payer,
+        category: category,
+        description: description,
+        payment: parseFloat(amount),
+      });
       if (error) {
         setError(error.message);
-        return false;
       } else {
-        console.log(data, "data");
-        if (data) {
-          console.log(data);
-          setCategories(data as Category[]);
-        }
+        console.log(data);
       }
     } catch (error: any) {
       setError(error.message);
-      return false;
     }
   };
+  const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
+    setAmount(event.target.value);
+    const eachAmount =
+      Math.floor((parseFloat(event.target.value) / splitters.length) * 100) /
+      100;
+    const updatedEachAmount = memberExpense.map((member) => {
+      return { ...member, amount: eachAmount.toFixed(2) };
+    });
+    setMemberExpense(updatedEachAmount);
+  };
 
-  const categoryIcons: CategoryIcon[] = [
-    { category: "Food", icon: <RestaurantIcon /> },
-    { category: "Entertainment", icon: <MusicNoteIcon /> },
-    { category: "Transportation", icon: <DirectionsTransitIcon /> },
-    { category: "Cost of Living", icon: <HouseIcon /> },
-    { category: "Utility", icon: <LightIcon /> },
-    { category: "Health", icon: <MonitorHeartIcon /> },
-    { category: "Beauty", icon: <Face3Icon /> },
-    { category: "Cloth", icon: <ShoppingCartIcon /> },
-    { category: "Others", icon: <HelpOutlineIcon /> },
-    { category: "None", icon: <HorizontalRuleIcon /> },
-  ];
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userId = event.target.id;
+    setMemberExpense((prevMembers) => {
+      const updatedChecked = prevMembers.map((member) => {
+        if (member.id === userId) {
+          return {
+            ...member,
+            paid: !member.paid,
+          };
+        }
+        return member;
+      });
+      return updatedChecked;
+    });
+  };
 
   const handleChangeDate = (newValue: Dayjs | null) => {
     setDate(newValue);
+  };
+
+  const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value);
   };
 
   return (
@@ -130,12 +153,15 @@ export const PaymentPage = () => {
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <FormContainer onSubmit={handlesubmit}>
+          <FormContainer onSubmit={handleSubmit}>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
                 <StyledBox>
-                  <StyledOutlinedInput
+                  <StyledOutlinedNumberInput
+                    value={amount}
+                    onChange={handleChangeAmount}
+                    type="number"
                     placeholder="0.0"
                     startAdornment={
                       <StyledInputAdornment position="start">
@@ -149,21 +175,19 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Who paid?</InputSelectTitle>
                 <StyledSelect
-                  value={
-                    payer || (splitters.length > 0 ? splitters[0].email : "")
-                  }
+                  value={payer}
                   onChange={handleChangePayer}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                   fullWidth
                   variant="outlined"
                 >
-                  {splitters.map((item, index) => {
+                  {splitters.map((member, index) => {
                     return (
-                      <MenuItem value={item.email} key={index}>
-                        {item.id
-                          ? `${item.firstName} ${item.lastName}`
-                          : item.email}
+                      <MenuItem value={member.id} key={index}>
+                        {member.id
+                          ? `${member.firstName} ${member.lastName}`
+                          : member.email}
                       </MenuItem>
                     );
                   })}
@@ -174,27 +198,17 @@ export const PaymentPage = () => {
               <SubInputsWrapper>
                 <InputSelectTitle>Categories</InputSelectTitle>
                 <StyledSelect
-                  value={
-                    category
-                      ? category
-                      : categories.length > 0
-                      ? categories[0].id.toString()
-                      : ""
-                  }
+                  value={category}
                   onChange={handleChangeCategory}
                   displayEmpty
                   inputProps={{ "aria-label": "Without label" }}
                   fullWidth
                 >
-                  {categories.map((item, index) => (
-                    <MenuItem value={item.id} key={index}>
+                  {categories.map((category, index) => (
+                    <MenuItem value={category.name} key={index}>
                       <MenuItemContainer>
-                        {
-                          categoryIcons.find(
-                            (icon) => icon.category === item.name
-                          )?.icon
-                        }
-                        {item.name}
+                        <category.icon />
+                        {category.name}
                       </MenuItemContainer>
                     </MenuItem>
                   ))}
@@ -202,6 +216,8 @@ export const PaymentPage = () => {
                 <InputTitle>Description</InputTitle>
                 <StyledBox>
                   <StyledOutlinedInput
+                    value={description}
+                    onChange={handleChangeDescription}
                     placeholder="Please enter text"
                     fullWidth
                   />
@@ -216,24 +232,41 @@ export const PaymentPage = () => {
                 </LocalizationProvider>
               </SubInputsWrapper>
               <SubInputsWrapper>
-                <InputSelectTitle>How will you guys split?</InputSelectTitle>
+                <InputSelectTitle>Amount per member</InputSelectTitle>
                 <SplitterContainer>
-                  {splitters.map((friend, index) => {
+                  {memberExpense.map((member, index) => {
                     return (
                       <div key={index}>
                         <SplitWrapper>
-                          <SplitterName>{friend.firstName}</SplitterName>
+                          <SplitterName>{member.firstName}</SplitterName>
                           <SplitterBox>
-                            <StyledOutlinedInput
+                            <StyledOutlinedNumberInput
+                              id={member.id}
+                              value={member.amount}
                               placeholder="0.0"
+                              type="number"
                               startAdornment={
                                 <StyledInputAdornment position="start">
                                   $
                                 </StyledInputAdornment>
                               }
                               fullWidth
+                              disabled={true}
                             />
                           </SplitterBox>
+                          <CheckboxWrapper>
+                            <Checkbox
+                              id={member.id}
+                              checked={
+                                memberExpense.find(
+                                  (user) => user.id === member.id
+                                )?.paid
+                              }
+                              onChange={handleToggle}
+                              inputProps={{ "aria-label": "controlled" }}
+                              disabled={payer === member.id}
+                            />
+                          </CheckboxWrapper>
                         </SplitWrapper>
                       </div>
                     );
@@ -242,7 +275,7 @@ export const PaymentPage = () => {
               </SubInputsWrapper>
             </InputsWrapper>
             <ButtonContainer>
-              <StyledButton variant="contained" disableRipple>
+              <StyledButton variant="contained" disableRipple type="submit">
                 create
               </StyledButton>
             </ButtonContainer>
@@ -382,6 +415,21 @@ const StyledOutlinedInput = styled(OutlinedInput)`
   }
 `;
 
+const StyledOutlinedNumberInput = styled(StyledOutlinedInput)`
+  && input::-webkit-outer-spin-button,
+  && input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  && input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .Mui-disabled {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+`;
+
 const MenuItemContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -449,5 +497,12 @@ const DatePickerWrapper = styled.div`
         color: ${(props) => props.theme.palette.info.dark};
       }
     }
+  }
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
   }
 `;

@@ -9,31 +9,13 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      Categories: {
-        Row: {
-          id: number
-          name: string | null
-          sequence: number | null
-        }
-        Insert: {
-          id?: number
-          name?: string | null
-          sequence?: number | null
-        }
-        Update: {
-          id?: number
-          name?: string | null
-          sequence?: number | null
-        }
-        Relationships: []
-      }
       Expenses: {
         Row: {
-          categoryId: number | null
+          category: string | null
+          date: string | null
           description: string | null
           groupId: string | null
-          id: number
-          methodId: number | null
+          id: string
           payer: string | null
           payment: number | null
           registeredAt: string | null
@@ -43,11 +25,11 @@ export interface Database {
           updatedBy: string | null
         }
         Insert: {
-          categoryId?: number | null
+          category?: string | null
+          date?: string | null
           description?: string | null
           groupId?: string | null
-          id?: number
-          methodId?: number | null
+          id?: string
           payer?: string | null
           payment?: number | null
           registeredAt?: string | null
@@ -57,11 +39,11 @@ export interface Database {
           updatedBy?: string | null
         }
         Update: {
-          categoryId?: number | null
+          category?: string | null
+          date?: string | null
           description?: string | null
           groupId?: string | null
-          id?: number
-          methodId?: number | null
+          id?: string
           payer?: string | null
           payment?: number | null
           registeredAt?: string | null
@@ -70,81 +52,32 @@ export interface Database {
           updatedAt?: string | null
           updatedBy?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "expenses_categoryid_fkey"
-            columns: ["categoryId"]
-            referencedRelation: "Categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expenses_groupid_fkey"
-            columns: ["groupId"]
-            referencedRelation: "Groups"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expenses_payer_fkey"
-            columns: ["payer"]
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expenses_registeredby_fkey"
-            columns: ["registeredBy"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expenses_updatedby_fkey"
-            columns: ["updatedBy"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       ExpenseStatus: {
         Row: {
           amount: number | null
-          id: number
+          expenseId: string
           paid: boolean | null
-          ratio: number | null
           updatedAt: string | null
           updatedBy: string | null
-          userId: string | null
+          userId: string
         }
         Insert: {
           amount?: number | null
-          id?: number
+          expenseId: string
           paid?: boolean | null
-          ratio?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
-          userId?: string | null
+          userId: string
         }
         Update: {
           amount?: number | null
-          id?: number
+          expenseId?: string
           paid?: boolean | null
-          ratio?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
-          userId?: string | null
+          userId?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "expensestatus_updatedby_fkey"
-            columns: ["updatedBy"]
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expensestatus_userid_fkey"
-            columns: ["userId"]
-            referencedRelation: "Users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       Friendships: {
         Row: {
@@ -174,54 +107,20 @@ export interface Database {
           updatedAt?: string | null
           userId?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "friendships_friendid_fkey"
-            columns: ["friendId"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "friendships_statusid_fkey"
-            columns: ["statusId"]
-            referencedRelation: "Status"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "friendships_userid_fkey"
-            columns: ["userId"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       GroupMembers: {
         Row: {
-          friendshipId: string | null
           groupId: string
+          memberId: string
         }
         Insert: {
-          friendshipId?: string | null
           groupId: string
+          memberId: string
         }
         Update: {
-          friendshipId?: string | null
           groupId?: string
+          memberId?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "groupmembers_friendshipid_fkey"
-            columns: ["friendshipId"]
-            referencedRelation: "Friendships"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "groupmembers_groupid_fkey"
-            columns: ["groupId"]
-            referencedRelation: "Groups"
-            referencedColumns: ["id"]
-          }
-        ]
       }
       Groups: {
         Row: {
@@ -233,7 +132,7 @@ export interface Database {
           updatedBy: string | null
         }
         Insert: {
-          id: string
+          id?: string
           name?: string | null
           registeredAt?: string | null
           registeredBy?: string | null
@@ -248,38 +147,6 @@ export interface Database {
           updatedAt?: string | null
           updatedBy?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "groups_registeredby_fkey"
-            columns: ["registeredBy"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "groups_updatedby_fkey"
-            columns: ["updatedBy"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      Methods: {
-        Row: {
-          id: number
-          name: string | null
-          sequence: number | null
-        }
-        Insert: {
-          id?: number
-          name?: string | null
-          sequence?: number | null
-        }
-        Update: {
-          id?: number
-          name?: string | null
-          sequence?: number | null
-        }
-        Relationships: []
       }
       Status: {
         Row: {
@@ -294,7 +161,6 @@ export interface Database {
           id?: number
           statusName?: string | null
         }
-        Relationships: []
       }
       Users: {
         Row: {
@@ -321,14 +187,6 @@ export interface Database {
           registeredAt?: string | null
           updatedAt?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
       }
     }
     Views: {
@@ -342,6 +200,34 @@ export interface Database {
         }
         Returns: number
       }
+      get_expenses: {
+        Args: {
+          user_id: string
+        }
+        Returns: Json[]
+      }
+      get_total_borrowed_amount: {
+        Args: {
+          user_id: string
+        }
+        Returns: {
+          payer: string
+          totalAmount: number
+          firstName: string
+          lastName: string
+        }[]
+      }
+      get_total_lent_amount: {
+        Args: {
+          user_id: string
+        }
+        Returns: {
+          userId: string
+          totalAmount: number
+          firstName: string
+          lastName: string
+        }[]
+      }
       get_user_friends: {
         Args: {
           user_id: string
@@ -351,14 +237,41 @@ export interface Database {
           firstName: string
           lastName: string
           email: string
+          statusId: number
         }[]
+      }
+      insert_expense: {
+        Args: {
+          group_name: string
+          date: string
+          registered_by: string
+          member_ids: string[]
+          member_paids: boolean[]
+          member_amounts: number[]
+          payer_id: string
+          category: string
+          description: string
+          payment: number
+        }
+        Returns: undefined
+      }
+      update_members_paid: {
+        Args: {
+          expense_id: string
+          checked_members: string
+          update_by: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      checked_member_type: {
+        user_id: string
+        paid: boolean
+      }
     }
   }
 }
