@@ -103,15 +103,9 @@ export const HistoryPage = () => {
 
   useEffect(() => {
     getTotalLentAmount();
-  }, [getTotalLentAmount]);
-
-  useEffect(() => {
     getTotalBorrowedAmount();
-  }, [getTotalBorrowedAmount]);
-
-  useEffect(() => {
     getExpenses();
-  }, [getExpenses]);
+  }, [getTotalLentAmount, getTotalBorrowedAmount, getExpenses]);
 
   const [value, setValue] = useState("1");
 

@@ -12,10 +12,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-import { Friend, Friendship, Users } from "../../types";
 import { createClient } from "@supabase/supabase-js";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
+import { FriendShipsReturns } from "./FriendsListPage";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -27,12 +27,7 @@ export const FriendsApprovePage = () => {
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [requestFriendsFromFriendship, setRequestFriendsFromFriendship] =
-    useState<Friendship[]>([]);
-  const [requestFriendsFromUsers, setRequestFriendsFromUsers] = useState<
-    Users[]
-  >([]);
+  const [friends, setFriends] = useState<FriendShipsReturns>([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -43,7 +38,6 @@ export const FriendsApprovePage = () => {
 
   useEffect(() => {
     getUserFriendsById();
-    getRequestFriendsFromFriendShip();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,63 +57,6 @@ export const FriendsApprovePage = () => {
       return false;
     }
   };
-
-  const getRequestFriendsFromFriendShip = async () => {
-    try {
-      const { data, error }: { data: any; error: any } = await supabase
-        .from("Friendships")
-        .select("*")
-        .eq("friendId", userId)
-        .neq("userId", userId)
-        .eq("statusId", 1);
-
-      if (error) {
-        console.log("Error: ", error);
-      } else {
-        setRequestFriendsFromFriendship(data);
-        getRequestFriendsFromUsers(data); // Call here after setting the state
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  };
-
-  const getRequestFriendsFromUsers = async (
-    friendsFromFriendship: Friendship[]
-  ) => {
-    try {
-      const ids = friendsFromFriendship.map((user) => user.userId);
-      const { data, error }: { data: any; error: any } = await supabase
-        .from("Users")
-        .select("*")
-        .in("id", ids);
-      if (error) {
-        console.log("Error: ", error);
-      } else {
-        setRequestFriendsFromUsers(data);
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  };
-
-  const requestFriendsIdsFromFriendship = requestFriendsFromFriendship.map(
-    (item) => {
-      return { userId: item.userId };
-    }
-  );
-
-  const requestedPeople = requestFriendsIdsFromFriendship.flatMap(
-    (item: { userId: string }) => {
-      const matchedUsers = requestFriendsFromUsers.filter(
-        (user) => user.id === item.userId
-      );
-      if (matchedUsers.length > 0) {
-        return matchedUsers;
-      }
-      return [];
-    }
-  );
 
   console.log(error);
 
@@ -160,24 +97,24 @@ export const FriendsApprovePage = () => {
               <SubTitle>Friend Request</SubTitle>
               <hr />
               <UnorderedList>
-                {requestedPeople.map((person) => (
-                  <FriendApproveCard
-                    id={person.id}
-                    firstName={person.firstName}
-                    lastName={person.lastName}
-                    email={person.email}
-                    key={person.id}
-                    getRequestFriendsFromFriendShip={
-                      getRequestFriendsFromFriendShip
-                    }
-                  />
-                ))}
+                {friends!.map((friend, index) =>
+                  !friend.sender && friend.statusId === 1 && friend.id ? (
+                    <FriendApproveCard
+                      id={friend.id}
+                      firstName={friend.firstName}
+                      lastName={friend.lastName}
+                      email={friend.email}
+                      key={index}
+                      getUserFriendsById={getUserFriendsById}
+                    />
+                  ) : null
+                )}
               </UnorderedList>
               <SubTitle>All friends</SubTitle>
               <hr />
               <UnorderedList>
-                {friends!.map((friend, index) => {
-                  return (
+                {friends!.map((friend, index) =>
+                  friend.statusId === 2 ? (
                     <FriendCard
                       id={friend.id}
                       firstName={friend.firstName}
@@ -185,8 +122,8 @@ export const FriendsApprovePage = () => {
                       email={friend.email}
                       key={index}
                     />
-                  );
-                })}
+                  ) : null
+                )}
               </UnorderedList>
             </Section>
           </DetailBox>
