@@ -11,9 +11,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -52,8 +49,6 @@ export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const [checked, setChecked] = useState(false);
 
@@ -64,11 +59,6 @@ export const HistoryDetailPage = () => {
   const handlegoback = () => {
     navigate("/history");
   };
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
