@@ -31,6 +31,7 @@ export const userSlice = createSlice({
         email: action.payload.email,
       };
       state.isLogin = true;
+
     },
     logout: (state) => {
       state.user = null;

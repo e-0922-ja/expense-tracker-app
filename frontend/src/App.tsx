@@ -13,9 +13,10 @@ import { HistoryPage } from "./views/pages/HistoryPage";
 import { PaymentPage } from "./views/pages/PaymentPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
-import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
 import { PassWordResetPage } from "./views/pages/PassWordResetPage";
 import ProtectedRoute from "./constants/ProtectedRoute";
+import { FriendsApprovePage } from "./views/pages/FriendsApprovePage";
+import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -52,6 +53,10 @@ function App() {
           <Route
             path="/account"
             element={<ProtectedRoute element={<AccountPage />} />}
+          />
+          <Route
+            path="/friends"
+            element={<ProtectedRoute element={<FriendsApprovePage />} />}
           />
           <Route path="/passwordReset" element={<PassWordResetPage />} />
         </Routes>

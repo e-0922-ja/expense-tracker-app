@@ -25,15 +25,16 @@ interface FormData {
   email?: string;
 }
 
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
+
 export const AccountInput = ({
   firstName,
   lastName,
   email,
 }: AccountInputProps) => {
-  const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
 
@@ -100,7 +101,9 @@ export const AccountInput = ({
 
   return (
     <div>
-      <Title>User Info</Title>
+      <Title>Account</Title>
+      <SubTitle>Your information</SubTitle>
+
       <InfoContainer>
         <StyledFormBox
           component="form"
@@ -159,25 +162,25 @@ export const AccountInput = ({
             )}
           </ButtonContainer>
         </StyledFormBox>
-        <Title>Reset Password</Title>
-
-        <SubButtonWrapper>
-          <StyledButton
-            variant="contained"
-            disableRipple
-            onClick={handleSendEmail}
-          >
-            send
-          </StyledButton>
-        </SubButtonWrapper>
       </InfoContainer>
+      <SubTitle>Reset Password</SubTitle>
+
+      <SubButtonWrapper>
+        <StyledButton
+          variant="contained"
+          disableRipple
+          onClick={handleSendEmail}
+        >
+          send
+        </StyledButton>
+      </SubButtonWrapper>
     </div>
   );
 };
 
 const InfoContainer = styled.div`
   width: 70%;
-  margin: 3rem 0;
+  margin: 1rem 0;
   @media (max-width: 600px) {
     width: 100%;
   }
@@ -231,8 +234,14 @@ const StyledOutlinedInput = styled(OutlinedInput)`
 
 const Title = styled.h2`
   margin-top: 1rem;
+  padding-bottom: 2rem;
+  color: ${({ theme }) => theme.palette.info.light};
+`;
+
+const SubTitle = styled.h3`
+  margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SubButtonWrapper = styled.div`

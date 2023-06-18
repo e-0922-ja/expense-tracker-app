@@ -1,3 +1,4 @@
+import { UUID } from "crypto";
 import { SvgIconProps } from "@mui/material/SvgIcon";
 
 export interface Friend {
@@ -40,4 +41,32 @@ export interface Expense {
 export interface CheckedMember {
   id: string;
   paid: boolean;
+}
+
+export interface Friendship {
+  friendEmail: string;
+  friendId: UUID;
+  id: UUID;
+  registeredAt: string;
+  statusId: number;
+  updatedAt: string;
+  userId: UUID;
+}
+
+export interface Users {
+  email: string;
+  firstName: string;
+  id: UUID;
+  lastName: string;
+  password: string;
+  registeredAt: string;
+  updatedAt: string;
+}
+
+export interface PropsFriendApproveCard {
+  id: UUID;
+  firstName: string;
+  lastName: string;
+  email: string;
+  getRequestFriendsFromFriendShip: () => void;
 }

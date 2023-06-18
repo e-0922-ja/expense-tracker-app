@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import PortraitIcon from "@mui/icons-material/Portrait";
+import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { MainButton } from "./MainButton";
@@ -24,42 +25,44 @@ export const DrawerContents = () => {
   const dispatch: AppDispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(0);
 
-  const navigateHistory = () => {
-    navigate("/history");
-    setSelectedId(1);
-  };
-
-  const navigateAccount = () => {
-    navigate("/account");
-    setSelectedId(2);
+  const navigatePage = (link: string, num: number) => {
+    navigate(link);
+    setSelectedId(num);
   };
 
   const handleLogput = () => {
     if (account.isLogin) {
       dispatch(logout());
       navigate("/");
-      setSelectedId(3);
+      setSelectedId(4);
     }
   };
 
   const toolbarItems = [
     {
-      onClick: navigateHistory,
+      onClick: () => navigatePage("/history", 1),
       text: "History",
       icon: <HistoryIcon style={{ color: theme.palette.secondary.main }} />,
       id: 1,
     },
     {
-      onClick: navigateAccount,
-      text: "My Account",
-      icon: <PortraitIcon style={{ color: theme.palette.secondary.main }} />,
+      onClick: () => navigatePage("/friends", 2),
+      text: "Friends List",
+      icon: <GroupIcon style={{ color: theme.palette.secondary.main }} />,
       id: 2,
     },
+    {
+      onClick: () => navigatePage("/account", 3),
+      text: "My Account",
+      icon: <PortraitIcon style={{ color: theme.palette.secondary.main }} />,
+      id: 3,
+    },
+
     {
       onClick: handleLogput,
       text: "Logout",
       icon: <LogoutIcon style={{ color: theme.palette.secondary.main }} />,
-      id: 3,
+      id: 4,
     },
   ];
 
