@@ -71,6 +71,7 @@ export const PaymentPage = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("hello");
     insertExpense();
     navigate("/history");
   };
@@ -253,17 +254,19 @@ export const PaymentPage = () => {
                               disabled={true}
                             />
                           </SplitterBox>
-                          <Checkbox
-                            id={member.id}
-                            checked={
-                              memberExpense.find(
-                                (user) => user.id === member.id
-                              )?.paid
-                            }
-                            onChange={handleToggle}
-                            inputProps={{ "aria-label": "controlled" }}
-                            disabled={payer === member.id}
-                          />
+                          <CheckboxWrapper>
+                            <Checkbox
+                              id={member.id}
+                              checked={
+                                memberExpense.find(
+                                  (user) => user.id === member.id
+                                )?.paid
+                              }
+                              onChange={handleToggle}
+                              inputProps={{ "aria-label": "controlled" }}
+                              disabled={payer === member.id}
+                            />
+                          </CheckboxWrapper>
                         </SplitWrapper>
                       </div>
                     );
@@ -272,7 +275,7 @@ export const PaymentPage = () => {
               </SubInputsWrapper>
             </InputsWrapper>
             <ButtonContainer>
-              <StyledButton variant="contained" disableRipple>
+              <StyledButton variant="contained" disableRipple type="submit">
                 create
               </StyledButton>
             </ButtonContainer>
@@ -412,18 +415,18 @@ const StyledOutlinedInput = styled(OutlinedInput)`
   }
 `;
 
-const StyledOutlinedNumberInput = styled(OutlinedInput)`
+const StyledOutlinedNumberInput = styled(StyledOutlinedInput)`
   && input::-webkit-outer-spin-button,
   && input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-
   && input[type="number"] {
     -moz-appearance: textfield;
   }
-  && .MuiInputBase-input.MuiOutlinedInput-input {
-    padding: 14px;
+
+  .Mui-disabled {
+    color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
@@ -494,5 +497,12 @@ const DatePickerWrapper = styled.div`
         color: ${(props) => props.theme.palette.info.dark};
       }
     }
+  }
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
   }
 `;

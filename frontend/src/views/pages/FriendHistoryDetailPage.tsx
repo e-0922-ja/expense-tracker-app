@@ -202,18 +202,20 @@ export const FriendHistoryDetailPage = () => {
                         return (
                           <div key={member.id}>
                             <SplitWrapper>
-                              <Checkbox
-                                id={member.id}
-                                checked={
-                                  checkedMembers.find(
-                                    (checkedMember) =>
-                                      checkedMember.id === member.id
-                                  )?.paid
-                                }
-                                onChange={handleToggle}
-                                inputProps={{ "aria-label": "controlled" }}
-                                disabled={expense.payer === member.id}
-                              />
+                              <CheckboxWrapper>
+                                <Checkbox
+                                  id={member.id}
+                                  checked={
+                                    checkedMembers.find(
+                                      (checkedMember) =>
+                                        checkedMember.id === member.id
+                                    )?.paid
+                                  }
+                                  onChange={handleToggle}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                  disabled={expense.payer === member.id}
+                                />
+                              </CheckboxWrapper>
                               <SplitterName>
                                 {`${member.firstName} ${member.lastName}`}
                               </SplitterName>
@@ -323,6 +325,7 @@ const SubInputsWrapper = styled.div`
 
 const TopicTitle = styled.div`
   margin-top: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const InputSelectTitle = styled.div`
@@ -350,6 +353,7 @@ const SplitterName = styled.div`
   width: 30%;
   display: flex;
   padding-left: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const SplitterBox = styled(Box)`
@@ -364,6 +368,7 @@ const Data = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
 `;
 
@@ -373,6 +378,7 @@ const CategoryData = styled.div`
   padding: 0.7rem;
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
+  color: ${({ theme }) => theme.palette.info.light};
   border-radius: 10px;
   gap: 10px;
 `;
@@ -391,7 +397,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.main};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const ButtonContainer = styled.div`
@@ -411,4 +418,11 @@ const PageTitle = styled.h2`
 const Span = styled.span`
   color: ${({ theme }) => theme.palette.secondary.light};
   margin-left: 0.5rem;
+`;
+
+const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+    color: ${(props) => props.theme.palette.secondary.main};
+  }
 `;
