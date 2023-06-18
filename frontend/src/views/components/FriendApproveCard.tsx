@@ -16,7 +16,7 @@ export const FriendApproveCard = ({
   firstName,
   lastName,
   email,
-  getRequestFriendsFromFriendShip,
+  getUserFriendsById,
 }: PropsFriendApproveCard) => {
   const { user } = useSelector(selectUser);
   const userId = user?.id;
@@ -33,18 +33,17 @@ export const FriendApproveCard = ({
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, "aprovecard");
+        console.log(data, userId, id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await supabase
             .from("Friendships")
             .update({ statusId: 2, updatedAt: new Date() })
             .match({ id: data[0].id });
-
           if (updateError) {
             console.error("Error updating statusId: ", updateError);
           }
-          getRequestFriendsFromFriendShip();
+          getUserFriendsById();
         } else {
           console.log("No data to update");
         }
@@ -76,7 +75,7 @@ export const FriendApproveCard = ({
             console.error("Error deleting statusId: ", updateError);
           }
           console.log("Deleted record:", deletedData);
-          getRequestFriendsFromFriendShip();
+          getUserFriendsById();
         } else {
           console.log("No data to Delete");
         }

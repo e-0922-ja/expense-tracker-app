@@ -238,6 +238,7 @@ export interface Database {
           lastName: string
           email: string
           statusId: number
+          sender: boolean
         }[]
       }
       insert_expense: {
