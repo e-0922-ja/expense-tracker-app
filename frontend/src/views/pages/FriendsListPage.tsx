@@ -58,6 +58,7 @@ export const FriendsListPage = () => {
         return false;
       } else {
         setFriends(data);
+        return true;
       }
     } catch (error: any) {
       setError(error.message);
@@ -75,35 +76,39 @@ export const FriendsListPage = () => {
   };
 
   const sendFriendRequest = async (email: string) => {
-    if (email === userEmail) {
+    const emailToLowerCase = email.toLowerCase();
+    if (emailToLowerCase === userEmail) {
       setError("You cannot send a friend request to your email address.");
     } else {
-      const resultCountFriendShipByEmail = await countFriendShipByEmail(email);
-      if (resultCountFriendShipByEmail) {
-        if (resultCountFriendShipByEmail > 0) {
-          setError("You've already sent a friend request to this email.");
-        } else {
-          const resultGetFriendByEmail = await getFriendByEmail(email);
-          if (resultGetFriendByEmail) {
-            const resultInsertFriendship = await insertFriendship(
-              resultGetFriendByEmail,
-              email
-            );
-            if (resultInsertFriendship) {
-              // ==============================================================
-              // implement send email function later
-              // ==============================================================
+      const resultCountFriendShipByEmail = await countFriendShipByEmail(
+        emailToLowerCase
+      );
+      if (
+        typeof resultCountFriendShipByEmail === "number" &&
+        resultCountFriendShipByEmail > 0
+      ) {
+        setError("You've already sent a friend request to this email.");
+      } else {
+        const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
+        if (resultGetFriendByEmail) {
+          const resultInsertFriendship = await insertFriendship(
+            resultGetFriendByEmail,
+            emailToLowerCase
+          );
+          if (resultInsertFriendship) {
+            // ==============================================================
+            // implement send email function later
+            // ==============================================================
 
-              // to retrieve the data to update the friend list
-              const resultGetUserFriendsById = await getUserFriendsById();
-              if (resultGetUserFriendsById) {
-                reset();
-                setError("");
-              }
-              setSuccess(
-                `You have successfully sent a friend request to ${email}!`
-              );
+            // to retrieve the data to update the friend list
+            const resultGetUserFriendsById = await getUserFriendsById();
+            if (resultGetUserFriendsById) {
+              reset();
+              setError("");
             }
+            setSuccess(
+              `You have successfully sent a friend request to ${email}!`
+            );
           }
         }
       }
