@@ -58,14 +58,14 @@ export const HistoryDetailPage = () => {
     });
   };
 
-  const handlesave = () => {
-    updateMembersPaidStatus();
-    navigate("/history");
+  const handlesave = async () => {
+    const resultUpdateMembersPaidStatus = await updateMembersPaidStatus();
+    if (resultUpdateMembersPaidStatus) navigate("/history");
   };
 
-  const handledelete = () => {
-    deleteExpense();
-    navigate("/history");
+  const handledelete = async () => {
+    const resultDeleteExpense = await deleteExpense();
+    if (resultDeleteExpense) navigate("/history");
   };
 
   const handleDrawerToggle = () => {
@@ -87,11 +87,14 @@ export const HistoryDetailPage = () => {
       });
       if (error) {
         console.log(error);
+        return false;
       } else {
         console.log(data);
+        return true;
       }
     } catch (error: any) {
       console.log(error);
+      return false;
     }
   };
 
@@ -103,11 +106,14 @@ export const HistoryDetailPage = () => {
         .eq("id", expense.id);
       if (error) {
         console.log(error);
+        return false;
       } else {
         console.log(data);
+        return true;
       }
     } catch (error: any) {
       console.log(error);
+      return false;
     }
   };
 

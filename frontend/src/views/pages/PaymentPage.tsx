@@ -69,11 +69,10 @@ export const PaymentPage = () => {
     setMemberExpense(updatedPaid);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("hello");
-    insertExpense();
-    navigate("/history");
+    const resultInsertExpense = await insertExpense();
+    if (resultInsertExpense) navigate("/history");
   };
 
   console.log(error);
@@ -101,11 +100,14 @@ export const PaymentPage = () => {
       });
       if (error) {
         setError(error.message);
+        return false;
       } else {
         console.log(data);
+        return true;
       }
     } catch (error: any) {
       setError(error.message);
+      return false;
     }
   };
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
