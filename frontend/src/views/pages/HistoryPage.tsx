@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -14,9 +14,6 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { FriendsCard } from "../components/FriendsCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
@@ -40,15 +37,6 @@ export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-
-  // const [date, setDate] = useState<Dayjs | null>(null);
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -104,31 +92,6 @@ export const HistoryPage = () => {
     { id: 4, firstName: "tom" },
     { id: 5, firstName: "Bob" },
   ];
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  };
-  console.log(error);
 
   const [value, setValue] = useState("1");
 

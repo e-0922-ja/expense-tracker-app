@@ -44,6 +44,7 @@ export const FriendsApprovePage = () => {
   useEffect(() => {
     getUserFriendsById();
     getRequestFriendsFromFriendShip();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUserFriendsById = async () => {
@@ -55,9 +56,7 @@ export const FriendsApprovePage = () => {
         setError(error.message);
         return false;
       } else {
-        // console.log(data, "data");
         setFriends(data);
-        // console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
@@ -90,7 +89,6 @@ export const FriendsApprovePage = () => {
   ) => {
     try {
       const ids = friendsFromFriendship.map((user) => user.userId);
-      console.log(ids, "ids");
       const { data, error }: { data: any; error: any } = await supabase
         .from("Users")
         .select("*")
@@ -98,7 +96,6 @@ export const FriendsApprovePage = () => {
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, "hello");
         setRequestFriendsFromUsers(data);
       }
     } catch (error) {
@@ -112,9 +109,6 @@ export const FriendsApprovePage = () => {
     }
   );
 
-  console.log(requestFriendsIdsFromFriendship, "a");
-  console.log(requestFriendsFromUsers, "b");
-
   const requestedPeople = requestFriendsIdsFromFriendship.flatMap(
     (item: { userId: string }) => {
       const matchedUsers = requestFriendsFromUsers.filter(
@@ -127,7 +121,7 @@ export const FriendsApprovePage = () => {
     }
   );
 
-  console.log(requestedPeople, "Who");
+  console.log(error);
 
   return (
     <Wrapper>

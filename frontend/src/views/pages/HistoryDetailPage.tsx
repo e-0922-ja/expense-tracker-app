@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -27,7 +27,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { SubButton } from "../components/SubButton";
-import { CheckBox } from "@mui/icons-material";
 
 interface TransactionHistory {
   id: number;
@@ -104,32 +103,6 @@ export const HistoryDetailPage = () => {
     { category: "Others", icon: <HelpOutlineIcon /> },
     { category: "None", icon: <HorizontalRuleIcon /> },
   ];
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-    console.error(error);
-  };
 
   const handleGoBack = () => {
     navigate("/history");

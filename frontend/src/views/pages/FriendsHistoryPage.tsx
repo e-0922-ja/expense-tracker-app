@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -10,9 +10,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { Category } from "../../types";
 import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
@@ -32,13 +29,6 @@ export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const [error, setError] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const supabase = createClient<Database>(
-    process.env.REACT_APP_SUPABASE_URL as string,
-    process.env.REACT_APP_SUPABASE_ANON_KEY as string
-  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -89,35 +79,9 @@ export const FriendsHistoryPage = () => {
     },
   ];
 
-  useEffect(() => {
-    getCategories();
-  }, []);
-
-  // get categories from a table
-  const getCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("Categories")
-        .select("*")
-        .order("sequence", { ascending: true });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setCategories(data);
-        console.log(categories);
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  };
-
   const handleGoBack = () => {
     navigate("/history");
   };
-
-  console.log(error);
 
   return (
     <Wrapper>

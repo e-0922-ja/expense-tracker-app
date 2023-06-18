@@ -35,6 +35,7 @@ export const FriendApproveCard = ({
       } else {
         console.log(data, "aprovecard");
         if (data && data.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await supabase
             .from("Friendships")
             .update({ statusId: 2, updatedAt: new Date() })
