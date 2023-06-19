@@ -12,6 +12,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Friend, FriendWithStatus } from "../../types";
 import { SubButton } from "../components/SubButton";
 import { Database } from "../../../../supabase/schema";
+import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
 
 interface FriendEmail {
   email: string;
@@ -45,6 +46,8 @@ export const FriendsListPage = () => {
   const userState = useSelector((state: RootState) => state.user);
   const userId = userState.user?.id!;
   const userEmail = userState.user?.email;
+  const userFirstName = userState.user?.firstName;
+  const userLastName = userState.user?.lastName;
 
   const navigate = useNavigate();
 
@@ -96,9 +99,14 @@ export const FriendsListPage = () => {
             emailToLowerCase
           );
           if (resultInsertFriendship) {
-            // ==============================================================
-            // implement send email function later
-            // ==============================================================
+            const emailResponse = await SupabaseEdgeFunctionService.sendEmail(
+              email,
+              `${userFirstName} ${userLastName}`
+            );
+
+            if (!emailResponse.status) {
+              setError("Failed to send an email.");
+            }
 
             // to retrieve the data to update the friend list
             const resultGetUserFriendsById = await getUserFriendsById();

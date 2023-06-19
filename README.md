@@ -71,18 +71,30 @@ Creating shadow database...
 Applying migration 20230602141215_add-users-table.sql...
 Diffing schemas: auth,extensions,public,storage
 ```
-
 -> Created supabase/migrations/20230602141215_add-users-table.sql
+
 ## Run the edge functions
 
+1. Prepare `.env.local` file. You can copy `.env.local.example` and edit it.
+
 ```bash
-supabase functions serve --no-verify-jwt
+cp ./supabase/.env.local.example ./supabase/.env.local
 ```
 
-For example, you can fetch users by the following command.
-
+2. Run the following command to start the edge functions.
 ```bash
-curl localhost:54321/functions/v1/users
+supabase functions serve --no-verify-jwt --env-file ./supabase/.env.local
+```
+
+3. You can access the edge functions at `http://localhost:54321/functions/v1/`.
+For example, you can fetch users by the following command.
+```bash
+# Fetch all users
+$ curl localhost:54321/functions/v1/users
+
+# Send Friend Request Email
+$ curl -i --request POST 'http://localhost:54321/functions/v1/email' \
+  --data '{ "toAddress":"ytkwmr18@gmail.com", "requestee": "Yuta Kawamura" }'
 ```
 
 ## Prepare lint

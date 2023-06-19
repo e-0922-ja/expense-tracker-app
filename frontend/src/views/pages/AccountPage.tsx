@@ -134,4 +134,3 @@ const DetailBox = styled.div`
 const SubBox = styled(Box)`
   width: 100%;
 `;
-
