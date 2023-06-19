@@ -1,4 +1,31 @@
-# Preparation
+# SpendShare | Online Group Expense Tracker App
+
+SpendShare is a comprehensive solution for managing group expenses.  
+This application allows users to effortlessly split bills and track shared expenditures, promoting transparency, fairness, and convenience in all your financial transactions.
+
+## Features
+- Split Bills Evenly: Distribute expenses among your group fairly, ensuring that everyone contributes equally.
+- Payment Tracking: Keep track of who has paid and who hasn't for each expense, bringing accountability to shared costs.
+- Debt Management: Easily understand your financial position within the group. See who you owe money to and who owes you, providing a clear picture of your financial obligations.
+- Expense History: Access previous expense records, allowing you to refer back to past transactions whenever necessary.
+
+## Tech Stack
+- **React**
+- **TypeScript**
+- **MUI (Material-UI)**
+- **Styled-components**
+- **Supabase**
+- **SendGrid**
+
+### Table Design
+https://lucid.app/lucidchart/603f4685-8e92-46e9-a3c1-67b482422914/edit?beaconFlowId=4EFD9C91AE2B384E&invitationId=inv_c05db614-6c0b-4b54-871c-80b051299540&referringApp=slack&page=0_0#
+
+## Project Members
+ Yuta Kawamura  
+ Akito Tobita  
+ Yuki Kasugai
+
+## Preparation
 
 If you don't have Supbase CLI, please install it.
 
@@ -6,7 +33,7 @@ If you don't have Supbase CLI, please install it.
 brew install supabase/tap/supabase
 ```
 
-# Installation
+## Installation
 
 1. Clone this repository.
 
@@ -24,9 +51,9 @@ cd backend
 yarn install
 ```
 
-# How to use
+## How to use
 
-## Run the application
+### Run the application
 
 1. Use the following command to start the application.
 
@@ -52,7 +79,7 @@ npm run start
 - [Frontend]http://localhost:3000
 - [Supabase]http://localhost:54321
 
-## Migrate database
+### Migrate database
 
 1. Edit table schema with [Supabase SQL Editor](https://supabase.com/docs/guides/database/overview#the-sql-editor).
 
@@ -73,7 +100,7 @@ Diffing schemas: auth,extensions,public,storage
 ```
 -> Created supabase/migrations/20230602141215_add-users-table.sql
 
-## Run the edge functions
+### Run the edge functions
 
 1. Prepare `.env.local` file. You can copy `.env.local.example` and edit it.
 
@@ -97,10 +124,10 @@ $ curl -i --request POST 'http://localhost:54321/functions/v1/email' \
   --data '{ "toAddress":"ytkwmr18@gmail.com", "requestee": "Yuta Kawamura" }'
 ```
 
-## Prepare lint
+### Prepare lint
 To run lint, you need to install the husky and prettier. So please run `npm i` on root directory
 
-## Frontend Test
+### Frontend Test
 
 ```bash
 cd frontend
