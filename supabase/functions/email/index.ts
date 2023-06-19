@@ -37,5 +37,12 @@ serve(async (req) => {
     },
     method: "POST"
   })
-  return new Response({ status: response.status, message: response.statusText })
+  return new Response({
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json'
+    },
+    status: response.status,
+    message: response.statusText
+  })
 });
