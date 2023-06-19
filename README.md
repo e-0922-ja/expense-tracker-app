@@ -83,7 +83,7 @@ cp ./supabase/.env.local.example ./supabase/.env.local
 
 2. Run the following command to start the edge functions.
 ```bash
-supabase functions serve --no-verify-jwt
+supabase functions serve --no-verify-jwt --env-file ./supabase/.env.local
 ```
 
 3. You can access the edge functions at `http://localhost:54321/functions/v1/`.
