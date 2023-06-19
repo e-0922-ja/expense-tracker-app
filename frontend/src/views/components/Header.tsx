@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
-import { logout, selectUser } from "../../reducer/userSlice";
+import { selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { DarkModeButton } from "./DarkModeButton";
 import { LightModeButton } from "./LightModeButton";
@@ -28,15 +28,6 @@ export const Header = () => {
 
   const handleChangeMode = () => {
     dispatch(toggleTheme());
-  };
-
-  const handleLogInOut = () => {
-    if (account.isLogin) {
-      dispatch(logout());
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
   };
 
   return (
@@ -64,12 +55,8 @@ export const Header = () => {
               <LightModeButton />
             )}
           </StyledIconButton>
-          <Text>
-            <button onClick={handleLogInOut}>
-              {account.isLogin ? "LogOut" : "LogIn"}
-            </button>
-          </Text>
-          <Text>{account.isLogin ? account.user?.firstName : "Person"}</Text>
+
+          {account.isLogin ? <Text>{account.user?.firstName}</Text> : ""}
         </AppBarNavWrapper>
       </StyledToolbar>
     </AppBarWrapper>
@@ -79,6 +66,13 @@ export const Header = () => {
 const AppBarWrapper = styled(AppBar)<AppBarProps>`
   position: fixed;
   background-color: ${({ theme }) => theme.palette.info.main} !important;
+`;
+
+const StyledToolbar = styled(Toolbar)`
+  padding: 0 70px !important;
+  @media (max-width: 768px) {
+    padding: 0 20px !important;
+  }
 `;
 
 const AppBarNavWrapper = styled(Box)`
@@ -98,8 +92,4 @@ const StyledIconButton = styled(IconButton)`
   .MuiTouchRipple-root {
     color: #f8f9f9;
   }
-`;
-
-const StyledToolbar = styled(Toolbar)`
-  padding: 0 70px !important;
 `;

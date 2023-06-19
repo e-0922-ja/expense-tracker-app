@@ -1,44 +1,39 @@
 import { Card, CardActionArea, Typography } from "@mui/material";
 import styled from "styled-components";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { useNavigate } from "react-router-dom";
-
-interface Transaction {
-  category: string;
-  dispription: string;
-  amount: number;
-  date: string;
-}
+import { Expense } from "../../types";
+import { getCategoryIcon } from "../../utils/categoryUtils";
 
 interface TransactionProps {
-  item: Transaction;
+  expense: Expense;
 }
 
-export const TransactionCard = ({ item }: TransactionProps) => {
+export const TransactionCard = ({ expense }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
-    navigate("/history/1");
+    navigate(`/history/${expense.id}`, { state: { expense } });
   };
+  const CategoryIcon = getCategoryIcon(expense.category);
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={handleGoToDetail}>
         <ContentWrapper>
           <IconContainer>
             <IconCircle>
-              <RestaurantIcon />
+              <CategoryIcon />
             </IconCircle>
           </IconContainer>
           <DiscriptionContainer>
             <Typography gutterBottom component="div" style={{ margin: "0" }}>
-              {item.dispription}
+              {expense.description}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {item.date}
+            <Typography variant="body2">
+              {expense.date.toLocaleString().substring(0, 10)}
             </Typography>
           </DiscriptionContainer>
           <AnountContainer>
             <Typography gutterBottom component="div">
-              ${item.amount}
+              {expense.payment.toFixed(2).toLocaleString()}
             </Typography>
           </AnountContainer>
         </ContentWrapper>
@@ -51,6 +46,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -72,7 +69,8 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;
 
 const DiscriptionContainer = styled.div`

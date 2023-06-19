@@ -7,11 +7,12 @@ import {
   useMediaQuery,
   useTheme,
   Box,
-  OutlinedInput,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { SubButton } from "../components/SubButton";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
+import { AccountInput } from "../components/AccountInput";
 
 export const AccountPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,22 +23,7 @@ export const AccountPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const [userData, setUserData] = useState({
-    firstName: "Yuki",
-    lastName: "Kasugai",
-    email: "yuki@gmail.com",
-    password: "*******",
-  });
-
-  const [editStatus, setEditStatus] = useState(false);
-
-  const handleEdit = () => {
-    setEditStatus(true);
-  };
-
-  const handleSave = () => {
-    setEditStatus(false);
-  };
+  const { user } = useSelector(selectUser);
 
   return (
     <Wrapper>
@@ -51,7 +37,7 @@ export const AccountPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           <Toolbar />
@@ -72,62 +58,11 @@ export const AccountPage = () => {
         <SubBox>
           <DetailBox>
             <Section>
-              <Title>Account</Title>
-              <InfoContainer>
-                <InputTitle>First Name</InputTitle>
-                <StyledBox>
-                  <Data>{userData.firstName}</Data>
-                </StyledBox>
-                <InputTitle>last Name</InputTitle>
-                <StyledBox>
-                  {editStatus ? (
-                    <StyledOutlinedInput
-                      value={userData.lastName}
-                      onChange={(e) =>
-                        setUserData({ ...userData, lastName: e.target.value })
-                      }
-                      fullWidth
-                    />
-                  ) : (
-                    <Data>{userData.lastName}</Data>
-                  )}
-                </StyledBox>
-                <InputTitle>email</InputTitle>
-                <StyledBox>
-                  {editStatus ? (
-                    <StyledOutlinedInput
-                      value={userData.email}
-                      onChange={(e) =>
-                        setUserData({ ...userData, email: e.target.value })
-                      }
-                      fullWidth
-                    />
-                  ) : (
-                    <Data>{userData.email}</Data>
-                  )}
-                </StyledBox>
-                <InputTitle>password</InputTitle>
-                <StyledBox>
-                  {editStatus ? (
-                    <StyledOutlinedInput
-                      value={userData.password}
-                      onChange={(e) =>
-                        setUserData({ ...userData, password: e.target.value })
-                      }
-                      fullWidth
-                    />
-                  ) : (
-                    <Data>{userData.password}</Data>
-                  )}
-                </StyledBox>
-                <ButtonContainer>
-                  {editStatus ? (
-                    <SubButton title={"save"} onClick={handleSave} />
-                  ) : (
-                    <SubButton title={"edit"} onClick={handleEdit} />
-                  )}
-                </ButtonContainer>
-              </InfoContainer>
+              <AccountInput
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+                email={user?.email}
+              />
             </Section>
           </DetailBox>
         </SubBox>
@@ -178,17 +113,13 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: 100%;
+  width: calc(100% - ${drawerWidth}px);
   overflow: auto;
-  @media (min-width: 600px) {
-    width: calc(100% - ${drawerWidth}px);
-  }
-`;
 
-const Title = styled.h2`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 0 20px;
+  }
 `;
 
 const Section = styled.div`
@@ -200,37 +131,7 @@ const DetailBox = styled.div`
   margin: 0 1rem;
 `;
 
-const InfoContainer = styled.div`
-  width: 70%;
-  margin: 3rem 0;
-`;
-
-const InputTitle = styled.div`
-  margin-top: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
-`;
-
-const StyledBox = styled(Box)`
-  margin-top: 8px;
-`;
-
-const Data = styled.div`
-  padding: 0.7rem;
-  margin-bottom: 1rem;
-  background-color: ${({ theme }) => theme.palette.primary.light};
-  border-radius: 10px;
-`;
-
-const ButtonContainer = styled.div`
-  margin-top: 30px;
-`;
-
-const StyledOutlinedInput = styled(OutlinedInput)`
-  && .MuiInputBase-input.MuiOutlinedInput-input {
-    padding: 14px;
-  }
-`;
-
 const SubBox = styled(Box)`
   width: 100%;
 `;
+

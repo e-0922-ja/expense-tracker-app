@@ -31,16 +31,21 @@ export const userSlice = createSlice({
         email: action.payload.email,
       };
       state.isLogin = true;
+
     },
     logout: (state) => {
       state.user = null;
       state.isLogin = false;
+    },
+    update: (state, action) => {
+      state.user = action.payload;
+      state.isLogin = true;
     },
   },
 });
 
 export const selectUser = (state: RootState) => state.user;
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, update } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -9,23 +9,30 @@ import { emailRegex, errEmail } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Friend } from "../../types";
-import { UUID } from "crypto";
+import { Friend, FriendWithStatus } from "../../types";
 import { SubButton } from "../components/SubButton";
+import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
 
 interface FriendEmail {
   email: string;
 }
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
+export type FriendShipsReturns =
+  Database["public"]["Functions"]["get_user_friends"]["Returns"];
+export type FriendShipsArgs =
+  Database["public"]["Functions"]["get_user_friends"]["Args"];
+export type FriendShipsInsert =
+  Database["public"]["Tables"]["Friendships"]["Insert"];
+
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friends, setFriends] = useState<FriendShipsReturns>([]);
   const [selectedError, setSelectedError] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -37,16 +44,34 @@ export const FriendsListPage = () => {
   } = useForm<FriendEmail>();
 
   const userState = useSelector((state: RootState) => state.user);
-  const userId = userState.user?.id;
+  const userId = userState.user?.id!;
   const userEmail = userState.user?.email;
   const userFirstName = userState.user?.firstName;
   const userLastName = userState.user?.lastName;
 
   const navigate = useNavigate();
 
+  const getUserFriendsById = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.rpc("get_user_friends", {
+        user_id: userId,
+      });
+      if (error) {
+        setError(error.message);
+        return false;
+      } else {
+        setFriends(data);
+        return true;
+      }
+    } catch (error: any) {
+      setError(error.message);
+      return false;
+    }
+  }, [userId]);
+
   useEffect(() => {
     getUserFriendsById();
-  });
+  }, [getUserFriendsById]);
 
   const onSubmit = (data: FriendEmail) => {
     const { email } = data;
@@ -54,18 +79,24 @@ export const FriendsListPage = () => {
   };
 
   const sendFriendRequest = async (email: string) => {
-    if (email === userEmail) {
+    const emailToLowerCase = email.toLowerCase();
+    if (emailToLowerCase === userEmail) {
       setError("You cannot send a friend request to your email address.");
     } else {
-      const resultCountFriendShipByEmail = await countFriendShipByEmail(email);
-      if (resultCountFriendShipByEmail > 0) {
+      const resultCountFriendShipByEmail = await countFriendShipByEmail(
+        emailToLowerCase
+      );
+      if (
+        typeof resultCountFriendShipByEmail === "number" &&
+        resultCountFriendShipByEmail > 0
+      ) {
         setError("You've already sent a friend request to this email.");
       } else {
-        const resultGetFriendByEmail = await getFriendByEmail(email);
+        const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
           const resultInsertFriendship = await insertFriendship(
             resultGetFriendByEmail,
-            email
+            emailToLowerCase
           );
           if (resultInsertFriendship) {
             const emailResponse = await SupabaseEdgeFunctionService.sendEmail(
@@ -98,7 +129,7 @@ export const FriendsListPage = () => {
 
   // Check friends to add or not
   const handleCheckedChange = (
-    id: UUID,
+    id: string,
     email: string,
     firstName: string,
     lastName: string,
@@ -131,11 +162,13 @@ export const FriendsListPage = () => {
       });
       if (error) {
         setError(error.message);
+        return false;
       } else {
         return data;
       }
     } catch (error: any) {
       setError(error.message);
+      return false;
     }
   };
 
@@ -159,13 +192,13 @@ export const FriendsListPage = () => {
 
   // register the input email address to friendships table for a friend request
   const insertFriendship = async (data: any, email: string) => {
-    const friendshipsData = {
+    const friendshipsData: FriendShipsInsert = {
       userId: userId,
       friendId: data.length > 0 ? data[0].id : null,
       friendEmail: data.length > 0 ? data[0].email : email,
       statusId: 1, // status: pending
-      registeredAt: new Date(),
-      updatedAt: new Date(),
+      registeredAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     try {
@@ -177,26 +210,6 @@ export const FriendsListPage = () => {
         return false;
       } else {
         return true;
-      }
-    } catch (error: any) {
-      setError(error.message);
-      return false;
-    }
-  };
-
-  const getUserFriendsById = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_user_friends", {
-        user_id: userId,
-      });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        console.log(userId, "id");
-        console.log(data, "data");
-        setFriends(data);
-        console.log(friends, "friends");
       }
     } catch (error: any) {
       setError(error.message);
@@ -249,7 +262,7 @@ export const FriendsListPage = () => {
       <SubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
-          {friends!.map((friend: Friend, index) => {
+          {friends!.map((friend: FriendWithStatus, index) => {
             return (
               <List key={index}>
                 <CheckBox
@@ -269,11 +282,11 @@ export const FriendsListPage = () => {
                       event.target.checked
                     )
                   }
-                  disabled={!friend.id}
+                  disabled={friend.statusId === 1}
                 />
                 <Label htmlFor={index.toString()}>
                   <ListItem>
-                    {friend.firstName
+                    {friend.statusId !== 1
                       ? `${friend.firstName}  ${friend.lastName}`
                       : "-"}
                   </ListItem>
@@ -298,11 +311,13 @@ const MainContainer = styled.div`
   width: 100%;
   overflow: auto;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const SubContainer = styled(Box)`
@@ -313,6 +328,10 @@ const SubContainer = styled(Box)`
   width: 35%;
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const Title = styled.h1`

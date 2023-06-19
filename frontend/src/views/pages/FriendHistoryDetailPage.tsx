@@ -26,7 +26,7 @@ const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
-export const HistoryDetailPage = () => {
+export const FriendHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
@@ -150,6 +150,18 @@ export const HistoryDetailPage = () => {
         <SubBox>
           <GobackButton onClick={handleGoBack} />
           <DetailBox>
+            <Section>
+              <PageTitle>
+                Expense with
+                {expense.members.map((member) => {
+                  if (member.id !== userId) {
+                    return <Span key={member.id}>{member.firstName}</Span>;
+                  } else {
+                    return null;
+                  }
+                })}
+              </PageTitle>
+            </Section>
             <Section>
               <Title>{expense.description}</Title>
             </Section>
@@ -283,18 +295,17 @@ const MobileDrawer = styled(Drawer)`
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
-  width: calc(100% - ${drawerWidth}px);
+  width: 100%;
   overflow: auto;
-  @media (max-width: 600px) {
-    width: 100%;
-    padding: 0 20px;
+  @media (min-width: 600px) {
+    width: calc(100% - ${drawerWidth}px);
   }
 `;
 
 const Title = styled.h2`
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.info.light};
+  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Section = styled.div`
@@ -312,17 +323,10 @@ const InputsWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 30px;
-  @media (max-width: 600px) {
-    flex-direction: column;
-    gap: 0;
-  }
 `;
 
 const SubInputsWrapper = styled.div`
   width: 50%;
-  @media (max-width: 600px) {
-    width: 100%;
-  }
 `;
 
 const TopicTitle = styled.div`
@@ -409,6 +413,17 @@ const ButtonContainer = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const PageTitle = styled.h2`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.secondary.main};
+`;
+
+const Span = styled.span`
+  color: ${({ theme }) => theme.palette.secondary.light};
+  margin-left: 0.5rem;
 `;
 
 const CheckboxWrapper = styled.div`

@@ -2,15 +2,16 @@ import { Card, CardActionArea, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { Expense } from "../../types";
 
 interface FriendsCardProps {
-  friendName: string;
+  expense: Expense;
 }
 
-export const FriendsCard = ({ friendName }: FriendsCardProps) => {
+export const FriendsCard = ({ expense }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
-    navigate("/history/group/1");
+    navigate("/history/group/1", { state: { expense } });
   };
   return (
     <TransactionCardWrapper elevation={0}>
@@ -22,7 +23,9 @@ export const FriendsCard = ({ friendName }: FriendsCardProps) => {
             </IconCircle>
           </IconContainer>
           <NameWrapper>
-            <Typography variant="body1">{friendName}</Typography>
+            <Typography variant="body1">
+              {expense.members.map(({ firstName }) => firstName).join(", ")}
+            </Typography>
           </NameWrapper>
         </ContentWrapper>
       </CardActionArea>
@@ -34,6 +37,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const NameWrapper = styled.div`
@@ -62,5 +67,6 @@ const IconCircle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.secondary.light};
+  color: #fff;
 `;

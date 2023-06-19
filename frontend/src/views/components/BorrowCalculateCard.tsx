@@ -1,31 +1,33 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
+import { BorrowedAmountReturns } from "../pages/HistoryPage";
+import { calculateTotalAmount } from "../../utils/calculateUtils";
 
 interface BorrowCalculateCardProps {
-  name: string;
-  amount: number;
-  totalAmount: number;
+  borrowed: BorrowedAmountReturns;
 }
 
-export const BorrowCalculateCard = ({
-  name,
-  amount,
-  totalAmount,
-}: BorrowCalculateCardProps) => {
+export const BorrowCalculateCard = ({ borrowed }: BorrowCalculateCardProps) => {
+  const total = calculateTotalAmount(borrowed);
+
   return (
     <TransactionCardWrapper elevation={0} variant="outlined">
       <InsideWrapper>
         <Container>
           <div>
             <BorrowTitle>Borrow</BorrowTitle>
-            <CalculateContainer>
-              <CalculateName>{name}</CalculateName>
-              <CalculateAmount>${amount}</CalculateAmount>
-            </CalculateContainer>
+            {borrowed.map((member, index) => (
+              <CalculateContainer key={index}>
+                <CalculateName>{`${member.firstName} ${member.lastName}`}</CalculateName>
+                <CalculateAmount>
+                  {member.totalAmount.toFixed(2).toLocaleString()}
+                </CalculateAmount>
+              </CalculateContainer>
+            ))}
           </div>
           <CalculateContainer>
             <CalculateName>Total</CalculateName>
-            <BorrowTotal>${totalAmount}</BorrowTotal>
+            <BorrowTotal>{total ? total : "-"}</BorrowTotal>
           </CalculateContainer>
         </Container>
       </InsideWrapper>
@@ -37,6 +39,8 @@ const TransactionCardWrapper = styled(Card)`
   width: 100%;
   margin-bottom: 20px;
   border-radius: 10px !important;
+  background: ${({ theme }) => theme.palette.primary.light} !important;
+  color: ${({ theme }) => theme.palette.info.light} !important;
 `;
 
 const InsideWrapper = styled.div`
@@ -53,7 +57,7 @@ const Container = styled.div`
 
 const BorrowTitle = styled.h3`
   margin: 0 0 1rem 0;
-  color: blue;
+  color: #a196ee;
 `;
 
 const CalculateContainer = styled.div`
@@ -72,5 +76,5 @@ const CalculateAmount = styled.div`
 `;
 
 const BorrowTotal = styled.div`
-  color: blue;
+  color: #a196ee;
 `;
