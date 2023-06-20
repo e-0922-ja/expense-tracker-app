@@ -1,13 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
-
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import {
+  SuccessSignUp,
   emailRegex,
   errEmail,
   errFirstName,
@@ -34,6 +34,7 @@ interface NewUser {
 
 export const SignUpPage = () => {
   const [authError, setAuthError] = useState("");
+  const [authSuccess, setauthSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -61,8 +62,6 @@ export const SignUpPage = () => {
     formState: { errors },
   } = useForm<NewUser>();
 
-  const navigate = useNavigate();
-
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
     const { error } = await supabase.auth.signUp({
@@ -79,7 +78,7 @@ export const SignUpPage = () => {
       setAuthError(error.message);
       return;
     }
-    navigate("/login");
+    setauthSuccess(SuccessSignUp);
   };
 
   return (
@@ -183,7 +182,10 @@ export const SignUpPage = () => {
           <ButtonWrapper>
             <FormButton title="register" />
           </ButtonWrapper>
-          {authError && <ErrorText>{authError}</ErrorText>}
+          <MsgContainer>
+            {authError && <ErrorText>{authError}</ErrorText>}
+            {authSuccess && <SuccessText>{authSuccess}</SuccessText>}
+          </MsgContainer>
         </FormWrapper>
       </SignUpWrapper>
     </ComponentWrapper>
@@ -255,6 +257,14 @@ const Title = styled.h1`
 const Text = styled.p`
   margin: 0;
   color: ${({ theme }) => theme.palette.info.light};
+`;
+
+const SuccessText = styled.span`
+  color: #4caf50;
+`;
+
+const MsgContainer = styled.div`
+  width: 70%;
 `;
 
 const ErrorText = styled.span`
