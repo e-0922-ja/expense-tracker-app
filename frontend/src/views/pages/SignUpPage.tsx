@@ -1,13 +1,14 @@
+import { useState } from "react";
 import styled from "styled-components";
-import { IconButton, InputBase, Paper } from "@mui/material";
+import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { UseFormRegister, ValidationRule, useForm } from "react-hook-form";
 import { SupabaseService } from "../../services/supabase";
 import {
-  emailRegex,
   errEmail,
   errFirstName,
   errLastName,
@@ -15,8 +16,6 @@ import {
   errPasswordConf,
   passwordRegex,
 } from "../../constants/regexPattern";
-import { FormButton } from "../components/FormButton";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface NewUser {
   firstName: string;
@@ -28,25 +27,6 @@ interface NewUser {
 
 export const SignUpPage = () => {
   const [authError, setAuthError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
-  const handleClickShowConfirmPassword = () =>
-    setShowConfirmPassword((show) => !show);
-
-  const handleMouseDownConfirmPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
 
   const {
     register,
@@ -83,6 +63,9 @@ export const SignUpPage = () => {
     navigate("/login");
   };
 
+  const isConfirmPasswordSame = (value: string) =>
+    value === getValues("password");
+
   return (
     <ComponentWrapper>
       <SignUpWrapper>
@@ -92,97 +75,52 @@ export const SignUpPage = () => {
           <Link to="/login">Login</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
-          <InputWrapper>
-            <InputPaper elevation={0}>
-              <IconContainer>
-                <AccountCircle />
-              </IconContainer>
-              <InputBase
-                fullWidth
-                placeholder="First Name"
-                type="text"
-                {...register("firstName", { required: true })}
-              />
-            </InputPaper>
-            {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper elevation={0}>
-              <IconContainer>
-                <AccountCircle />
-              </IconContainer>
-              <InputBase
-                fullWidth
-                placeholder="Last Name"
-                type="text"
-                {...register("lastName", { required: true })}
-              />
-            </InputPaper>
-            {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaper elevation={0}>
-              <IconContainer>
-                <MailOutlineIcon />
-              </IconContainer>
-              <InputBase
-                fullWidth
-                placeholder="Email"
-                type="email"
-                {...register("email", {
-                  required: true,
-                  pattern: emailRegex,
-                })}
-              />
-            </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaperPassword elevation={0}>
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-
-              <InputBase
-                fullWidth
-                placeholder="Password"
-                type={showPassword ? "text" : "password"}
-                {...register("password", {
-                  required: true,
-                  pattern: passwordRegex,
-                })}
-              />
-            </InputPaperPassword>
-            {errors.password && <ErrorText>{errPassword}</ErrorText>}
-          </InputWrapper>
-          <InputWrapper>
-            <InputPaperPassword elevation={0}>
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleClickShowConfirmPassword}
-                onMouseDown={handleMouseDownConfirmPassword}
-              >
-                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-              <InputBase
-                fullWidth
-                placeholder="Confirm Password"
-                type={showConfirmPassword ? "text" : "password"}
-                {...register("confirmPassword", {
-                  required: true,
-                  validate: (value) => value === getValues("password"),
-                })}
-              />
-            </InputPaperPassword>
-            {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
-          </InputWrapper>
-
+          <FormInputItem
+            placeholder={"First Name"}
+            inputType={"text"}
+            register={register}
+            valueName={"firstName"}
+            required={true}
+          />
+          {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
+          <FormInputItem
+            placeholder={"Last Name"}
+            inputType={"text"}
+            register={register}
+            valueName={"lastName"}
+            required={true}
+          />
+          {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
+          <FormInputItem
+            placeholder={"Email"}
+            inputType={"email"}
+            register={register}
+            valueName={"email"}
+            required={true}
+          />
+          {errors.email && <ErrorText>{errEmail}</ErrorText>}
+          <FormInputItem
+            placeholder={"Password"}
+            inputType={"password"}
+            register={register}
+            valueName={"password"}
+            required={true}
+            pattern={passwordRegex}
+          />
+          {errors.password && <ErrorText>{errPassword}</ErrorText>}
+          <FormInputItem
+            placeholder={"Confirm Password"}
+            inputType={"password"}
+            register={register}
+            valueName={"confirmPassword"}
+            required={true}
+            validate={isConfirmPasswordSame}
+          />
+          {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
           <ButtonWrapper>
-            <FormButton title="register" />
+            <Button type="submit" variant="contained" disableRipple>
+              submit
+            </Button>
           </ButtonWrapper>
           {authError && <ErrorText>{authError}</ErrorText>}
         </FormWrapper>
@@ -191,8 +129,71 @@ export const SignUpPage = () => {
   );
 };
 
+interface FormInputItemProps {
+  placeholder:
+    | "First Name"
+    | "Last Name"
+    | "Email"
+    | "Password"
+    | "Confirm Password";
+  inputType: "text" | "email" | "password";
+  register: UseFormRegister<NewUser>;
+  valueName:
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "password"
+    | "confirmPassword";
+  required: boolean;
+  pattern?: ValidationRule<RegExp>;
+  validate?: (value: string) => boolean;
+  // errors?: FieldErrors<NewUser>;
+}
+
+const FormInputItem = ({
+  placeholder,
+  inputType,
+  register,
+  valueName,
+  required,
+  pattern,
+  validate,
+}: // errors,
+FormInputItemProps) => {
+  const Icon = () => (
+    <>
+      {(valueName === "firstName" || valueName === "lastName") && (
+        <AccountCircle />
+      )}
+      {valueName === "email" && <MailOutlineIcon />}
+      {valueName === "password" && <LockOutlinedIcon />}
+      {valueName === "confirmPassword" && <LockIcon />}
+    </>
+  );
+  return (
+    <InputWrapper>
+      <InputPaper>
+        <InputAdornment position="start">
+          <Icon />
+        </InputAdornment>
+        <InputBase
+          placeholder={placeholder}
+          type={inputType}
+          {...register(valueName, {
+            required,
+            pattern,
+            validate,
+          })}
+        />
+      </InputPaper>
+      {/* TODO: Consider how to show error statements */}
+      {/* {errors?.[valueName] && <ErrorText>{errPasswordConf}</ErrorText>} */}
+    </InputWrapper>
+  );
+};
+
 const ComponentWrapper = styled.div`
-  height: calc(100vh - 64px);
+  height: calc(100% - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -201,15 +202,12 @@ const ComponentWrapper = styled.div`
 
 const SignUpWrapper = styled.div`
   padding: 20px 0;
-  width: 35%;
+  width: 30%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media (max-width: 600px) {
-    width: 70%;
-  }
 `;
 
 const FormWrapper = styled.form`
@@ -232,13 +230,6 @@ const InputPaper = styled(Paper)`
   align-items: center;
 `;
 
-const InputPaperPassword = styled(Paper)`
-  margin: 15px 0 7px;
-  padding: 7px;
-  display: flex;
-  align-items: center;
-`;
-
 const TitleWrapper = styled.div`
   color: ${({ theme }) => theme.palette.secondary.light};
   display: flex;
@@ -250,12 +241,10 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h1`
   margin: 0 0 7px 0;
-  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Text = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const ErrorText = styled.span`
@@ -265,12 +254,6 @@ const ErrorText = styled.span`
 
 const ButtonWrapper = styled.div`
   margin-top: 15px;
-  margin-bottom: 7px;
   display: flex;
   justify-content: center;
-`;
-
-const IconContainer = styled.div`
-  padding: 8px;
-  color: rgba(0, 0, 0, 0.54);
 `;
