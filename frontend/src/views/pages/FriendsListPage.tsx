@@ -13,6 +13,7 @@ import { Friend, FriendWithStatus } from "../../types";
 import { SubButton } from "../components/SubButton";
 import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 interface FriendEmail {
   email: string;
@@ -285,11 +286,16 @@ export const FriendsListPage = () => {
                   disabled={friend.statusId === 1}
                 />
                 <Label htmlFor={index.toString()}>
-                  <ListItem>
-                    {friend.statusId !== 1
-                      ? `${friend.firstName}  ${friend.lastName}`
-                      : "-"}
-                  </ListItem>
+                  {friend.statusId !== 1 ? (
+                    <ListItem>
+                      {friend.firstName} {friend.lastName}
+                    </ListItem>
+                  ) : (
+                    <ListPending>
+                      <AccessTimeIcon fontSize="small" />
+                      <ListPendingItem>pending approval</ListPendingItem>
+                    </ListPending>
+                  )}
                   <ListItem>{friend.email}</ListItem>
                 </Label>
               </List>
@@ -369,6 +375,18 @@ const Label = styled.label`
 
 const ListItem = styled.span`
   display: inline-block;
+`;
+
+const ListPending = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const ListPendingItem = styled.span`
+  display: inline-block;
+  padding: 0 0.4rem;
+  font-size: 0.8rem;
 `;
 
 const ButtonContainer = styled.div`
