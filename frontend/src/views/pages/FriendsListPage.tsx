@@ -263,44 +263,47 @@ export const FriendsListPage = () => {
       <SubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
-          {friends!.map((friend: FriendWithStatus, index) => {
-            return (
-              <List key={index}>
-                <CheckBox
-                  type="checkbox"
-                  id={index.toString()}
-                  checked={
-                    !!selectedFriends.find(
-                      (selectedFriend) => selectedFriend.email === friend.email
-                    )
-                  }
-                  onChange={(event) =>
-                    handleCheckedChange(
-                      friend.id,
-                      friend.email,
-                      friend.firstName,
-                      friend.lastName,
-                      event.target.checked
-                    )
-                  }
-                  disabled={friend.statusId === 1}
-                />
-                <Label htmlFor={index.toString()}>
-                  {friend.statusId !== 1 ? (
-                    <ListItem>
-                      {friend.firstName} {friend.lastName}
-                    </ListItem>
-                  ) : (
-                    <ListPending>
-                      <AccessTimeIcon fontSize="small" />
-                      <ListPendingItem>pending approval</ListPendingItem>
-                    </ListPending>
-                  )}
-                  <ListItem>{friend.email}</ListItem>
-                </Label>
-              </List>
-            );
-          })}
+          {friends!
+            .filter((friend) => friend.statusId === 2 || friend.sender)
+            .map((friend: FriendWithStatus, index) => {
+              return (
+                <List key={index}>
+                  <CheckBox
+                    type="checkbox"
+                    id={index.toString()}
+                    checked={
+                      !!selectedFriends.find(
+                        (selectedFriend) =>
+                          selectedFriend.email === friend.email
+                      )
+                    }
+                    onChange={(event) =>
+                      handleCheckedChange(
+                        friend.id,
+                        friend.email,
+                        friend.firstName,
+                        friend.lastName,
+                        event.target.checked
+                      )
+                    }
+                    disabled={friend.statusId === 1}
+                  />
+                  <Label htmlFor={index.toString()}>
+                    {friend.statusId !== 1 ? (
+                      <ListItem>
+                        {friend.firstName} {friend.lastName}
+                      </ListItem>
+                    ) : (
+                      <ListPending>
+                        <AccessTimeIcon fontSize="small" />
+                        <ListPendingItem>pending approval</ListPendingItem>
+                      </ListPending>
+                    )}
+                    <ListItem>{friend.email}</ListItem>
+                  </Label>
+                </List>
+              );
+            })}
         </UnorderedList>
 
         <ButtonContainer>
