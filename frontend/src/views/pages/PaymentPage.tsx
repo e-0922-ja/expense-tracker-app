@@ -16,12 +16,14 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
 import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
+import { FormButton } from "../components/FormButton";
 
 interface EachAmount extends Friend {
   amount: string;
@@ -38,7 +40,7 @@ export const PaymentPage = () => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState(categories[0].name);
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState<Dayjs | null>(null);
+  const [date, setDate] = useState<Dayjs | null>(dayjs());
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
@@ -85,7 +87,6 @@ export const PaymentPage = () => {
     );
 
     try {
-      console.log(category);
       const { data, error } = await supabase.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
@@ -103,6 +104,7 @@ export const PaymentPage = () => {
         return false;
       } else {
         console.log(data);
+
         return true;
       }
     } catch (error: any) {
@@ -137,8 +139,8 @@ export const PaymentPage = () => {
     });
   };
 
-  const handleChangeDate = (newValue: Dayjs | null) => {
-    setDate(newValue);
+  const handleChangeDate = (newDate: Dayjs | null) => {
+    setDate(newDate);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
@@ -277,9 +279,7 @@ export const PaymentPage = () => {
               </SubInputsWrapper>
             </InputsWrapper>
             <ButtonContainer>
-              <StyledButton variant="contained" disableRipple type="submit">
-                create
-              </StyledButton>
+              <FormButton title={"create expense"} />
             </ButtonContainer>
           </FormContainer>
         </Section>
@@ -364,6 +364,8 @@ const PeopleSectionContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 50px;
 `;
 
@@ -418,17 +420,10 @@ const StyledOutlinedInput = styled(OutlinedInput)`
 `;
 
 const StyledOutlinedNumberInput = styled(StyledOutlinedInput)`
-  && input::-webkit-outer-spin-button,
-  && input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  && input[type="number"] {
-    -moz-appearance: textfield;
-  }
-
-  .Mui-disabled {
-    color: ${({ theme }) => theme.palette.info.light};
+  &&.Mui-disabled {
+    .css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+      -webkit-text-fill-color: ${({ theme }) => theme.palette.info.light};
+    }
   }
 `;
 
@@ -436,10 +431,6 @@ const MenuItemContainer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
-`;
-
-const StyledButton = styled(Button)`
-  background: ${({ theme }) => theme.palette.secondary.main} !important;
 `;
 
 const StyledSelect = styled(Select)`
@@ -503,6 +494,9 @@ const DatePickerWrapper = styled.div`
 `;
 
 const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};
