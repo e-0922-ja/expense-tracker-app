@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { emailRegex, errEmail } from "../../constants/regexPattern";
+import { emailRegex } from "../../constants/regexPattern";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -13,6 +13,14 @@ import { Friend, FriendWithStatus } from "../../types";
 import { SubButton } from "../components/SubButton";
 import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
+import {
+  ERROR_EMAIL,
+  ERROR_SELECT_FRIENDS,
+  ERROR_SEND_EXISTED_ADDRESS,
+  ERROR_SEND_FAILED,
+  ERROR_SEND_OWN_ADDRESS,
+  deleteMsg,
+} from "../../constants/messages";
 
 interface FriendEmail {
   email: string;
@@ -81,7 +89,8 @@ export const FriendsListPage = () => {
   const sendFriendRequest = async (email: string) => {
     const emailToLowerCase = email.toLowerCase();
     if (emailToLowerCase === userEmail) {
-      setError("You cannot send a friend request to your email address.");
+      setError(ERROR_SEND_OWN_ADDRESS);
+      deleteMsg(setError, "");
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(
         emailToLowerCase
@@ -90,7 +99,8 @@ export const FriendsListPage = () => {
         typeof resultCountFriendShipByEmail === "number" &&
         resultCountFriendShipByEmail > 0
       ) {
-        setError("You've already sent a friend request to this email.");
+        setError(ERROR_SEND_EXISTED_ADDRESS);
+        deleteMsg(setError, "");
       } else {
         const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
@@ -105,7 +115,8 @@ export const FriendsListPage = () => {
             );
 
             if (!emailResponse.status) {
-              setError("Failed to send an email.");
+              setError(ERROR_SEND_FAILED);
+              deleteMsg(setError, "");
             }
 
             // to retrieve the data to update the friend list
@@ -117,6 +128,7 @@ export const FriendsListPage = () => {
             setSuccess(
               `You have successfully sent a friend request to ${email}!`
             );
+            deleteMsg(setSuccess, "");
           }
         }
       }
@@ -224,7 +236,7 @@ export const FriendsListPage = () => {
         state: { selectedFriends },
       });
     } else {
-      setSelectedError("select friends from your friends list");
+      setSelectedError(ERROR_SELECT_FRIENDS);
     }
   };
 
@@ -241,13 +253,14 @@ export const FriendsListPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
+                fullWidth
                 {...register("email", {
                   required: true,
                   pattern: emailRegex,
                 })}
               />
             </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
             <SubButton title={"send"} onClick={handleSendEmail} />
@@ -296,7 +309,6 @@ export const FriendsListPage = () => {
             );
           })}
         </UnorderedList>
-
         <ButtonContainer>
           <SubButton title={"create"} onClick={handleClick} />
         </ButtonContainer>

@@ -2,21 +2,23 @@ import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { SupabaseService } from "../../services/supabase";
-import {
-  emailRegex,
-  errEmail,
-  errFirstName,
-  errLastName,
-  errPassword,
-  errPasswordConf,
-  passwordRegex,
-} from "../../constants/regexPattern";
+import { emailRegex, passwordRegex } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  ERROR_EMAIL,
+  ERROR_FIRSTNAME,
+  ERROR_LASTNAME,
+  ERROR_PASSWORD,
+  ERROR_PASSWORDCONF,
+  ERROR_SOMETHING,
+  ERROR_USER_EXIST,
+  SUCCESS_SIGNUP,
+} from "../../constants/messages";
 
 interface NewUser {
   firstName: string;
@@ -28,6 +30,7 @@ interface NewUser {
 
 export const SignUpPage = () => {
   const [authError, setAuthError] = useState("");
+  const [authSuccess, setAuthSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -55,8 +58,6 @@ export const SignUpPage = () => {
     formState: { errors },
   } = useForm<NewUser>();
 
-  const navigate = useNavigate();
-
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
 
@@ -71,16 +72,16 @@ export const SignUpPage = () => {
       return;
     }
     if (!user) {
-      setAuthError("Something went wrong");
+      setAuthError(ERROR_SOMETHING);
       return;
     }
     const searcUuser = await SupabaseService.findUserByEmail(user.email);
     if (searcUuser) {
-      setAuthError("User already exists");
+      setAuthError(ERROR_USER_EXIST);
       return;
     }
     await SupabaseService.createUser(user);
-    navigate("/login");
+    setAuthSuccess(SUCCESS_SIGNUP);
   };
 
   return (
@@ -104,7 +105,7 @@ export const SignUpPage = () => {
                 {...register("firstName", { required: true })}
               />
             </InputPaper>
-            {errors.firstName && <ErrorText>{errFirstName}</ErrorText>}
+            {errors.firstName && <ErrorText>{ERROR_FIRSTNAME}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -118,7 +119,7 @@ export const SignUpPage = () => {
                 {...register("lastName", { required: true })}
               />
             </InputPaper>
-            {errors.lastName && <ErrorText>{errLastName}</ErrorText>}
+            {errors.lastName && <ErrorText>{ERROR_LASTNAME}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -135,7 +136,7 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaperPassword elevation={0}>
@@ -157,7 +158,7 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaperPassword>
-            {errors.password && <ErrorText>{errPassword}</ErrorText>}
+            {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaperPassword elevation={0}>
@@ -178,13 +179,19 @@ export const SignUpPage = () => {
                 })}
               />
             </InputPaperPassword>
-            {errors.confirmPassword && <ErrorText>{errPasswordConf}</ErrorText>}
+            {errors.confirmPassword && (
+              <ErrorText>{ERROR_PASSWORDCONF}</ErrorText>
+            )}
           </InputWrapper>
-
           <ButtonWrapper>
             <FormButton title="register" />
           </ButtonWrapper>
-          {authError && <ErrorText>{authError}</ErrorText>}
+          {authError && <ErrorTextSignup>{authError}</ErrorTextSignup>}
+          {authSuccess && (
+            <SuccessTextSignup
+              dangerouslySetInnerHTML={{ __html: authSuccess }}
+            />
+          )}
         </FormWrapper>
       </SignUpWrapper>
     </ComponentWrapper>
@@ -261,6 +268,22 @@ const Text = styled.p`
 const ErrorText = styled.span`
   font-size: 0.7rem;
   color: #ff908d;
+`;
+
+const ErrorTextSignup = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #ff908d;
+`;
+
+const SuccessTextSignup = styled.div`
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #4caf50;
 `;
 
 const ButtonWrapper = styled.div`

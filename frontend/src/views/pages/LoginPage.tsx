@@ -8,15 +8,15 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
-import {
-  emailRegex,
-  errEmail,
-  errPassword,
-  errUserNotFound,
-  passwordRegex,
-} from "../../constants/regexPattern";
+import { emailRegex, passwordRegex } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  ERROR_EMAIL,
+  ERROR_PASSWORD,
+  ERROR_USER_NOTFOUND,
+  deleteMsg,
+} from "../../constants/messages";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -48,10 +48,12 @@ export const LoginPage = () => {
     });
     if (error) {
       setAuthError(error.message);
+      deleteMsg(setAuthError, "");
       return;
     }
     if (!data?.user) {
-      setAuthError(errUserNotFound);
+      setAuthError(ERROR_USER_NOTFOUND);
+      deleteMsg(setAuthError, "");
       return;
     }
 
@@ -64,7 +66,6 @@ export const LoginPage = () => {
     };
 
     dispatch(login(userInfo));
-
     navigate("/history");
   };
 
@@ -100,7 +101,7 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -121,12 +122,12 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.password && <ErrorText>{errPassword}</ErrorText>}
+            {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           </InputWrapper>
           <ButtonWrapper>
             <FormButton title="login" />
           </ButtonWrapper>
-          {authError && <ErrorText>{authError}</ErrorText>}
+          {authError && <ErrorTextLogin>{authError}</ErrorTextLogin>}
         </FormWrapper>
       </LoginWrapper>
     </ComponentWrapper>
@@ -195,6 +196,15 @@ const Text = styled.p`
 
 const ErrorText = styled.span`
   font-size: 0.7rem;
+  color: #ff908d;
+`;
+
+const ErrorTextLogin = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
   color: #ff908d;
 `;
 

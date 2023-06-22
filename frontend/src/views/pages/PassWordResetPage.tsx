@@ -2,15 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Box, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { useForm } from "react-hook-form";
-import {
-  errPassword,
-  errPasswordConf,
-  passwordRegex,
-} from "../../constants/regexPattern";
+import { passwordRegex } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/messages";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -101,7 +98,7 @@ export const PassWordResetPage = () => {
               }
             />
           </StyledBox>
-          {errors.password && <ErrorText>{errPassword}</ErrorText>}
+          {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           <InputTitle>Confirm Password</InputTitle>
           <StyledBox>
             <StyledOutlinedInput
@@ -129,7 +126,7 @@ export const PassWordResetPage = () => {
               }
             />
           </StyledBox>
-          {errors.confPassword && <ErrorText>{errPasswordConf}</ErrorText>}
+          {errors.confPassword && <ErrorText>{ERROR_PASSWORDCONF}</ErrorText>}
           <ButtonWrapper>
             <FormButton title="Register" />
           </ButtonWrapper>

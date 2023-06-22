@@ -6,12 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
 import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
+import { emailRegex } from "../../constants/regexPattern";
 import {
-  emailRegex,
-  errEmail,
-  errFirstName,
-  errLastName,
-} from "../../constants/regexPattern";
+  ERROR_CHANGE_ACCOUNT_INFO,
+  ERROR_EMAIL,
+  ERROR_FIRSTNAME,
+  ERROR_LASTNAME,
+  ERROR_RESET_PASSWORD_EMAIL_NOTHING,
+  ERROR_RESET_PASSWORD_SEND_MAIL,
+  ERROR_SOMETHING,
+  SUCCESS_CHANGE_ACCOUNT_INFO,
+  SUCCESS_RESET_PASSWORD,
+  deleteMsg,
+} from "../../constants/messages";
 
 interface AccountInputProps {
   firstName?: string;
@@ -37,6 +44,10 @@ export const AccountInput = ({
 }: AccountInputProps) => {
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
+  const [errorUpdateUserInfo, setErrorUpdateUserInfo] = useState("");
+  const [successUpdateUserInfo, setSuccessUpdateUserInfo] = useState("");
+  const [errorSendEmail, setErrorSendEmail] = useState("");
+  const [successSendEmail, setSuccessSendEmail] = useState("");
 
   const {
     register: registerUpdatedUser,
@@ -63,7 +74,9 @@ export const AccountInput = ({
       data: updatedMetaData,
     });
     if (error) {
-      console.error("Error updating user email and metadata:", error);
+      setErrorUpdateUserInfo(ERROR_CHANGE_ACCOUNT_INFO);
+      console.error(ERROR_CHANGE_ACCOUNT_INFO);
+      deleteMsg(setErrorUpdateUserInfo, "");
     }
 
     if (data.user) {
@@ -74,15 +87,17 @@ export const AccountInput = ({
         email: data.user.email,
       };
       dispatch(update(fetchedUserInfoBySupabase));
+      setSuccessUpdateUserInfo(SUCCESS_CHANGE_ACCOUNT_INFO);
+      deleteMsg(setSuccessUpdateUserInfo, "");
     }
-
     setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
     const currentEmail = account.user?.email;
     if (!currentEmail) {
-      alert("Email not defined");
+      setErrorSendEmail(ERROR_RESET_PASSWORD_EMAIL_NOTHING);
+      deleteMsg(setErrorSendEmail, "");
       return;
     }
     try {
@@ -91,11 +106,15 @@ export const AccountInput = ({
           redirectTo: "http://localhost:3000/passwordReset",
         });
       if (sendEmailError) {
+        setErrorSendEmail(ERROR_RESET_PASSWORD_SEND_MAIL);
+        deleteMsg(setErrorSendEmail, "");
         throw sendEmailError;
       }
-      alert("Please check your email");
+      setSuccessSendEmail(SUCCESS_RESET_PASSWORD);
+      deleteMsg(setSuccessSendEmail, "");
     } catch (error) {
-      alert("Something went wrong");
+      setErrorSendEmail(ERROR_SOMETHING);
+      deleteMsg(setErrorSendEmail, "");
     }
   };
 
@@ -103,7 +122,6 @@ export const AccountInput = ({
     <div>
       <Title>Account</Title>
       <SubTitle>Your information</SubTitle>
-
       <InfoContainer>
         <StyledFormBox
           component="form"
@@ -121,7 +139,9 @@ export const AccountInput = ({
               <Data>{account.user?.firstName}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.firstName && <ErrorText>{errFirstName}</ErrorText>}
+          {errorsUpdatedUser.firstName && (
+            <ErrorText>{ERROR_FIRSTNAME}</ErrorText>
+          )}
           <InputTitle>Last Name</InputTitle>
           <StyledBox>
             {editStatus ? (
@@ -135,7 +155,9 @@ export const AccountInput = ({
               <Data>{account.user?.lastName}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
+          {errorsUpdatedUser.lastName && (
+            <ErrorText>{ERROR_LASTNAME}</ErrorText>
+          )}
           <InputTitle>Email</InputTitle>
           <StyledBox>
             {editStatus ? (
@@ -151,7 +173,7 @@ export const AccountInput = ({
               <Data>{account.user?.email}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}
+          {errorsUpdatedUser.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           <ButtonContainer>
             {editStatus ? (
               <StyledButton variant="contained" disableRipple type="submit">
@@ -161,10 +183,19 @@ export const AccountInput = ({
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
+          {errorUpdateUserInfo && (
+            <ErrorText
+              dangerouslySetInnerHTML={{ __html: errorUpdateUserInfo }}
+            />
+          )}
+          {successUpdateUserInfo && (
+            <SuccessText
+              dangerouslySetInnerHTML={{ __html: successUpdateUserInfo }}
+            />
+          )}
         </StyledFormBox>
       </InfoContainer>
-      <SubTitle>Reset Password</SubTitle>
-
+      <SecondSubTitle>Reset Password</SecondSubTitle>
       <SubButtonWrapper>
         <StyledButton
           variant="contained"
@@ -173,6 +204,12 @@ export const AccountInput = ({
         >
           send
         </StyledButton>
+        {errorSendEmail && (
+          <ErrorText dangerouslySetInnerHTML={{ __html: errorSendEmail }} />
+        )}
+        {successSendEmail && (
+          <SuccessText dangerouslySetInnerHTML={{ __html: successSendEmail }} />
+        )}
       </SubButtonWrapper>
     </div>
   );
@@ -205,7 +242,6 @@ const Data = styled.div`
 
 const ButtonContainer = styled.div`
   margin-top: 30px;
-  margin-bottom: 6rem;
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
@@ -244,8 +280,14 @@ const SubTitle = styled.h3`
   color: ${({ theme }) => theme.palette.info.light};
 `;
 
+const SecondSubTitle = styled.h3`
+  margin-top: 6rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
+`;
+
 const SubButtonWrapper = styled.div`
-  width: 100%;
+  width: 70%;
   display: flex;
   flex-direction: column;
   margin-top: 30px;
@@ -262,6 +304,12 @@ const ErrorText = styled.div`
   margin-top: 7px;
   font-size: 1rem;
   color: #ff908d;
+`;
+
+const SuccessText = styled.div`
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #4caf50;
 `;
 
 const StyledButton = styled(Button)`
