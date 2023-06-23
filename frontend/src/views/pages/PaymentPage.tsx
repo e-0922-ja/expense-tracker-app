@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Box,
-  Button,
   Checkbox,
   InputAdornment,
   MenuItem,
@@ -24,10 +23,16 @@ import { selectUser } from "../../reducer/userSlice";
 import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
+import { useForm } from "react-hook-form";
 
 interface EachAmount extends Friend {
   amount: string;
   paid: boolean;
+}
+
+interface Expense {
+  amount: string;
+  description: string;
 }
 
 const supabase = createClient<Database>(
@@ -37,14 +42,26 @@ const supabase = createClient<Database>(
 
 export const PaymentPage = () => {
   const [error, setError] = useState("");
-  const [amount, setAmount] = useState("");
+  // const [amount, setAmount] = useState("");
   const [category, setCategory] = useState(categories[0].name);
-  const [description, setDescription] = useState("");
+  // const [description, setDescription] = useState("");
   const [date, setDate] = useState<Dayjs | null>(dayjs());
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
   const account = useSelector(selectUser);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<Expense>();
+
+  const amount = watch("amount", "");
+  const description = watch("description");
+
   const splitters =
     account.isLogin && account.user ? [account.user, ...selectedFriends] : [];
 
@@ -67,19 +84,22 @@ export const PaymentPage = () => {
       ...member,
       paid: member.id.toString() === event.target.value,
     }));
-
     setMemberExpense(updatedPaid);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const createExpense = handleSubmit(async (data: Expense) => {
+    // Here you have access to data which includes amount, description and others that you registered
     const resultInsertExpense = await insertExpense();
     if (resultInsertExpense) navigate("/history");
-  };
+  });
 
   console.log(error);
 
   const insertExpense = async () => {
+    if (description === "") {
+      setError("Description cannot be empty");
+      return false;
+    }
     const memberIds = memberExpense.map((member) => member.id.toString());
     const memberPaids = memberExpense.map((member) => member.paid);
     const memberAmounts = memberExpense.map((member) =>
@@ -99,6 +119,7 @@ export const PaymentPage = () => {
         description: description,
         payment: parseFloat(amount),
       });
+
       if (error) {
         setError(error.message);
         return false;
@@ -112,14 +133,19 @@ export const PaymentPage = () => {
       return false;
     }
   };
+
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
-    const eachAmount =
-      Math.floor((parseFloat(event.target.value) / splitters.length) * 100) /
-      100;
+    const newAmount = event.target.value;
+
+    setValue("amount", newAmount);
+    const eachAmount = newAmount
+      ? Math.floor((parseFloat(newAmount) / splitters.length) * 100) / 100
+      : 0;
+
     const updatedEachAmount = memberExpense.map((member) => {
       return { ...member, amount: eachAmount.toFixed(2) };
     });
+
     setMemberExpense(updatedEachAmount);
   };
 
@@ -144,7 +170,8 @@ export const PaymentPage = () => {
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value);
+    const newAmount = event.target.value;
+    setValue("description", newAmount);
   };
 
   return (
@@ -157,12 +184,18 @@ export const PaymentPage = () => {
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <FormContainer onSubmit={handleSubmit}>
+          <FormContainer onSubmit={createExpense}>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
                 <StyledBox>
                   <StyledOutlinedNumberInput
+                    {...register("amount", {
+                      required: {
+                        value: true,
+                        message: "The amount is required",
+                      },
+                    })}
                     value={amount}
                     onChange={handleChangeAmount}
                     type="number"
@@ -221,9 +254,15 @@ export const PaymentPage = () => {
                 <StyledBox>
                   <StyledOutlinedInput
                     value={description}
-                    onChange={handleChangeDescription}
                     placeholder="Please enter text"
                     fullWidth
+                    {...register("description", {
+                      required: {
+                        value: true,
+                        message: "The description is required",
+                      },
+                    })}
+                    onChange={handleChangeDescription}
                   />
                 </StyledBox>
                 <InputTitle>Date</InputTitle>
@@ -245,7 +284,7 @@ export const PaymentPage = () => {
                           <SplitterName>{member.firstName}</SplitterName>
                           <SplitterBox>
                             <StyledOutlinedNumberInput
-                              id={member.id}
+                              id={index.toString()}
                               value={member.amount}
                               placeholder="0.0"
                               type="number"
@@ -281,6 +320,10 @@ export const PaymentPage = () => {
             <ButtonContainer>
               <FormButton title={"create expense"} />
             </ButtonContainer>
+            {errors.amount && <ErrorText>{errors.amount.message}</ErrorText>}
+            {errors.description && (
+              <ErrorText>{errors.description.message}</ErrorText>
+            )}
           </FormContainer>
         </Section>
       </SubContainer>
@@ -483,11 +526,11 @@ const DatePickerWrapper = styled.div`
       color: ${(props) => props.theme.palette.info.light};
 
       &:hover {
-        color: ${(props) => props.theme.palette.info.dark};
+        color: ${(props) => props.theme.palette.info.light};
       }
 
       &:active {
-        color: ${(props) => props.theme.palette.info.dark};
+        color: ${(props) => props.theme.palette.info.light};
       }
     }
   }
@@ -501,4 +544,13 @@ const CheckboxWrapper = styled.div`
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};
   }
+`;
+
+const ErrorText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #ff908d;
 `;
