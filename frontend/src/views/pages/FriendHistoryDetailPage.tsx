@@ -237,15 +237,13 @@ export const FriendHistoryDetailPage = () => {
                         );
                       })}
                     </SplitterContainer>
-                    <ButtonContainer>
-                      <SubButton title={"save"} onClick={handlesave} />
-                    </ButtonContainer>
-                    <ButtonContainer>
-                      <SubButton title={"delete"} onClick={handledelete} />
-                    </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>
               </FormContainer>
+              <ButtonContainer>
+                <SubButton title={"delete"} onClick={handledelete} />
+                <SubButton title={"save"} onClick={handlesave} />
+              </ButtonContainer>
             </Section>
           </DetailBox>
         </SubBox>
@@ -296,7 +294,7 @@ const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: 100%;
-  overflow: auto;
+  height: 100vh;
   @media (min-width: 600px) {
     width: calc(100% - ${drawerWidth}px);
   }
@@ -305,7 +303,7 @@ const MainBox = styled.div`
 const Title = styled.h2`
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const Section = styled.div`
@@ -408,9 +406,11 @@ const IconCircle = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 50px;
+  display: flex;
+  justyfy-content: space-between;
+  gap: 20px;
 `;
-
 const SubBox = styled(Box)`
   width: 100%;
 `;
@@ -418,7 +418,7 @@ const SubBox = styled(Box)`
 const PageTitle = styled.h2`
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const Span = styled.span`
@@ -427,6 +427,9 @@ const Span = styled.span`
 `;
 
 const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};

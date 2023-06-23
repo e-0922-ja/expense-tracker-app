@@ -225,15 +225,13 @@ export const HistoryDetailPage = () => {
                         );
                       })}
                     </SplitterContainer>
-                    <ButtonContainer>
-                      <SubButton title={"save"} onClick={handlesave} />
-                    </ButtonContainer>
-                    <ButtonContainer>
-                      <SubButton title={"delete"} onClick={handledelete} />
-                    </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>
               </FormContainer>
+              <ButtonContainer>
+                <SubButton title={"delete"} onClick={handledelete} />
+                <SubButton title={"save"} onClick={handlesave} />
+              </ButtonContainer>
             </Section>
           </DetailBox>
         </SubBox>
@@ -283,7 +281,7 @@ const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: calc(100% - ${drawerWidth}px);
-  overflow: auto;
+  height: 100vh;
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;
@@ -403,7 +401,10 @@ const IconCircle = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  margin-top: 50px;
+  display: flex;
+  justyfy-content: space-between;
+  gap: 20px;
 `;
 
 const SubBox = styled(Box)`
@@ -411,6 +412,9 @@ const SubBox = styled(Box)`
 `;
 
 const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};

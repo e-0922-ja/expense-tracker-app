@@ -326,7 +326,7 @@ const MainContainer = styled.div`
   justify-content: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
-  margin-top: 70px;
+  height: 100vh;
   @media (max-width: 600px) {
     flex-direction: column;
     margin-top: 0;
@@ -341,6 +341,7 @@ const SubContainer = styled(Box)`
   width: 35%;
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
+  margin-top: 70px;
   @media (max-width: 600px) {
     height: 100%;
     width: 100%;

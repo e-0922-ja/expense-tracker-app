@@ -22,8 +22,8 @@ function App() {
   const theme = useSelector(selectTheme);
 
   return (
-    <div className="App">
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <div className="App">
         <Header />
         <StyledToolbar />
         <Routes>
@@ -60,8 +60,8 @@ function App() {
           />
           <Route path="/passwordReset" element={<PassWordResetPage />} />
         </Routes>
-      </ThemeProvider>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

@@ -345,7 +345,7 @@ const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 95%;
+  height: 100vh;
   width: 45%;
   background-color: ${({ theme }) => theme.palette.primary.main};
   @media (max-width: 600px) {
