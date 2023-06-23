@@ -37,12 +37,11 @@ serve(async (req) => {
     },
     method: "POST"
   })
-  return new Response({
+  return new Response(JSON.stringify(response), {
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json'
     },
     status: response.status,
-    message: response.statusText
   })
 });

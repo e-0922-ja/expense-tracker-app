@@ -10,6 +10,7 @@ export interface Friend {
 
 export interface FriendWithStatus extends Friend {
   statusId: number;
+  sender: boolean;
 }
 
 export interface Category {
