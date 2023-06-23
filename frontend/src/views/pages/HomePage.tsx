@@ -76,13 +76,19 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   font-size: 4rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+  padding-left: 70px;
   @media (max-width: 600px) {
     font-size: 2rem;
+    padding-left: 20px;
   }
 `;
 
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
+  padding-left: 70px;
+  @media (max-width: 600px) {
+    padding: 0 20px;
+  }
 `;
 
 const HeroSection = styled.div`
@@ -106,6 +112,7 @@ const HeroContainer = styled.div`
   align-item: center;
   width: 50%;
   height: fit-content;
+
   @media (max-width: 600px) {
     width: 100%;
   }
@@ -132,6 +139,7 @@ const SubSection = styled.div`
   align-items: center;
   height: 40%;
   background: ${({ theme }) => theme.palette.primary.main};
+  gap: 20px;
   @media (max-width: 600px) {
     width: 100%;
     flex-direction: column;
@@ -152,6 +160,10 @@ const FeatContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.palette.info.light};
+  padding: 0 70px 70px;
+  @media (max-width: 600px) {
+    padding: 0 20px 70px;
+  }
 `;
 
 const StyledButton = styled(Button)`

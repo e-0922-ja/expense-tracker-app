@@ -291,6 +291,9 @@ const SubButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 30px;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const StyledFormBox = styled(Box)`

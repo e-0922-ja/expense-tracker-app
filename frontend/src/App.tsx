@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./views/pages/HomePage";
 import { Header } from "./views/components/Header";
 import { useSelector } from "react-redux";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { selectTheme } from "./reducer/colorModeSlice";
 import { SignUpPage } from "./views/pages/SignUpPage";
 import { LoginPage } from "./views/pages/LoginPage";
@@ -25,7 +25,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <Header />
-        <Toolbar />
+        <StyledToolbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
@@ -66,3 +66,10 @@ function App() {
 }
 
 export default App;
+
+const StyledToolbar = styled(Toolbar)`
+  padding: 0 70px !important;
+  @media (max-width: 600px) {
+    padding: 0 20px !important;
+  }
+`;

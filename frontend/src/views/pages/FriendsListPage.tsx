@@ -324,11 +324,12 @@ const MainContainer = styled.div`
   overflow: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
+  margin-top: 70px;
   @media (max-width: 600px) {
     flex-direction: column;
+    margin-top: 0;
   }
 `;
 
@@ -343,6 +344,7 @@ const SubContainer = styled(Box)`
   @media (max-width: 600px) {
     height: 100%;
     width: 100%;
+    padding: 0;
   }
 `;
 

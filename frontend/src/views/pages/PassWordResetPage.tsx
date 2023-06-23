@@ -80,8 +80,8 @@ export const PassWordResetPage = () => {
               })}
               type={showPassword ? "text" : "password"}
               fullWidth
-              endAdornment={
-                <InputAdornment position="end">
+              startAdornment={
+                <InputAdornment position="start">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
@@ -108,8 +108,8 @@ export const PassWordResetPage = () => {
               })}
               type={showConfirmPassword ? "text" : "password"}
               fullWidth
-              endAdornment={
-                <InputAdornment position="end">
+              startAdornment={
+                <InputAdornment position="start">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowConfirmPassword}
@@ -137,7 +137,7 @@ export const PassWordResetPage = () => {
 };
 
 const ComponentWrapper = styled.div`
-  height: calc(100% - 64px);
+  height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,9 +158,10 @@ const PassResetWrapper = styled.div`
 `;
 
 const FormWrapper = styled.form`
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const TitleWrapper = styled.div`

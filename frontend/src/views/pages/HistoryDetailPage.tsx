@@ -274,7 +274,6 @@ const MobileDrawer = styled(Drawer)`
     box-sizing: border-box;
     width: ${drawerWidth}px;
   }
-
   @media (min-width: 600px) {
     display: none;
   }
