@@ -73,7 +73,6 @@ class _userService {
       },
     ]);
     if (error) {
-      console.log(error);
       return { isError: true, message: error.message };
     }
     return { isError: false, message: "Success!" };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
@@ -26,7 +26,6 @@ interface NewUser {
 }
 
 export const SignUpPage = () => {
-  const [authError, setAuthError] = useState("");
   const { signupError, signup } = useSignup();
 
   const {
@@ -38,13 +37,15 @@ export const SignUpPage = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (signupError.message === "Success!") {
+      navigate("/login");
+    }
+  }, [navigate, signupError]);
+
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
     signup({ firstName, lastName, email, password });
-    if (signupError.isError && signupError.message) {
-      return setAuthError(signupError.message);
-    }
-    navigate("/login");
   };
 
   const isConfirmPasswordSame = (value: string) =>
@@ -106,7 +107,7 @@ export const SignUpPage = () => {
               submit
             </Button>
           </ButtonWrapper>
-          {authError && <ErrorText>{authError}</ErrorText>}
+          {signupError.message && <ErrorText>{signupError.message}</ErrorText>}
         </FormWrapper>
       </SignUpWrapper>
     </ComponentWrapper>

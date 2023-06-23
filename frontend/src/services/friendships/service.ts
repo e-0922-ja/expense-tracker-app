@@ -9,10 +9,10 @@ class _friendService {
     const { error } = await client
       .from("Friendships")
       .update({ friendId })
-      .eq("friendEmail", friendEmail);
+      .eq("friendEmail", friendEmail)
+      .is("friendId", null);
 
     if (error) {
-      console.log(error);
       return { isError: true, message: error.message };
     }
     return { isError: false, message: "Success!" };

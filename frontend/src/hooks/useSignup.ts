@@ -44,7 +44,7 @@ export const useSignup = () => {
       lastName,
     });
     if (isError) {
-      return setSignupError({ isError, message });
+      setSignupError({ isError, message });
     }
     return createdUser;
   };
@@ -60,10 +60,12 @@ export const useSignup = () => {
     id,
     email,
   }: UpdateFriendIdRequest) => {
-    await FriendshipService.updateFriendshipIdByFriendemail({
-      friendEmail: email,
-      friendId: id,
-    });
+    const { isError, message } =
+      await FriendshipService.updateFriendshipIdByFriendemail({
+        friendEmail: email,
+        friendId: id,
+      });
+    return setSignupError({ isError, message });
   };
 
   const signup = async ({
@@ -79,10 +81,11 @@ export const useSignup = () => {
       lastName,
     });
     const isUser = createdUser
-      ? UserService.findUserByEmail(createdUser?.email)
+      ? await UserService.findUserByEmail(createdUser?.email)
       : false;
     if (isUser) {
       setSignupError({ isError: true, message: "User already exists" });
+      return;
     }
     if (createdUser) {
       await createUser(createdUser);
