@@ -263,6 +263,8 @@ export const FriendsListPage = () => {
       <SubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
+          {/* statusId 1: pending, 2: approved */}
+          {/* friend.id could be null so pathing index instead of friend.id */}
           {friends!
             .filter((friend) => friend.statusId === 2 || friend.sender)
             .map((friend: FriendWithStatus, index) => {
@@ -294,10 +296,10 @@ export const FriendsListPage = () => {
                         {friend.firstName} {friend.lastName}
                       </ListItem>
                     ) : (
-                      <ListPending>
+                      <PendingFriendList>
                         <AccessTimeIcon fontSize="small" />
-                        <ListPendingItem>pending approval</ListPendingItem>
-                      </ListPending>
+                        <PendingListItem>pending approval</PendingListItem>
+                      </PendingFriendList>
                     )}
                     <ListItem>{friend.email}</ListItem>
                   </Label>
@@ -380,13 +382,13 @@ const ListItem = styled.span`
   display: inline-block;
 `;
 
-const ListPending = styled.div`
+const PendingFriendList = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
 
-const ListPendingItem = styled.span`
+const PendingListItem = styled.span`
   display: inline-block;
   padding: 0 0.4rem;
   font-size: 0.8rem;
