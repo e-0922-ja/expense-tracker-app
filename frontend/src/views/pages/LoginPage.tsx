@@ -17,11 +17,7 @@ import {
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 interface CurrentUser {
   email: string;
@@ -42,7 +38,7 @@ export const LoginPage = () => {
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
-    const { error, data } = await supabase.auth.signInWithPassword({
+    const { error, data } = await client.auth.signInWithPassword({
       email,
       password,
     });
@@ -75,8 +71,6 @@ export const LoginPage = () => {
   ) => {
     event.preventDefault();
   };
-
-
 
   return (
     <ComponentWrapper>

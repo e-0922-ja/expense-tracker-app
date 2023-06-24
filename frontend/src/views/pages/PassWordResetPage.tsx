@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Box, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { useForm } from "react-hook-form";
@@ -11,11 +10,7 @@ import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 interface PasswordData {
   password: string;
@@ -37,7 +32,7 @@ export const PassWordResetPage = () => {
   const handleChangePassWord = async (data: PasswordData) => {
     const { password } = data;
     try {
-      const { error: passwordResetError } = await supabase.auth.updateUser({
+      const { error: passwordResetError } = await client.auth.updateUser({
         password,
       });
       if (passwordResetError) {

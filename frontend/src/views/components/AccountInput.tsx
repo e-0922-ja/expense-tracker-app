@@ -4,7 +4,6 @@ import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
-import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import {
   emailRegex,
@@ -12,6 +11,7 @@ import {
   errFirstName,
   errLastName,
 } from "../../constants/regexPattern";
+import { client } from "../../services/supabase";
 
 interface AccountInputProps {
   firstName?: string;
@@ -24,11 +24,6 @@ interface FormData {
   lastName?: string;
   email?: string;
 }
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
 
 export const AccountInput = ({
   firstName,
@@ -58,7 +53,7 @@ export const AccountInput = ({
       lastName: lastName,
     };
 
-    const { data, error } = await supabase.auth.updateUser({
+    const { data, error } = await client.auth.updateUser({
       email: email,
       data: updatedMetaData,
     });
@@ -86,10 +81,12 @@ export const AccountInput = ({
       return;
     }
     try {
-      const { error: sendEmailError } =
-        await supabase.auth.resetPasswordForEmail(currentEmail, {
+      const { error: sendEmailError } = await client.auth.resetPasswordForEmail(
+        currentEmail,
+        {
           redirectTo: "http://localhost:3000/passwordReset",
-        });
+        }
+      );
       if (sendEmailError) {
         throw sendEmailError;
       }
