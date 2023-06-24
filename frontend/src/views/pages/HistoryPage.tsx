@@ -113,6 +113,8 @@ export const HistoryPage = () => {
     setValue(newValue);
   };
 
+
+
   return (
     <Wrapper>
       <NavBox>

@@ -1,26 +1,23 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../reducer/userSlice";
+import { useSupabaseSession } from "../hooks/useSupabaseSession";
 
 interface ProtectedRouteProps {
   element: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
-  const account = useSelector(selectUser);
   const location = useLocation();
+  const { session, loading } = useSupabaseSession();
 
-  // If account or account.isLogin is undefined, return null
-  if (!account || account.isLogin === undefined) {
-    return null;
-  }
+  if (loading) return null;
 
-  // Otherwise, proceed as before
-  return account.isLogin ? (
-    <>{element}</> // Wrapping the element with Fragment to ensure a ReactElement is returned.
+  return session ? (
+    <>{element}</>
   ) : (
     <Navigate to="/login" state={{ from: location.pathname }} replace />
   );
 };
 
 export default ProtectedRoute;
+
+

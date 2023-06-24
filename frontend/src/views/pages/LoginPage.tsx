@@ -76,6 +76,8 @@ export const LoginPage = () => {
     event.preventDefault();
   };
 
+
+
   return (
     <ComponentWrapper>
       <LoginWrapper>

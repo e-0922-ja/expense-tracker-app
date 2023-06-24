@@ -17,6 +17,7 @@ import { selectTheme } from "../../reducer/colorModeSlice";
 import { logout, selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { useState } from "react";
+import { client } from "../../services/supabase";
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
@@ -30,11 +31,16 @@ export const DrawerContents = () => {
     setSelectedId(num);
   };
 
-  const handleLogput = () => {
+  const handleLogout = async () => {
     if (account.isLogin) {
       dispatch(logout());
       navigate("/");
       setSelectedId(4);
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        console.error("Failed to logout: ", error.message);
+      }
     }
   };
 
@@ -59,7 +65,7 @@ export const DrawerContents = () => {
     },
 
     {
-      onClick: handleLogput,
+      onClick: handleLogout,
       text: "Logout",
       icon: <LogoutIcon style={{ color: theme.palette.secondary.main }} />,
       id: 4,

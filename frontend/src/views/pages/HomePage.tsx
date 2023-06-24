@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 import TopImage from "../../images/topimage.png";
 
 export const HomePage = () => {
