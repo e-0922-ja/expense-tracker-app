@@ -21,6 +21,7 @@ import {
   ERROR_SEND_OWN_ADDRESS,
   deleteMsg,
 } from "../../constants/messages";
+import { GobackButton } from "../components/GobackButton";
 
 interface FriendEmail {
   email: string;
@@ -240,9 +241,16 @@ export const FriendsListPage = () => {
     }
   };
 
+  const handleGoBack = () => {
+    navigate("/history");
+  };
+
   return (
     <MainContainer>
       <SubContainer>
+        <GobackButtonWrapper>
+          <GobackButton onClick={handleGoBack} />
+        </GobackButtonWrapper>
         <Title>Add new friends</Title>
         <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
@@ -272,7 +280,7 @@ export const FriendsListPage = () => {
           </SubButtonWrapper>
         </StyledBox>
       </SubContainer>
-      <SubContainer>
+      <FriendListSubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
           {friends!.map((friend: FriendWithStatus, index) => {
@@ -313,7 +321,7 @@ export const FriendsListPage = () => {
           <SubButton title={"create"} onClick={handleClick} />
         </ButtonContainer>
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
-      </SubContainer>
+      </FriendListSubContainer>
     </MainContainer>
   );
 };
@@ -333,7 +341,7 @@ const MainContainer = styled.div`
   }
 `;
 
-const SubContainer = styled(Box)`
+const FriendListSubContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -342,6 +350,22 @@ const SubContainer = styled(Box)`
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
   margin-top: 70px;
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+  }
+`;
+
+const SubContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 70%;
+  width: 35%;
+  padding: 2rem;
+  background: ${({ theme }) => theme.palette.primary.main};
+  margin-top: 30px;
   @media (max-width: 600px) {
     height: 100%;
     width: 100%;
@@ -403,18 +427,12 @@ const SuccessText = styled.div`
   color: #4caf50;
 `;
 
-// ==============================================================
-// commonized later
-// ==============================================================
 const InputWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-// ==============================================================
-// commonized later
-// ==============================================================
 const InputPaper = styled(Paper)`
   margin: 15px 0 0;
   padding: 7px;
@@ -435,4 +453,9 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   width: 70%;
   margintop: 2rem;
+`;
+
+const GobackButtonWrapper = styled.div`
+  width: 70%;
+  display: flex;
 `;

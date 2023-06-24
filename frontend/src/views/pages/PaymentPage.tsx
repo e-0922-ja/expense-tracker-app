@@ -24,6 +24,7 @@ import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
+import { GobackButton } from "../components/GobackButton";
 
 interface EachAmount extends Friend {
   amount: string;
@@ -174,10 +175,17 @@ export const PaymentPage = () => {
     setValue("description", newAmount);
   };
 
+  const handleGoBack = () => {
+    navigate("/expenses/friendslist");
+  };
+
   return (
     <MainContainer>
       <SubContainer>
         <Section>
+          <GobackButtonWrapper>
+            <GobackButton onClick={handleGoBack} />
+          </GobackButtonWrapper>
           <Title>Create Expense</Title>
           <PeopleSectionContainer>
             <FriendIcon friends={splitters} />
@@ -553,4 +561,8 @@ const ErrorText = styled.div`
   margin-top: 7px;
   font-size: 1rem;
   color: #ff908d;
+`;
+
+const GobackButtonWrapper = styled.div`
+  margin-top: 20px;
 `;
