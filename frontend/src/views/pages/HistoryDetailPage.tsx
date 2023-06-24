@@ -138,14 +138,14 @@ export const HistoryDetailPage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <GobackButton onClick={handleGoBack} />
@@ -277,6 +277,15 @@ const MobileDrawer = styled(Drawer)`
   }
 `;
 
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+`;
+
 const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
@@ -285,6 +294,7 @@ const MainBox = styled.div`
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;
+    height: 100%;
   }
 `;
 

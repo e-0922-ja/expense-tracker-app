@@ -134,14 +134,14 @@ export const HistoryPage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <TabContext value={value}>
@@ -214,6 +214,15 @@ const MobileDrawer = styled(Drawer)`
 
   @media (min-width: 600px) {
     display: none;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 

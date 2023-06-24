@@ -10,20 +10,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-// import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
-// import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
-// import { LendCalculateCard } from "../components/LendCalculateCard";
-
-// interface TransactionHistory {
-//   id: number;
-//   paidPerson: string;
-//   category: string;
-//   dispription: string;
-//   amount: number;
-//   date: string;
-// }
 
 export const FriendsHistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,49 +23,6 @@ export const FriendsHistoryPage = () => {
   };
 
   const navigate = useNavigate();
-
-  // const transactionHistory: TransactionHistory[] = [
-  //   {
-  //     id: 1,
-  //     paidPerson: "Yuki",
-  //     category: "Food",
-  //     dispription: "starbucks",
-  //     amount: 123,
-  //     date: "5/23",
-  //   },
-  //   {
-  //     id: 2,
-  //     paidPerson: "Hana",
-  //     category: "Food",
-  //     dispription: "Korean",
-  //     amount: 123,
-  //     date: "5/23",
-  //   },
-  //   {
-  //     id: 3,
-  //     paidPerson: "Kota",
-  //     category: "Food",
-  //     dispription: "Chinese",
-  //     amount: 123,
-  //     date: "5/23",
-  //   },
-  //   {
-  //     id: 4,
-  //     paidPerson: "Haruka",
-  //     category: "Food",
-  //     dispription: "Itarian",
-  //     amount: 123,
-  //     date: "5/23",
-  //   },
-  //   {
-  //     id: 5,
-  //     paidPerson: "Akito",
-  //     category: "Food",
-  //     dispription: "French",
-  //     amount: 123,
-  //     date: "5/23",
-  //   },
-  // ];
 
   const handleGoBack = () => {
     navigate("/history");
@@ -104,14 +49,14 @@ export const FriendsHistoryPage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <GobackButton onClick={handleGoBack} />
@@ -124,22 +69,8 @@ export const FriendsHistoryPage = () => {
             </Section>
             <TransactionCardContainer>
               <Title>Summary for this group</Title>
-              <CalculateCardContainer>
-                {/* <BorrowCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                />
-                <LendCalculateCard
-                  name={"Megan"}
-                  amount={200}
-                  totalAmount={300}
-                /> */}
-              </CalculateCardContainer>
+              <CalculateCardContainer></CalculateCardContainer>
               <Title>All Expenses</Title>
-              {/* {transactionHistory.map((item) => (
-                <TransactionCard key={item.id} item={item} />
-              ))} */}
             </TransactionCardContainer>
           </DetailBox>
         </SubBox>
@@ -182,6 +113,15 @@ const MobileDrawer = styled(Drawer)`
   }
   @media (min-width: 600px) {
     display: none;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
