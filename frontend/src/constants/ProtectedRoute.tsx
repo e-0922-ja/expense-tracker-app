@@ -15,11 +15,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
     return null;
   }
 
+  const redirectPath =
+    process.env.REACT_APP_ENVIRONMENT === "production"
+      ? "/expense-tracker-app/login"
+      : "/login";
+
   // Otherwise, proceed as before
   return account.isLogin ? (
     <>{element}</> // Wrapping the element with Fragment to ensure a ReactElement is returned.
   ) : (
-    <Navigate to="/login" state={{ from: location.pathname }} replace />
+    <Navigate to={redirectPath} state={{ from: location.pathname }} replace />
   );
 };
 
