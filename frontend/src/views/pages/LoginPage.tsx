@@ -17,6 +17,7 @@ import {
 } from "../../constants/regexPattern";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { paths } from "../../constants/routePaths";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -67,7 +68,7 @@ export const LoginPage = () => {
 
     dispatch(login(userInfo));
 
-    navigate("/history");
+    navigate(paths.history);
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -84,7 +85,7 @@ export const LoginPage = () => {
         <TitleWrapper>
           <Title>Login</Title>
           <Text>New to Expense tracker? </Text>
-          <Link to="/signup">Signup</Link>
+          <Link to={paths.signup}>Signup</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(handleloginWithEmail)}>
           <InputWrapper>

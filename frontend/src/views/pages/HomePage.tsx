@@ -2,19 +2,13 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import { paths } from "../../constants/routePaths";
 import TopImage from "../../images/topimage.png";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
-  const path =
-    process.env.REACT_APP_ENVIRONMENT === "production"
-      ? "/expense-tracker-app/login"
-      : "/login";
-
-  const handleNavigateLogin = () => {
-    navigate(path);
-  };
+  const handleNavigateLogin = () => navigate(paths.login);
 
   return (
     <Wrapper>
