@@ -7,8 +7,13 @@ import TopImage from "../../images/topimage.png";
 export const HomePage = () => {
   const navigate = useNavigate();
 
+  const path =
+    process.env.REACT_APP_ENVIRONMENT === "production"
+      ? "/expense-tracker-app/login"
+      : "/login";
+
   const handleNavigateLogin = () => {
-    navigate("/login");
+    navigate(path);
   };
 
   return (
