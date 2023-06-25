@@ -45,6 +45,7 @@ jobs:
           REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
           REACT_APP_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.REACT_APP_SUPABASE_SERVICE_ROLE_KEY }}
           REACT_APP_SUPABASE_ENDPOINT: ${{ secrets.REACT_APP_SUPABASE_ENDPOINT }}
+          REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
