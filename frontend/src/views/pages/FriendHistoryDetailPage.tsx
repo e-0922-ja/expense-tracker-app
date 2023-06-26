@@ -20,6 +20,15 @@ import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import {
+  SUCCESS_DELETE_EXPENSE,
+  SUCCESS_UPDATE_EXPENSE,
+} from "../../utils/textUtils";
+
+interface Message {
+  isError: boolean;
+  message: string;
+}
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -40,6 +49,14 @@ export const FriendHistoryDetailPage = () => {
   const [checkedMembers, setCheckedMembers] = useState<CheckedMember[]>(
     initialCheckedMembers
   );
+  const [updateMessage, setUpdateMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+  const [deleteMessage, setDeleteMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
   const CategoryIcon = getCategoryIcon(expense.category);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,8 +76,7 @@ export const FriendHistoryDetailPage = () => {
   };
 
   const handlesave = async () => {
-    const resultUpdateMembersPaidStatus = await updateMembersPaidStatus();
-    if (resultUpdateMembersPaidStatus) navigate("/history");
+    await updateMembersPaidStatus();
   };
 
   const handledelete = async () => {
@@ -80,20 +96,20 @@ export const FriendHistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { data, error } = await supabase.rpc("update_members_paid", {
+      const { error } = await supabase.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
       });
       if (error) {
-        console.log(error);
+        setUpdateMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
+        setUpdateMessage({ isError: false, message: SUCCESS_UPDATE_EXPENSE });
         return true;
       }
     } catch (error: any) {
-      console.log(error);
+      setUpdateMessage({ isError: true, message: error.message });
       return false;
     }
   };
@@ -105,14 +121,16 @@ export const FriendHistoryDetailPage = () => {
         .delete()
         .eq("id", expense.id);
       if (error) {
-        console.log(error);
+        setDeleteMessage({ isError: true, message: error.message });
         return false;
       } else {
         console.log(data);
+        setDeleteMessage({ isError: true, message: SUCCESS_DELETE_EXPENSE });
+
         return true;
       }
     } catch (error: any) {
-      console.log(error);
+      setDeleteMessage({ isError: true, message: error.message });
       return false;
     }
   };
@@ -129,7 +147,7 @@ export const FriendHistoryDetailPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           <Toolbar />
@@ -241,8 +259,22 @@ export const FriendHistoryDetailPage = () => {
                 </InputsWrapper>
               </FormContainer>
               <ButtonContainer>
-                <SubButton title={"delete"} onClick={handledelete} />
-                <SubButton title={"save"} onClick={handlesave} />
+                <ButtonWrapper>
+                  <SubButton title={"delete"} onClick={handledelete} />
+                  {deleteMessage && (
+                    <ButtonMessage isError={deleteMessage.isError}>
+                      {deleteMessage.message}
+                    </ButtonMessage>
+                  )}
+                </ButtonWrapper>
+                <ButtonWrapper>
+                  <SubButton title={"save"} onClick={handlesave} />
+                  {updateMessage && (
+                    <ButtonMessage isError={updateMessage.isError}>
+                      {updateMessage.message}
+                    </ButtonMessage>
+                  )}
+                </ButtonWrapper>
               </ButtonContainer>
             </Section>
           </DetailBox>
@@ -422,10 +454,18 @@ const IconCircle = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  width: 100%;
   margin-top: 50px;
   display: flex;
   justyfy-content: space-between;
   gap: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const PageTitle = styled.h2`
@@ -451,4 +491,13 @@ const CheckboxWrapper = styled.div`
 
 const SubBox = styled(Box)`
   width: 100%;
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;

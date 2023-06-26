@@ -7,7 +7,7 @@ import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/messages";
+import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../utils/textUtils";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,

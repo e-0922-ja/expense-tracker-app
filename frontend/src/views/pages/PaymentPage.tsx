@@ -25,6 +25,11 @@ import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
 import { GobackButton } from "../components/GobackButton";
+import {
+  ERROR_EMPTY_AMOUNT,
+  ERROR_EMPTY_DESCRIPTION,
+  SUCCESS_CREATE_EXPENSE,
+} from "../../utils/textUtils";
 
 interface EachAmount extends Friend {
   amount: string;
@@ -36,21 +41,28 @@ interface Expense {
   description: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
 export const PaymentPage = () => {
-  const [error, setError] = useState("");
-  // const [amount, setAmount] = useState("");
+  // const [error, setError] = useState("");
   const [category, setCategory] = useState(categories[0].name);
-  // const [description, setDescription] = useState("");
   const [date, setDate] = useState<Dayjs | null>(dayjs());
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
   const account = useSelector(selectUser);
+  const [createExpenseMessage, setCreateExpenseMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
 
   const {
     register,
@@ -60,7 +72,7 @@ export const PaymentPage = () => {
     watch,
   } = useForm<Expense>();
 
-  const amount = watch("amount", "");
+  const amount = watch("amount");
   const description = watch("description");
 
   const splitters =
@@ -89,18 +101,11 @@ export const PaymentPage = () => {
   };
 
   const createExpense = handleSubmit(async (data: Expense) => {
-    // Here you have access to data which includes amount, description and others that you registered
     const resultInsertExpense = await insertExpense();
     if (resultInsertExpense) navigate("/history");
   });
 
-  console.log(error);
-
   const insertExpense = async () => {
-    if (description === "") {
-      setError("Description cannot be empty");
-      return false;
-    }
     const memberIds = memberExpense.map((member) => member.id.toString());
     const memberPaids = memberExpense.map((member) => member.paid);
     const memberAmounts = memberExpense.map((member) =>
@@ -108,10 +113,10 @@ export const PaymentPage = () => {
     );
 
     try {
-      const { data, error } = await supabase.rpc("insert_expense", {
+      const { error } = await supabase.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
-        registered_by: account.user!.id, // think about the user data handling later
+        registered_by: account.user!.id,
         member_ids: memberIds,
         member_paids: memberPaids,
         member_amounts: memberAmounts,
@@ -120,17 +125,18 @@ export const PaymentPage = () => {
         description: description,
         payment: parseFloat(amount),
       });
-
       if (error) {
-        setError(error.message);
+        setCreateExpenseMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
-
+        setCreateExpenseMessage({
+          isError: false,
+          message: SUCCESS_CREATE_EXPENSE,
+        });
         return true;
       }
     } catch (error: any) {
-      setError(error.message);
+      setCreateExpenseMessage({ isError: true, message: error.message });
       return false;
     }
   };
@@ -201,7 +207,7 @@ export const PaymentPage = () => {
                     {...register("amount", {
                       required: {
                         value: true,
-                        message: "The amount is required",
+                        message: ERROR_EMPTY_AMOUNT,
                       },
                     })}
                     value={amount}
@@ -267,7 +273,11 @@ export const PaymentPage = () => {
                     {...register("description", {
                       required: {
                         value: true,
-                        message: "The description is required",
+                        message: ERROR_EMPTY_DESCRIPTION,
+                      },
+                      validate: {
+                        noWhitespaceOnly: (value) =>
+                          value.trim() !== "" || ERROR_EMPTY_DESCRIPTION,
                       },
                     })}
                     onChange={handleChangeDescription}
@@ -332,6 +342,11 @@ export const PaymentPage = () => {
             {errors.description && (
               <ErrorText>{errors.description.message}</ErrorText>
             )}
+            {createExpenseMessage && (
+              <ExpenseMessage isError={createExpenseMessage.isError}>
+                {createExpenseMessage.message}
+              </ExpenseMessage>
+            )}
           </FormContainer>
         </Section>
       </SubContainer>
@@ -371,7 +386,6 @@ const Title = styled.h2`
 
 const Section = styled.div`
   width: 100%;
-  margin-bottom: 15px;
 `;
 
 const FormContainer = styled.form`
@@ -570,6 +584,15 @@ const ErrorText = styled.div`
   margin-top: 7px;
   font-size: 1rem;
   color: #ff908d;
+`;
+
+const ExpenseMessage = styled.div<{ isError: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;
 
 const GobackButtonWrapper = styled.div`

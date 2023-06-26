@@ -18,7 +18,8 @@ import {
   ERROR_SOMETHING,
   ERROR_USER_EXIST,
   SUCCESS_SIGNUP,
-} from "../../constants/messages";
+  addNewLinesAfterPunctuation,
+} from "../../utils/textUtils";
 
 interface NewUser {
   firstName: string;
@@ -28,9 +29,16 @@ interface NewUser {
   confirmPassword: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 export const SignUpPage = () => {
-  const [authError, setAuthError] = useState("");
-  const [authSuccess, setAuthSuccess] = useState("");
+  const [authMessage, setAuthMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -68,20 +76,26 @@ export const SignUpPage = () => {
       lastName,
     });
     if (isError) {
-      setAuthError(message);
+      setAuthMessage({ isError: true, message: message });
       return;
     }
     if (!user) {
-      setAuthError(ERROR_SOMETHING);
+      setAuthMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_SOMETHING),
+      });
       return;
     }
-    const searcUuser = await SupabaseService.findUserByEmail(user.email);
-    if (searcUuser) {
-      setAuthError(ERROR_USER_EXIST);
+    const searchUser = await SupabaseService.findUserByEmail(user.email);
+    if (searchUser) {
+      setAuthMessage({ isError: true, message: ERROR_USER_EXIST });
       return;
     }
     await SupabaseService.createUser(user);
-    setAuthSuccess(SUCCESS_SIGNUP);
+    setAuthMessage({
+      isError: false,
+      message: addNewLinesAfterPunctuation(SUCCESS_SIGNUP),
+    });
   };
 
   return (
@@ -186,11 +200,10 @@ export const SignUpPage = () => {
           <ButtonWrapper>
             <FormButton title="register" />
           </ButtonWrapper>
-          {authError && <ErrorTextSignup>{authError}</ErrorTextSignup>}
-          {authSuccess && (
-            <SuccessTextSignup
-              dangerouslySetInnerHTML={{ __html: authSuccess }}
-            />
+          {authMessage && (
+            <SignupMessage isError={authMessage.isError}>
+              {authMessage.message}
+            </SignupMessage>
           )}
         </FormWrapper>
       </SignUpWrapper>
@@ -270,20 +283,14 @@ const ErrorText = styled.span`
   color: #ff908d;
 `;
 
-const ErrorTextSignup = styled.div`
+const SignupMessage = styled.div<{ isError: boolean }>`
+  white-space: pre-wrap;
   display: flex;
   justify-content: center;
   width: 70%;
   margin-top: 7px;
   font-size: 1rem;
-  color: #ff908d;
-`;
-
-const SuccessTextSignup = styled.div`
-  width: 70%;
-  margin-top: 7px;
-  font-size: 1rem;
-  color: #4caf50;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;
 
 const ButtonWrapper = styled.div`

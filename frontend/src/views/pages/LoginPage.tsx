@@ -15,8 +15,7 @@ import {
   ERROR_EMAIL,
   ERROR_PASSWORD,
   ERROR_USER_NOTFOUND,
-  deleteMsg,
-} from "../../constants/messages";
+} from "../../utils/textUtils";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -28,10 +27,18 @@ interface CurrentUser {
   password: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [authError, setAuthError] = useState("");
+  const [authMessage, setAuthMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -47,13 +54,11 @@ export const LoginPage = () => {
       password,
     });
     if (error) {
-      setAuthError(error.message);
-      deleteMsg(setAuthError, "");
+      setAuthMessage({ isError: true, message: error.message });
       return;
     }
     if (!data?.user) {
-      setAuthError(ERROR_USER_NOTFOUND);
-      deleteMsg(setAuthError, "");
+      setAuthMessage({ isError: true, message: ERROR_USER_NOTFOUND });
       return;
     }
 
@@ -64,7 +69,6 @@ export const LoginPage = () => {
       lastName: user?.user_metadata.lastName,
       email: user?.email,
     };
-
     dispatch(login(userInfo));
     navigate("/history");
   };
@@ -127,7 +131,11 @@ export const LoginPage = () => {
           <ButtonWrapper>
             <FormButton title="login" />
           </ButtonWrapper>
-          {authError && <ErrorTextLogin>{authError}</ErrorTextLogin>}
+          {authMessage && (
+            <LoginMessage isError={authMessage.isError}>
+              {authMessage.message}
+            </LoginMessage>
+          )}
         </FormWrapper>
       </LoginWrapper>
     </ComponentWrapper>
@@ -199,13 +207,13 @@ const ErrorText = styled.span`
   color: #ff908d;
 `;
 
-const ErrorTextLogin = styled.div`
+const LoginMessage = styled.div<{ isError: boolean }>`
   display: flex;
   justify-content: center;
   width: 70%;
   margin-top: 7px;
   font-size: 1rem;
-  color: #ff908d;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;
 
 const ButtonWrapper = styled.div`

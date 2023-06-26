@@ -19,8 +19,7 @@ import {
   ERROR_SEND_EXISTED_ADDRESS,
   ERROR_SEND_FAILED,
   ERROR_SEND_OWN_ADDRESS,
-  deleteMsg,
-} from "../../constants/messages";
+} from "../../utils/textUtils";
 import { GobackButton } from "../components/GobackButton";
 
 interface FriendEmail {
@@ -91,7 +90,6 @@ export const FriendsListPage = () => {
     const emailToLowerCase = email.toLowerCase();
     if (emailToLowerCase === userEmail) {
       setError(ERROR_SEND_OWN_ADDRESS);
-      deleteMsg(setError, "");
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(
         emailToLowerCase
@@ -101,7 +99,6 @@ export const FriendsListPage = () => {
         resultCountFriendShipByEmail > 0
       ) {
         setError(ERROR_SEND_EXISTED_ADDRESS);
-        deleteMsg(setError, "");
       } else {
         const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
@@ -117,7 +114,6 @@ export const FriendsListPage = () => {
 
             if (!emailResponse.status) {
               setError(ERROR_SEND_FAILED);
-              deleteMsg(setError, "");
             }
 
             // to retrieve the data to update the friend list
@@ -129,7 +125,6 @@ export const FriendsListPage = () => {
             setSuccess(
               `You have successfully sent a friend request to ${email}!`
             );
-            deleteMsg(setSuccess, "");
           }
         }
       }

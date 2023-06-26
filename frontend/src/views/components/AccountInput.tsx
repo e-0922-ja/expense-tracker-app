@@ -17,8 +17,8 @@ import {
   ERROR_SOMETHING,
   SUCCESS_CHANGE_ACCOUNT_INFO,
   SUCCESS_RESET_PASSWORD,
-  deleteMsg,
-} from "../../constants/messages";
+  addNewLinesAfterPunctuation,
+} from "../../utils/textUtils";
 
 interface AccountInputProps {
   firstName?: string;
@@ -32,10 +32,17 @@ interface FormData {
   email?: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+
+const BASE_URI = process.env.REACT_APP_BASE_URI;
 
 export const AccountInput = ({
   firstName,
@@ -44,10 +51,15 @@ export const AccountInput = ({
 }: AccountInputProps) => {
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
-  const [errorUpdateUserInfo, setErrorUpdateUserInfo] = useState("");
-  const [successUpdateUserInfo, setSuccessUpdateUserInfo] = useState("");
-  const [errorSendEmail, setErrorSendEmail] = useState("");
-  const [successSendEmail, setSuccessSendEmail] = useState("");
+
+  const [updateUserInfoMessage, setUpdateUserInfoMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+  const [sendEmailMessage, setSendEmailMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
 
   const {
     register: registerUpdatedUser,
@@ -61,8 +73,6 @@ export const AccountInput = ({
     setEditStatus(true);
   };
 
-
-  
   const handleSave = async (formData: FormData) => {
     const { firstName, lastName, email } = formData;
 
@@ -76,9 +86,10 @@ export const AccountInput = ({
       data: updatedMetaData,
     });
     if (error) {
-      setErrorUpdateUserInfo(ERROR_CHANGE_ACCOUNT_INFO);
-      console.error(ERROR_CHANGE_ACCOUNT_INFO);
-      deleteMsg(setErrorUpdateUserInfo, "");
+      setUpdateUserInfoMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
+      });
     }
 
     if (data.user) {
@@ -89,8 +100,10 @@ export const AccountInput = ({
         email: data.user.email,
       };
       dispatch(update(fetchedUserInfoBySupabase));
-      setSuccessUpdateUserInfo(SUCCESS_CHANGE_ACCOUNT_INFO);
-      deleteMsg(setSuccessUpdateUserInfo, "");
+      setUpdateUserInfoMessage({
+        isError: false,
+        message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
+      });
     }
     setEditStatus(false);
   };
@@ -98,25 +111,36 @@ export const AccountInput = ({
   const handleSendEmail = async () => {
     const currentEmail = account.user?.email;
     if (!currentEmail) {
-      setErrorSendEmail(ERROR_RESET_PASSWORD_EMAIL_NOTHING);
-      deleteMsg(setErrorSendEmail, "");
+      setSendEmailMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(
+          ERROR_RESET_PASSWORD_EMAIL_NOTHING
+        ),
+      });
       return;
     }
     try {
+      const redirectUrl = `${BASE_URI}/passwordReset`;
       const { error: sendEmailError } =
         await supabase.auth.resetPasswordForEmail(currentEmail, {
-          redirectTo: "http://localhost:3000/passwordReset",
+          redirectTo: redirectUrl,
         });
       if (sendEmailError) {
-        setErrorSendEmail(ERROR_RESET_PASSWORD_SEND_MAIL);
-        deleteMsg(setErrorSendEmail, "");
+        setSendEmailMessage({
+          isError: true,
+          message: ERROR_RESET_PASSWORD_SEND_MAIL,
+        });
         throw sendEmailError;
       }
-      setSuccessSendEmail(SUCCESS_RESET_PASSWORD);
-      deleteMsg(setSuccessSendEmail, "");
+      setSendEmailMessage({
+        isError: false,
+        message: addNewLinesAfterPunctuation(SUCCESS_RESET_PASSWORD),
+      });
     } catch (error) {
-      setErrorSendEmail(ERROR_SOMETHING);
-      deleteMsg(setErrorSendEmail, "");
+      setSendEmailMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_SOMETHING),
+      });
     }
   };
 
@@ -134,7 +158,7 @@ export const AccountInput = ({
             {editStatus ? (
               <StyledOutlinedInput
                 {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
-                defaultValue={firstName} // use defaultValue instead of value
+                defaultValue={firstName}
                 fullWidth
               />
             ) : (
@@ -149,8 +173,8 @@ export const AccountInput = ({
             {editStatus ? (
               <StyledOutlinedInput
                 type="text"
-                {...registerUpdatedUser("lastName", { required: true })} // if firstName is required
-                defaultValue={lastName} // use defaultValue instead of value
+                {...registerUpdatedUser("lastName", { required: true })}
+                defaultValue={lastName}
                 fullWidth
               />
             ) : (
@@ -185,15 +209,10 @@ export const AccountInput = ({
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
-          {errorUpdateUserInfo && (
-            <ErrorText
-              dangerouslySetInnerHTML={{ __html: errorUpdateUserInfo }}
-            />
-          )}
-          {successUpdateUserInfo && (
-            <SuccessText
-              dangerouslySetInnerHTML={{ __html: successUpdateUserInfo }}
-            />
+          {updateUserInfoMessage && (
+            <ButtonMessage isError={updateUserInfoMessage.isError}>
+              {updateUserInfoMessage.message}
+            </ButtonMessage>
           )}
         </StyledFormBox>
       </InfoContainer>
@@ -206,11 +225,10 @@ export const AccountInput = ({
         >
           send
         </StyledButton>
-        {errorSendEmail && (
-          <ErrorText dangerouslySetInnerHTML={{ __html: errorSendEmail }} />
-        )}
-        {successSendEmail && (
-          <SuccessText dangerouslySetInnerHTML={{ __html: successSendEmail }} />
+        {sendEmailMessage && (
+          <ButtonMessage isError={sendEmailMessage.isError}>
+            {sendEmailMessage.message}
+          </ButtonMessage>
         )}
       </SubButtonWrapper>
     </div>
@@ -311,12 +329,6 @@ const ErrorText = styled.div`
   color: #ff908d;
 `;
 
-const SuccessText = styled.div`
-  margin-top: 7px;
-  font-size: 1rem;
-  color: #4caf50;
-`;
-
 const StyledButton = styled(Button)`
   background: ${({ theme }) => theme.palette.secondary.main} !important;
   border: 0;
@@ -326,4 +338,14 @@ const StyledButton = styled(Button)`
   fontsize: 1rem !important;
   padding: 0 30px !important;
   border-radius: 24px !important;
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  white-space: pre-wrap;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;
