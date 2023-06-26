@@ -471,6 +471,15 @@ const StyledOutlinedInput = styled(OutlinedInput)`
 `;
 
 const StyledOutlinedNumberInput = styled(StyledOutlinedInput)`
+  && input::-webkit-outer-spin-button,
+  && input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  && input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
   &&.Mui-disabled {
     .css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
       -webkit-text-fill-color: ${({ theme }) => theme.palette.info.light};
