@@ -2,8 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
-import { useDispatch, useSelector } from "react-redux";
-import { selectUser, update } from "../../reducer/userSlice";
 import { useForm } from "react-hook-form";
 import {
   emailRegex,
@@ -12,11 +10,11 @@ import {
   errLastName,
 } from "../../constants/regexPattern";
 import { client } from "../../services/supabase";
+import { Friend } from "../../types";
 
 interface AccountInputProps {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
+  user: Friend;
+  onGetSession: () => void;
 }
 
 interface FormData {
@@ -25,12 +23,7 @@ interface FormData {
   email?: string;
 }
 
-export const AccountInput = ({
-  firstName,
-  lastName,
-  email,
-}: AccountInputProps) => {
-  const dispatch = useDispatch();
+export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
   const [editStatus, setEditStatus] = useState(false);
 
   const {
@@ -38,8 +31,6 @@ export const AccountInput = ({
     handleSubmit: handleSubmitUpdatedUser,
     formState: { errors: errorsUpdatedUser },
   } = useForm<FormData>();
-
-  const account = useSelector(selectUser);
 
   const handleEdit = () => {
     setEditStatus(true);
@@ -57,25 +48,20 @@ export const AccountInput = ({
       email: email,
       data: updatedMetaData,
     });
+
     if (error) {
       console.error("Error updating user email and metadata:", error);
     }
 
     if (data.user) {
-      const fetchedUserInfoBySupabase = {
-        id: data.user.id,
-        firstName: data.user.user_metadata.firstName,
-        lastName: data.user.user_metadata.lastName,
-        email: data.user.email,
-      };
-      dispatch(update(fetchedUserInfoBySupabase));
+      onGetSession();
     }
 
     setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
-    const currentEmail = account.user?.email;
+    const currentEmail = user.email;
     if (!currentEmail) {
       alert("Email not defined");
       return;
@@ -111,11 +97,11 @@ export const AccountInput = ({
             {editStatus ? (
               <StyledOutlinedInput
                 {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
-                defaultValue={firstName} // use defaultValue instead of value
+                defaultValue={user.firstName} // use defaultValue instead of value
                 fullWidth
               />
             ) : (
-              <Data>{account.user?.firstName}</Data>
+              <Data>{user.firstName}</Data>
             )}
           </StyledBox>
           {errorsUpdatedUser.firstName && <ErrorText>{errFirstName}</ErrorText>}
@@ -125,11 +111,11 @@ export const AccountInput = ({
               <StyledOutlinedInput
                 type="text"
                 {...registerUpdatedUser("lastName", { required: true })} // if firstName is required
-                defaultValue={lastName} // use defaultValue instead of value
+                defaultValue={user.lastName} // use defaultValue instead of value
                 fullWidth
               />
             ) : (
-              <Data>{account.user?.lastName}</Data>
+              <Data>{user.lastName}</Data>
             )}
           </StyledBox>
           {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
@@ -141,11 +127,11 @@ export const AccountInput = ({
                   required: true,
                   pattern: emailRegex,
                 })}
-                defaultValue={email}
+                defaultValue={user.email}
                 fullWidth
               />
             ) : (
-              <Data>{account.user?.email}</Data>
+              <Data>{user.email}</Data>
             )}
           </StyledBox>
           {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}

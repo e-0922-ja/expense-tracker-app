@@ -19,10 +19,9 @@ import { Database, Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
 import { Expense } from "../../types";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -40,11 +39,19 @@ export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
   const [lent, setLent] = useState<LentAmountReturns>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  // const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -52,14 +59,16 @@ export const HistoryPage = () => {
 
   const getTotalLentAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_lent_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("lent", data);
-        setLent(data);
+      if (userId) {
+        const { data, error } = await supabase.rpc("get_total_lent_amount", {
+          user_id: userId,
+        });
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("lent", data);
+          setLent(data);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -68,14 +77,19 @@ export const HistoryPage = () => {
 
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("borrowed", data);
-        setBorrowed(data);
+      if (userId) {
+        const { data, error } = await supabase.rpc(
+          "get_total_borrowed_amount",
+          {
+            user_id: userId,
+          }
+        );
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("borrowed", data);
+          setBorrowed(data);
+        }
       }
     } catch (error: any) {
       console.log(error);
@@ -84,17 +98,19 @@ export const HistoryPage = () => {
 
   const getExpenses = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_expenses", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("histories", data);
-        const parsedExpenses: Expense[] = data.map((expense: Json) =>
-          JSON.parse(JSON.stringify(expense))
-        );
-        setExpenses(parsedExpenses);
+      if (userId) {
+        const { data, error } = await supabase.rpc("get_expenses", {
+          user_id: userId,
+        });
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("histories", data);
+          const parsedExpenses: Expense[] = data.map((expense: Json) =>
+            JSON.parse(JSON.stringify(expense))
+          );
+          setExpenses(parsedExpenses);
+        }
       }
     } catch (error: any) {
       console.log(error);
@@ -112,8 +128,6 @@ export const HistoryPage = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
-
 
   return (
     <Wrapper>

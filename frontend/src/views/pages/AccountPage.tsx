@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -10,20 +10,55 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { AccountInput } from "../components/AccountInput";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { Friend } from "../../types";
+import { client } from "../../services/supabase";
 
 export const AccountPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
+  const [user, setUser] = useState<Friend>({
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+
+  const { session } = useSupabaseSession();
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email!,
+        firstName: session.user.user_metadata.firstName,
+        lastName: session.user.user_metadata.lastName,
+      });
+    }
+  }, [session]);
+
+  const handleGetSession = async () => {
+    const { data, error } = await client.auth.getSession();
+
+    if (data.session) {
+      setUser({
+        id: data.session.user.id,
+        email: data.session.user.email!,
+        firstName: data.session.user.user_metadata.firstName,
+        lastName: data.session.user.user_metadata.lastName,
+      });
+    }
+
+    if (error) {
+      console.log(error);
+    }
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const { user } = useSelector(selectUser);
 
   return (
     <Wrapper>
@@ -58,11 +93,8 @@ export const AccountPage = () => {
         <SubBox>
           <DetailBox>
             <Section>
-              <AccountInput
-                firstName={user?.firstName}
-                lastName={user?.lastName}
-                email={user?.email}
-              />
+              <AccountInput user={user} onGetSession={handleGetSession} />
+              {/* <AccountInput user={user} /> */}
             </Section>
           </DetailBox>
         </SubBox>

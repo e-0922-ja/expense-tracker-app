@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
 import { FriendShipsReturns } from "./FriendsListPage";
 import { client } from "../../services/supabase";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 export const FriendsApprovePage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -23,34 +22,41 @@ export const FriendsApprovePage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [friends, setFriends] = useState<FriendShipsReturns>([]);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const { user } = useSelector(selectUser);
-  const userId = user?.id;
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     getUserFriendsById();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { session } = useSupabaseSession();
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
+
   const getUserFriendsById = async () => {
     try {
-      const { data, error } = await client.rpc("get_user_friends", {
-        user_id: userId,
-      });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setFriends(data);
+      if (userId) {
+        const { data, error } = await client.rpc("get_user_friends", {
+          user_id: userId,
+        });
+        if (error) {
+          setError(error.message);
+          return false;
+        } else {
+          setFriends(data);
+        }
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
+  };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   console.log(error);

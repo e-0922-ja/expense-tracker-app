@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -11,27 +11,18 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
 import { CheckedMember, Expense } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { client } from "../../services/supabase";
 
 export const FriendHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
   const initialCheckedMembers = expense.members.map((member) => {
@@ -41,6 +32,15 @@ export const FriendHistoryDetailPage = () => {
     initialCheckedMembers
   );
   const CategoryIcon = getCategoryIcon(expense.category);
+
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const targetId = event.target.id;
@@ -72,25 +72,25 @@ export const FriendHistoryDetailPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navigate = useNavigate();
-
   const handleGoBack = () => {
     navigate("/history");
   };
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { data, error } = await supabase.rpc("update_members_paid", {
-        expense_id: expense.id,
-        checked_members: JSON.stringify(checkedMembers),
-        update_by: userId,
-      });
-      if (error) {
-        console.log(error);
-        return false;
-      } else {
-        console.log(data);
-        return true;
+      if (userId) {
+        const { data, error } = await client.rpc("update_members_paid", {
+          expense_id: expense.id,
+          checked_members: JSON.stringify(checkedMembers),
+          update_by: userId,
+        });
+        if (error) {
+          console.log(error);
+          return false;
+        } else {
+          console.log(data);
+          return true;
+        }
       }
     } catch (error: any) {
       console.log(error);
@@ -100,7 +100,7 @@ export const FriendHistoryDetailPage = () => {
 
   const deleteExpense = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from("Expenses")
         .delete()
         .eq("id", expense.id);

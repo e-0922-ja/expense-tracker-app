@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -17,9 +17,8 @@ import { CheckedMember, Expense } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -28,10 +27,9 @@ const supabase = createClient<Database>(
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
   const initialCheckedMembers = expense.members.map((member) => {
@@ -73,6 +71,13 @@ export const HistoryDetailPage = () => {
   };
 
   const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleGoBack = () => {
     navigate("/history");
@@ -80,17 +85,19 @@ export const HistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { data, error } = await supabase.rpc("update_members_paid", {
-        expense_id: expense.id,
-        checked_members: JSON.stringify(checkedMembers),
-        update_by: userId,
-      });
-      if (error) {
-        console.log(error);
-        return false;
-      } else {
-        console.log(data);
-        return true;
+      if (userId) {
+        const { data, error } = await supabase.rpc("update_members_paid", {
+          expense_id: expense.id,
+          checked_members: JSON.stringify(checkedMembers),
+          update_by: userId,
+        });
+        if (error) {
+          console.log(error);
+          return false;
+        } else {
+          console.log(data);
+          return true;
+        }
       }
     } catch (error: any) {
       console.log(error);

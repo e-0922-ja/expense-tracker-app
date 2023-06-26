@@ -12,18 +12,14 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { MainButton } from "./MainButton";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectTheme } from "../../reducer/colorModeSlice";
-import { logout, selectUser } from "../../reducer/userSlice";
-import { AppDispatch } from "../../store/store";
 import { useState } from "react";
 import { client } from "../../services/supabase";
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
   const theme = useSelector(selectTheme);
-  const account = useSelector(selectUser);
-  const dispatch: AppDispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(0);
 
   const navigatePage = (link: string, num: number) => {
@@ -32,16 +28,9 @@ export const DrawerContents = () => {
   };
 
   const handleLogout = async () => {
-    if (account.isLogin) {
-      dispatch(logout());
-      navigate("/");
-      setSelectedId(4);
-      const { error } = await client.auth.signOut();
-
-      if (error) {
-        console.error("Failed to logout: ", error.message);
-      }
-    }
+    setSelectedId(4);
+    const { error } = await client.auth.signOut();
+    error ? console.error("Failed to logout: ", error.message) : navigate("/");
   };
 
   const toolbarItems = [

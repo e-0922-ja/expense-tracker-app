@@ -1,12 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { login } from "../../reducer/userSlice";
 import { useState } from "react";
 import {
   emailRegex,
@@ -18,6 +14,7 @@ import {
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { client } from "../../services/supabase";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 interface CurrentUser {
   email: string;
@@ -25,8 +22,6 @@ interface CurrentUser {
 }
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
   const [authError, setAuthError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,6 +30,13 @@ export const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CurrentUser>();
+
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  if (session) {
+    // navigate("/history");
+    console.log(session);
+  }
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
@@ -50,16 +52,6 @@ export const LoginPage = () => {
       setAuthError(errUserNotFound);
       return;
     }
-
-    let user = data.user;
-    let userInfo = {
-      id: user?.id,
-      firstName: user?.user_metadata.firstName,
-      lastName: user?.user_metadata.lastName,
-      email: user?.email,
-    };
-
-    dispatch(login(userInfo));
 
     navigate("/history");
   };

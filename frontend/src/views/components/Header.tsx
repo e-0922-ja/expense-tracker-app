@@ -10,17 +10,18 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
-import { selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { DarkModeButton } from "./DarkModeButton";
 import { LightModeButton } from "./LightModeButton";
 import styled from "styled-components";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 export const Header = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const theme = useSelector(selectTheme);
-  const account = useSelector(selectUser);
+
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
 
   const handleNavigateHome = () => {
     navigate("/");
@@ -56,7 +57,7 @@ export const Header = () => {
             )}
           </StyledIconButton>
 
-          {account.isLogin ? <Text>{account.user?.firstName}</Text> : ""}
+          {session && <Text>{session.user.app_metadata.firstName}</Text>}
         </AppBarNavWrapper>
       </StyledToolbar>
     </AppBarWrapper>

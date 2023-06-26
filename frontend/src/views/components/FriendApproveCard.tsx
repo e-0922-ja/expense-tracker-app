@@ -2,9 +2,9 @@ import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { PropsFriendApproveCard } from "../../types";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { client } from "../../services/supabase";
+import { useNavigate } from "react-router-dom";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 export const FriendApproveCard = ({
   id,
@@ -13,8 +13,13 @@ export const FriendApproveCard = ({
   email,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
-  const { user } = useSelector(selectUser);
-  const userId = user?.id;
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  if (!session) {
+    navigate("/");
+  }
+
+  const userId = session!.user.id;
 
   const handleApprove = async () => {
     try {
@@ -33,7 +38,7 @@ export const FriendApproveCard = ({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await client
             .from("Friendships")
-            .update({ statusId: 2, updatedAt: new Date() })
+            .update({ statusId: 2, updatedAt: new Date().toISOString() })
             .match({ id: data[0].id });
           if (updateError) {
             console.error("Error updating statusId: ", updateError);

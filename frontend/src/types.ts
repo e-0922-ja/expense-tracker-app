@@ -13,6 +13,11 @@ export interface FriendWithStatus extends Friend {
   sender: boolean;
 }
 
+export interface EachAmount extends Friend {
+  amount: string;
+  paid: boolean;
+}
+
 export interface Category {
   name: string;
   icon: React.ComponentType<SvgIconProps>;
