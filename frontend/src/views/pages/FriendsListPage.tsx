@@ -21,6 +21,7 @@ import {
   ERROR_SEND_OWN_ADDRESS,
 } from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 interface FriendEmail {
   email: string;
@@ -278,39 +279,49 @@ export const FriendsListPage = () => {
       <FriendListSubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
-          {friends!.map((friend: FriendWithStatus, index) => {
-            return (
-              <List key={index}>
-                <CheckBox
-                  type="checkbox"
-                  id={index.toString()}
-                  checked={
-                    !!selectedFriends.find(
-                      (selectedFriend) => selectedFriend.email === friend.email
-                    )
-                  }
-                  onChange={(event) =>
-                    handleCheckedChange(
-                      friend.id,
-                      friend.email,
-                      friend.firstName,
-                      friend.lastName,
-                      event.target.checked
-                    )
-                  }
-                  disabled={friend.statusId === 1}
-                />
-                <Label htmlFor={index.toString()}>
-                  <ListItem>
-                    {friend.statusId !== 1
-                      ? `${friend.firstName}  ${friend.lastName}`
-                      : "-"}
-                  </ListItem>
-                  <ListItem>{friend.email}</ListItem>
-                </Label>
-              </List>
-            );
-          })}
+          {/* statusId 1: pending, 2: approved */}
+          {/* friend.id could be null so pathing index instead of friend.id */}
+          {friends!
+            .filter((friend) => friend.statusId === 2 || friend.sender)
+            .map((friend: FriendWithStatus, index) => {
+              return (
+                <List key={index}>
+                  <CheckBox
+                    type="checkbox"
+                    id={index.toString()}
+                    checked={
+                      !!selectedFriends.find(
+                        (selectedFriend) =>
+                          selectedFriend.email === friend.email
+                      )
+                    }
+                    onChange={(event) =>
+                      handleCheckedChange(
+                        friend.id,
+                        friend.email,
+                        friend.firstName,
+                        friend.lastName,
+                        event.target.checked
+                      )
+                    }
+                    disabled={friend.statusId === 1}
+                  />
+                  <Label htmlFor={index.toString()}>
+                    {friend.statusId !== 1 ? (
+                      <ListItem>
+                        {friend.firstName} {friend.lastName}
+                      </ListItem>
+                    ) : (
+                      <PendingFriendList>
+                        <AccessTimeIcon fontSize="small" />
+                        <PendingListItem>pending approval</PendingListItem>
+                      </PendingFriendList>
+                    )}
+                    <ListItem>{friend.email}</ListItem>
+                  </Label>
+                </List>
+              );
+            })}
         </UnorderedList>
         <ButtonContainer>
           <SubButton title={"create"} onClick={handleClick} />
@@ -403,6 +414,18 @@ const Label = styled.label`
 
 const ListItem = styled.span`
   display: inline-block;
+`;
+
+const PendingFriendList = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const PendingListItem = styled.span`
+  display: inline-block;
+  padding: 0 0.4rem;
+  font-size: 0.8rem;
 `;
 
 const ButtonContainer = styled.div`

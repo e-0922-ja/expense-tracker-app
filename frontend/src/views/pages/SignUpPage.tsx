@@ -1,25 +1,21 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Link } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { SupabaseService } from "../../services/supabase";
+import { Link } from "react-router-dom";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   ERROR_EMAIL,
   ERROR_FIRSTNAME,
   ERROR_LASTNAME,
   ERROR_PASSWORD,
   ERROR_PASSWORDCONF,
-  ERROR_SOMETHING,
-  ERROR_USER_EXIST,
-  SUCCESS_SIGNUP,
 } from "../../constants/message";
-import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
+import { useSignup } from "../../hooks/useSignup";
 
 interface NewUser {
   firstName: string;
@@ -29,16 +25,7 @@ interface NewUser {
   confirmPassword: string;
 }
 
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
 export const SignUpPage = () => {
-  const [authMessage, setAuthMessage] = useState<Message>({
-    isError: false,
-    message: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -59,6 +46,8 @@ export const SignUpPage = () => {
     event.preventDefault();
   };
 
+  const { signupMessage, signup } = useSignup();
+
   const {
     register,
     handleSubmit,
@@ -68,34 +57,7 @@ export const SignUpPage = () => {
 
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
-
-    const { isError, message, user } = await SupabaseService.createAuthUser({
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    if (isError) {
-      setAuthMessage({ isError: true, message: message });
-      return;
-    }
-    if (!user) {
-      setAuthMessage({
-        isError: true,
-        message: addNewLinesAfterPunctuation(ERROR_SOMETHING),
-      });
-      return;
-    }
-    const searchUser = await SupabaseService.findUserByEmail(user.email);
-    if (searchUser) {
-      setAuthMessage({ isError: true, message: ERROR_USER_EXIST });
-      return;
-    }
-    await SupabaseService.createUser(user);
-    setAuthMessage({
-      isError: false,
-      message: addNewLinesAfterPunctuation(SUCCESS_SIGNUP),
-    });
+    signup({ firstName, lastName, email, password });
   };
 
   return (
@@ -153,7 +115,7 @@ export const SignUpPage = () => {
             {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaperPassword elevation={0}>
+            <InputPaper elevation={0}>
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={handleClickShowPassword}
@@ -161,7 +123,6 @@ export const SignUpPage = () => {
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
-
               <InputBase
                 fullWidth
                 placeholder="Password"
@@ -171,11 +132,11 @@ export const SignUpPage = () => {
                   pattern: passwordRegex,
                 })}
               />
-            </InputPaperPassword>
+            </InputPaper>
             {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
-            <InputPaperPassword elevation={0}>
+            <InputPaper elevation={0}>
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={handleClickShowConfirmPassword}
@@ -192,17 +153,17 @@ export const SignUpPage = () => {
                   validate: (value) => value === getValues("password"),
                 })}
               />
-            </InputPaperPassword>
+            </InputPaper>
             {errors.confirmPassword && (
               <ErrorText>{ERROR_PASSWORDCONF}</ErrorText>
             )}
           </InputWrapper>
           <ButtonWrapper>
-            <FormButton title="register" />
+            <FormButton title="submit" />
           </ButtonWrapper>
-          {authMessage && (
-            <SignupMessage isError={authMessage.isError}>
-              {authMessage.message}
+          {signupMessage.message && (
+            <SignupMessage isError={signupMessage.isError}>
+              {signupMessage.message}
             </SignupMessage>
           )}
         </FormWrapper>
@@ -221,15 +182,12 @@ const ComponentWrapper = styled.div`
 
 const SignUpWrapper = styled.div`
   padding: 20px 0;
-  width: 35%;
+  width: 30%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media (max-width: 600px) {
-    width: 70%;
-  }
 `;
 
 const FormWrapper = styled.form`
@@ -252,13 +210,6 @@ const InputPaper = styled(Paper)`
   align-items: center;
 `;
 
-const InputPaperPassword = styled(Paper)`
-  margin: 15px 0 7px;
-  padding: 7px;
-  display: flex;
-  align-items: center;
-`;
-
 const TitleWrapper = styled.div`
   color: ${({ theme }) => theme.palette.secondary.light};
   display: flex;
@@ -270,12 +221,10 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h1`
   margin: 0 0 7px 0;
-  color: ${({ theme }) => theme.palette.secondary.main};
 `;
 
 const Text = styled.p`
   margin: 0;
-  color: ${({ theme }) => theme.palette.info.light};
 `;
 
 const ErrorText = styled.span`
@@ -295,7 +244,6 @@ const SignupMessage = styled.div<{ isError: boolean }>`
 
 const ButtonWrapper = styled.div`
   margin-top: 15px;
-  margin-bottom: 7px;
   display: flex;
   justify-content: center;
 `;
@@ -304,3 +252,69 @@ const IconContainer = styled.div`
   padding: 8px;
   color: rgba(0, 0, 0, 0.54);
 `;
+
+// import { UseFormRegister, ValidationRule} from "react-hook-form";
+
+// interface FormInputItemProps {
+//   placeholder:
+//     | "First Name"
+//     | "Last Name"
+//     | "Email"
+//     | "Password"
+//     | "Confirm Password";
+//   inputType: "text" | "email" | "password";
+//   register: UseFormRegister<NewUser>;
+//   valueName:
+//     | "firstName"
+//     | "lastName"
+//     | "email"
+//     | "password"
+//     | "confirmPassword";
+//   required: boolean;
+//   pattern?: ValidationRule<RegExp>;
+//   validate?: (value: string) => boolean;
+//   // errors?: FieldErrors<NewUser>;
+// }
+
+// const FormInputItem = ({
+//   placeholder,
+//   inputType,
+//   register,
+//   valueName,
+//   required,
+//   pattern,
+//   validate,
+// }: // errors,
+
+// FormInputItemProps) => {
+//   const Icon = () => (
+//     <>
+//       {(valueName === "firstName" || valueName === "lastName") && (
+//         <AccountCircle />
+//       )}
+//       {valueName === "email" && <MailOutlineIcon />}
+//       {valueName === "password" && <LockOutlinedIcon />}
+//       {valueName === "confirmPassword" && <LockIcon />}
+//     </>
+//   );
+//   return (
+//     <InputWrapper>
+//       <InputPaper>
+//         <InputAdornment position="start">
+//           <Icon />
+//         </InputAdornment>
+//         <InputBase
+//           placeholder={placeholder}
+//           type={inputType}
+//           {...register(valueName, {
+//             required,
+//             pattern,
+//             validate,
+//           })}
+//         />
+//       </InputPaper>
+//       {/* TODO: Consider how to show error statements */}
+//       {/* {errors?.[valueName] && <ErrorText>{errPasswordConf}</ErrorText>} */}
+//     </InputWrapper>
+//   );
+// };
