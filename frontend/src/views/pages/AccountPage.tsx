@@ -13,9 +13,13 @@ import { DrawerContents } from "../components/DrawerContents";
 import { AccountInput } from "../components/AccountInput";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { Friend } from "../../types";
-import { client } from "../../services/supabase";
+import { UserService } from "../../services/supabase/users/service";
+import { update } from "../../reducer/userSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 
 export const AccountPage = () => {
+  const dispatch: AppDispatch = useDispatch();
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
@@ -40,19 +44,15 @@ export const AccountPage = () => {
   }, [session]);
 
   const handleGetSession = async () => {
-    const { data, error } = await client.auth.getSession();
-
-    if (data.session) {
+    const userInfo = await UserService.getUserInfoFromSession();
+    if (userInfo) {
       setUser({
-        id: data.session.user.id,
-        email: data.session.user.email!,
-        firstName: data.session.user.user_metadata.firstName,
-        lastName: data.session.user.user_metadata.lastName,
+        id: userInfo.id,
+        email: userInfo.email!,
+        firstName: userInfo.user_metadata.firstName,
+        lastName: userInfo.user_metadata.lastName,
       });
-    }
-
-    if (error) {
-      console.log(error);
+      dispatch(update(userInfo.user_metadata.firstName));
     }
   };
 

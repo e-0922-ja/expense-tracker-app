@@ -70,5 +70,6 @@ export interface Users {
 }
 
 export interface PropsFriendApproveCard extends Friend {
+  userId: string;
   getUserFriendsById: () => void;
 }

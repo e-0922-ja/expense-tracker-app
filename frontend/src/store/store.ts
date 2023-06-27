@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import colorModeReducer from "../reducer/colorModeSlice";
+import userReducer from "../reducer/userSlice";
 
 const store = configureStore({
   reducer: {
     colorMode: colorModeReducer,
+    user: userReducer,
   },
 });
 

@@ -14,7 +14,10 @@ import {
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { client } from "../../services/supabase";
-import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { login } from "../../reducer/userSlice";
+import { UserService } from "../../services/supabase/users/service";
 
 interface CurrentUser {
   email: string;
@@ -22,6 +25,7 @@ interface CurrentUser {
 }
 
 export const LoginPage = () => {
+  const dispatch: AppDispatch = useDispatch();
   const [authError, setAuthError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,11 +36,6 @@ export const LoginPage = () => {
   } = useForm<CurrentUser>();
 
   const navigate = useNavigate();
-  const { session } = useSupabaseSession();
-  if (session) {
-    // navigate("/history");
-    console.log(session);
-  }
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
@@ -53,7 +52,11 @@ export const LoginPage = () => {
       return;
     }
 
-    navigate("/history");
+    const userInfo = await UserService.getUserInfoFromSession();
+    if (userInfo) {
+      dispatch(login(userInfo.user_metadata.firstName));
+      navigate("/history");
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);

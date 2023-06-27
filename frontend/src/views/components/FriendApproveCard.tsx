@@ -3,24 +3,15 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { PropsFriendApproveCard } from "../../types";
 import { client } from "../../services/supabase";
-import { useNavigate } from "react-router-dom";
-import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 
 export const FriendApproveCard = ({
+  userId,
   id,
   firstName,
   lastName,
   email,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
-  const navigate = useNavigate();
-  const { session } = useSupabaseSession();
-  if (!session) {
-    navigate("/");
-  }
-
-  const userId = session!.user.id;
-
   const handleApprove = async () => {
     try {
       const { data, error }: { data: any; error: any } = await client
@@ -33,7 +24,6 @@ export const FriendApproveCard = ({
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, userId, id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await client

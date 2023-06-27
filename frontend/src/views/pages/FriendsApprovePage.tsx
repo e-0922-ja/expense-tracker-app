@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -22,12 +22,7 @@ export const FriendsApprovePage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [friends, setFriends] = useState<FriendShipsReturns>([]);
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    getUserFriendsById();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [userId, setUserId] = useState("");
 
   const { session } = useSupabaseSession();
   useEffect(() => {
@@ -36,7 +31,7 @@ export const FriendsApprovePage = () => {
     }
   }, [session]);
 
-  const getUserFriendsById = async () => {
+  const getUserFriendsById = useCallback(async () => {
     try {
       if (userId) {
         const { data, error } = await client.rpc("get_user_friends", {
@@ -47,13 +42,18 @@ export const FriendsApprovePage = () => {
           return false;
         } else {
           setFriends(data);
+          return true;
         }
       }
     } catch (error: any) {
       setError(error.message);
       return false;
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    getUserFriendsById();
+  }, [getUserFriendsById]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -101,6 +101,7 @@ export const FriendsApprovePage = () => {
                 {friends!.map((friend, index) =>
                   !friend.sender && friend.statusId === 1 && friend.id ? (
                     <FriendApproveCard
+                      userId={userId}
                       id={friend.id}
                       firstName={friend.firstName}
                       lastName={friend.lastName}
