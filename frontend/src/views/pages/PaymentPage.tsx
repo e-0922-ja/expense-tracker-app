@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Box,
-  Button,
   Checkbox,
   InputAdornment,
   MenuItem,
@@ -16,16 +15,35 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
 import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
+import { FormButton } from "../components/FormButton";
+import { useForm } from "react-hook-form";
+import { GobackButton } from "../components/GobackButton";
+import {
+  ERROR_EMPTY_AMOUNT,
+  ERROR_EMPTY_DESCRIPTION,
+  SUCCESS_CREATE_EXPENSE,
+} from "../../constants/message";
 
 interface EachAmount extends Friend {
   amount: string;
   paid: boolean;
+}
+
+interface Expense {
+  amount: string;
+  description: string;
+}
+
+interface Message {
+  isError: boolean;
+  message: string;
 }
 
 const supabase = createClient<Database>(
@@ -34,15 +52,29 @@ const supabase = createClient<Database>(
 );
 
 export const PaymentPage = () => {
-  const [error, setError] = useState("");
-  const [amount, setAmount] = useState("");
+  // const [error, setError] = useState("");
   const [category, setCategory] = useState(categories[0].name);
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState<Dayjs | null>(null);
+  const [date, setDate] = useState<Dayjs | null>(dayjs());
   const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
   const account = useSelector(selectUser);
+  const [createExpenseMessage, setCreateExpenseMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<Expense>();
+
+  const amount = watch("amount");
+  const description = watch("description");
+
   const splitters =
     account.isLogin && account.user ? [account.user, ...selectedFriends] : [];
 
@@ -65,17 +97,13 @@ export const PaymentPage = () => {
       ...member,
       paid: member.id.toString() === event.target.value,
     }));
-
     setMemberExpense(updatedPaid);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const createExpense = handleSubmit(async (data: Expense) => {
     const resultInsertExpense = await insertExpense();
     if (resultInsertExpense) navigate("/history");
-  };
-
-  console.log(error);
+  });
 
   const insertExpense = async () => {
     const memberIds = memberExpense.map((member) => member.id.toString());
@@ -85,11 +113,10 @@ export const PaymentPage = () => {
     );
 
     try {
-      console.log(category);
-      const { data, error } = await supabase.rpc("insert_expense", {
+      const { error } = await supabase.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
-        registered_by: account.user!.id, // think about the user data handling later
+        registered_by: account.user!.id,
         member_ids: memberIds,
         member_paids: memberPaids,
         member_amounts: memberAmounts,
@@ -99,25 +126,33 @@ export const PaymentPage = () => {
         payment: parseFloat(amount),
       });
       if (error) {
-        setError(error.message);
+        setCreateExpenseMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
+        setCreateExpenseMessage({
+          isError: false,
+          message: SUCCESS_CREATE_EXPENSE,
+        });
         return true;
       }
     } catch (error: any) {
-      setError(error.message);
+      setCreateExpenseMessage({ isError: true, message: error.message });
       return false;
     }
   };
+
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
-    const eachAmount =
-      Math.floor((parseFloat(event.target.value) / splitters.length) * 100) /
-      100;
+    const newAmount = event.target.value;
+
+    setValue("amount", newAmount);
+    const eachAmount = newAmount
+      ? Math.floor((parseFloat(newAmount) / splitters.length) * 100) / 100
+      : 0;
+
     const updatedEachAmount = memberExpense.map((member) => {
       return { ...member, amount: eachAmount.toFixed(2) };
     });
+
     setMemberExpense(updatedEachAmount);
   };
 
@@ -137,30 +172,44 @@ export const PaymentPage = () => {
     });
   };
 
-  const handleChangeDate = (newValue: Dayjs | null) => {
-    setDate(newValue);
+  const handleChangeDate = (newDate: Dayjs | null) => {
+    setDate(newDate);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value);
+    const newAmount = event.target.value;
+    setValue("description", newAmount);
+  };
+
+  const handleGoBack = () => {
+    navigate("/expenses/friendslist");
   };
 
   return (
     <MainContainer>
       <SubContainer>
         <Section>
+          <GobackButtonWrapper>
+            <GobackButton onClick={handleGoBack} />
+          </GobackButtonWrapper>
           <Title>Create Expense</Title>
           <PeopleSectionContainer>
             <FriendIcon friends={splitters} />
           </PeopleSectionContainer>
         </Section>
         <Section>
-          <FormContainer onSubmit={handleSubmit}>
+          <FormContainer onSubmit={createExpense}>
             <InputsWrapper>
               <SubInputsWrapper>
                 <InputTitle>Amount</InputTitle>
                 <StyledBox>
                   <StyledOutlinedNumberInput
+                    {...register("amount", {
+                      required: {
+                        value: true,
+                        message: ERROR_EMPTY_AMOUNT,
+                      },
+                    })}
                     value={amount}
                     onChange={handleChangeAmount}
                     type="number"
@@ -219,9 +268,19 @@ export const PaymentPage = () => {
                 <StyledBox>
                   <StyledOutlinedInput
                     value={description}
-                    onChange={handleChangeDescription}
                     placeholder="Please enter text"
                     fullWidth
+                    {...register("description", {
+                      required: {
+                        value: true,
+                        message: ERROR_EMPTY_DESCRIPTION,
+                      },
+                      validate: {
+                        noWhitespaceOnly: (value) =>
+                          value.trim() !== "" || ERROR_EMPTY_DESCRIPTION,
+                      },
+                    })}
+                    onChange={handleChangeDescription}
                   />
                 </StyledBox>
                 <InputTitle>Date</InputTitle>
@@ -243,7 +302,7 @@ export const PaymentPage = () => {
                           <SplitterName>{member.firstName}</SplitterName>
                           <SplitterBox>
                             <StyledOutlinedNumberInput
-                              id={member.id}
+                              id={index.toString()}
                               value={member.amount}
                               placeholder="0.0"
                               type="number"
@@ -277,10 +336,17 @@ export const PaymentPage = () => {
               </SubInputsWrapper>
             </InputsWrapper>
             <ButtonContainer>
-              <StyledButton variant="contained" disableRipple type="submit">
-                create
-              </StyledButton>
+              <FormButton title={"create expense"} />
             </ButtonContainer>
+            {errors.amount && <ErrorText>{errors.amount.message}</ErrorText>}
+            {errors.description && (
+              <ErrorText>{errors.description.message}</ErrorText>
+            )}
+            {createExpenseMessage && (
+              <ExpenseMessage isError={createExpenseMessage.isError}>
+                {createExpenseMessage.message}
+              </ExpenseMessage>
+            )}
           </FormContainer>
         </Section>
       </SubContainer>
@@ -302,7 +368,7 @@ const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 95%;
+  height: 100vh;
   width: 45%;
   background-color: ${({ theme }) => theme.palette.primary.main};
   @media (max-width: 600px) {
@@ -320,7 +386,6 @@ const Title = styled.h2`
 
 const Section = styled.div`
   width: 100%;
-  margin-bottom: 15px;
 `;
 
 const FormContainer = styled.form`
@@ -364,6 +429,8 @@ const PeopleSectionContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 50px;
 `;
 
@@ -427,8 +494,10 @@ const StyledOutlinedNumberInput = styled(StyledOutlinedInput)`
     -moz-appearance: textfield;
   }
 
-  .Mui-disabled {
-    color: ${({ theme }) => theme.palette.info.light};
+  &&.Mui-disabled {
+    .css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+      -webkit-text-fill-color: ${({ theme }) => theme.palette.info.light};
+    }
   }
 `;
 
@@ -436,10 +505,6 @@ const MenuItemContainer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
-`;
-
-const StyledButton = styled(Button)`
-  background: ${({ theme }) => theme.palette.secondary.main} !important;
 `;
 
 const StyledSelect = styled(Select)`
@@ -492,19 +557,44 @@ const DatePickerWrapper = styled.div`
       color: ${(props) => props.theme.palette.info.light};
 
       &:hover {
-        color: ${(props) => props.theme.palette.info.dark};
+        color: ${(props) => props.theme.palette.info.light};
       }
 
       &:active {
-        color: ${(props) => props.theme.palette.info.dark};
+        color: ${(props) => props.theme.palette.info.light};
       }
     }
   }
 `;
 
 const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};
   }
+`;
+
+const ErrorText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #ff908d;
+`;
+
+const ExpenseMessage = styled.div<{ isError: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
+`;
+
+const GobackButtonWrapper = styled.div`
+  margin-top: 20px;
 `;

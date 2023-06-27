@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { FriendshipService } from "../services/friendships";
 import { UserService } from "../services/users";
+import { ERROR_USER_EXIST, SUCCESS_SIGNUP } from "../constants/message";
+import { addNewLinesAfterPunctuation } from "../utils/textUtils";
 
 interface CreateUserRequest {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-}
-
-interface SignupError {
-  isError: boolean;
-  message?: string;
 }
 
 interface CreatedUser {
@@ -26,9 +23,15 @@ interface UpdateFriendIdRequest {
   email: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 export const useSignup = () => {
-  const [signupError, setSignupError] = useState<SignupError>({
+  const [signupMessage, setSignupMessage] = useState<Message>({
     isError: false,
+    message: "",
   });
 
   const createAuthUser = async ({
@@ -44,7 +47,7 @@ export const useSignup = () => {
       lastName,
     });
     if (isError) {
-      setSignupError({ isError, message });
+      setSignupMessage({ isError, message });
     }
     return createdUser;
   };
@@ -52,7 +55,7 @@ export const useSignup = () => {
   const createUser = async (createdUser: CreatedUser) => {
     const { isError, message } = await UserService.createUser(createdUser);
     if (isError) {
-      return setSignupError({ isError, message });
+      return setSignupMessage({ isError, message });
     }
   };
 
@@ -65,7 +68,7 @@ export const useSignup = () => {
         friendEmail: email,
         friendId: id,
       });
-    return setSignupError({ isError, message });
+    return setSignupMessage({ isError, message });
   };
 
   const signup = async ({
@@ -84,7 +87,10 @@ export const useSignup = () => {
       ? await UserService.findUserByEmail(createdUser?.email)
       : false;
     if (isUser) {
-      setSignupError({ isError: true, message: "User already exists" });
+      setSignupMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_USER_EXIST),
+      });
       return;
     }
     if (createdUser) {
@@ -93,8 +99,12 @@ export const useSignup = () => {
         id: createdUser.id,
         email: createdUser.email,
       });
+      setSignupMessage({
+        isError: false,
+        message: addNewLinesAfterPunctuation(SUCCESS_SIGNUP),
+      });
     }
   };
 
-  return { signupError, signup };
+  return { signupMessage, signup };
 };

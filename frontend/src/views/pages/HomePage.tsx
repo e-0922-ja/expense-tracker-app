@@ -76,27 +76,29 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   font-size: 4rem;
   color: ${({ theme }) => theme.palette.secondary.main};
+  padding-left: 70px;
   @media (max-width: 600px) {
     font-size: 2rem;
+    padding-left: 20px;
   }
 `;
 
 const Text = styled.p`
   color: ${({ theme }) => theme.palette.secondary.light};
+  padding-left: 70px;
+  @media (max-width: 600px) {
+    padding: 0 20px;
+  }
 `;
 
 const HeroSection = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 60%;
-  padding: 0 70px;
-  gap: 30px;
   @media (max-width: 600px) {
     height: 100%;
-    width: 100%;
-    padding: 0 20px;
-    gap: 0;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -109,6 +111,7 @@ const HeroContainer = styled.div`
   justify-content: center;
   align-item: center;
   width: 50%;
+  height: fit-content;
 
   @media (max-width: 600px) {
     width: 100%;
@@ -120,33 +123,28 @@ const ImageContainer = styled.div`
   justify-content: center;
   align-item: center;
   width: 50%;
-  height: 100%;
   @media (max-width: 600px) {
     width: 100%;
-    padding: 0 20px;
   }
 `;
 
 const ImageTag = styled.img`
-  @media (max-width: 600px) {
-    height: 30%;
-  }
+  width: 100%;
+  object-fit: contain;
 `;
 
 const SubSection = styled.div`
-  gap: 50px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 40%;
-  padding: 0 70px;
   background: ${({ theme }) => theme.palette.primary.main};
+  gap: 20px;
   @media (max-width: 600px) {
-    gap: 0;
-    height: 100%;
+    width: 100%;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0 20px;
+    align-items: flex-start;
   }
 `;
 
@@ -162,6 +160,10 @@ const FeatContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.palette.info.light};
+  padding: 0 70px 70px;
+  @media (max-width: 600px) {
+    padding: 0 20px 70px;
+  }
 `;
 
 const StyledButton = styled(Button)`
