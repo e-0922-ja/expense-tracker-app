@@ -3,6 +3,7 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
+import { paths } from "../../constants/routePaths";
 
 interface FriendsCardProps {
   expense: Expense;
@@ -11,7 +12,7 @@ interface FriendsCardProps {
 export const FriendsCard = ({ expense }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
-    navigate("/history/group/1", { state: { expense } });
+    navigate(`${paths.historyGroup}1`, { state: { expense } });
   };
   return (
     <TransactionCardWrapper elevation={0}>

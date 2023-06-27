@@ -20,6 +20,7 @@ import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { paths } from "../../constants/routePaths";
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -60,12 +61,12 @@ export const FriendHistoryDetailPage = () => {
 
   const handlesave = async () => {
     const resultUpdateMembersPaidStatus = await updateMembersPaidStatus();
-    if (resultUpdateMembersPaidStatus) navigate("/history");
+    if (resultUpdateMembersPaidStatus) navigate(`${paths.history}`);
   };
 
   const handledelete = async () => {
     const resultDeleteExpense = await deleteExpense();
-    if (resultDeleteExpense) navigate("/history");
+    if (resultDeleteExpense) navigate(`${paths.history}`);
   };
 
   const handleDrawerToggle = () => {
@@ -74,9 +75,7 @@ export const FriendHistoryDetailPage = () => {
 
   const navigate = useNavigate();
 
-  const handleGoBack = () => {
-    navigate("/history");
-  };
+  const handleGoBack = () => navigate(`${paths.history}`);
 
   const updateMembersPaidStatus = async () => {
     try {

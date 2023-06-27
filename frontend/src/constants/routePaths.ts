@@ -35,8 +35,8 @@ const historyDetail =
 
 const historyGroup =
   process.env.REACT_APP_ENVIRONMENT === "production"
-    ? "/expense-tracker-app/history/group/:id"
-    : "/history/group/:id";
+    ? "/expense-tracker-app/history/group/"
+    : "/history/group/";
 
 const account =
   process.env.REACT_APP_ENVIRONMENT === "production"

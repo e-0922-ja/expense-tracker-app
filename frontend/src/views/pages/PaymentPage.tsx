@@ -22,6 +22,7 @@ import { Friend } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
 import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
+import { paths } from "../../constants/routePaths";
 
 interface EachAmount extends Friend {
   amount: string;
@@ -72,7 +73,7 @@ export const PaymentPage = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const resultInsertExpense = await insertExpense();
-    if (resultInsertExpense) navigate("/history");
+    if (resultInsertExpense) navigate(paths.history);
   };
 
   console.log(error);

@@ -14,6 +14,7 @@ import { SubButton } from "../components/SubButton";
 import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { paths } from "../../constants/routePaths";
 
 interface FriendEmail {
   email: string;
@@ -221,7 +222,7 @@ export const FriendsListPage = () => {
   const handleClick = () => {
     if (selectedFriends.length > 0) {
       setSelectedError("");
-      navigate("/expenses/payment", {
+      navigate(paths.payment, {
         state: { selectedFriends },
       });
     } else {

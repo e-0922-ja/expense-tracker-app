@@ -13,6 +13,7 @@ import { DrawerContents } from "../components/DrawerContents";
 // import { TransactionCard } from "../components/TransactionCard";
 import { GobackButton } from "../components/GobackButton";
 import { useNavigate } from "react-router-dom";
+import { paths } from "../../constants/routePaths";
 // import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 // import { LendCalculateCard } from "../components/LendCalculateCard";
 
@@ -79,9 +80,7 @@ export const FriendsHistoryPage = () => {
   //   },
   // ];
 
-  const handleGoBack = () => {
-    navigate("/history");
-  };
+  const handleGoBack = () => navigate(paths.history);
 
   return (
     <Wrapper>

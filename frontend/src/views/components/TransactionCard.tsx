@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { paths } from "../../constants/routePaths";
 
 interface TransactionProps {
   expense: Expense;
@@ -11,7 +12,7 @@ interface TransactionProps {
 export const TransactionCard = ({ expense }: TransactionProps) => {
   const navigate = useNavigate();
   const handleGoToDetail = () => {
-    navigate(`/history/${expense.id}`, { state: { expense } });
+    navigate(`${paths.history}/${expense.id}`, { state: { expense } });
   };
   const CategoryIcon = getCategoryIcon(expense.category);
   return (

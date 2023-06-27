@@ -11,6 +11,7 @@ import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import { paths } from "../../constants/routePaths";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -43,7 +44,7 @@ export const PassWordResetPage = () => {
       if (passwordResetError) {
         throw passwordResetError;
       }
-      navigate("/account");
+      navigate(paths.account);
     } catch (error) {
       alert("The error has occured");
     }

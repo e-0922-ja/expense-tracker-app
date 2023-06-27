@@ -16,6 +16,7 @@ import {
   passwordRegex,
 } from "../../constants/regexPattern";
 import { useSignup } from "../../hooks/useSignup";
+import { paths } from "../../constants/routePaths";
 
 interface NewUser {
   firstName: string;
@@ -39,7 +40,7 @@ export const SignUpPage = () => {
 
   useEffect(() => {
     if (signupError.message === "Success!") {
-      navigate("/login");
+      navigate(paths.login);
     }
   }, [navigate, signupError]);
 
