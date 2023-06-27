@@ -2,12 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Box, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { passwordRegex } from "../../constants/regexPattern";
+import { passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../utils/textUtils";
+import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/message";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,

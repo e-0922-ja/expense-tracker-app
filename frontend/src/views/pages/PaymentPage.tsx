@@ -29,7 +29,7 @@ import {
   ERROR_EMPTY_AMOUNT,
   ERROR_EMPTY_DESCRIPTION,
   SUCCESS_CREATE_EXPENSE,
-} from "../../utils/textUtils";
+} from "../../constants/message";
 
 interface EachAmount extends Friend {
   amount: string;

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { SupabaseService } from "../../services/supabase";
-import { emailRegex, passwordRegex } from "../../constants/regexPattern";
+import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -18,8 +18,8 @@ import {
   ERROR_SOMETHING,
   ERROR_USER_EXIST,
   SUCCESS_SIGNUP,
-  addNewLinesAfterPunctuation,
-} from "../../utils/textUtils";
+} from "../../constants/message";
+import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
 
 interface NewUser {
   firstName: string;

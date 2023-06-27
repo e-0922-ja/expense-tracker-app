@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { emailRegex } from "../../constants/regexPattern";
+import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -19,7 +19,7 @@ import {
   ERROR_SEND_EXISTED_ADDRESS,
   ERROR_SEND_FAILED,
   ERROR_SEND_OWN_ADDRESS,
-} from "../../utils/textUtils";
+} from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
 
 interface FriendEmail {

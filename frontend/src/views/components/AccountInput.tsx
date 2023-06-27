@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
 import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
-import { emailRegex } from "../../constants/regexPattern";
+import { emailRegex } from "../../utils/regexPatternUtils";
 import {
   ERROR_CHANGE_ACCOUNT_INFO,
   ERROR_EMAIL,
@@ -17,8 +17,8 @@ import {
   ERROR_SOMETHING,
   SUCCESS_CHANGE_ACCOUNT_INFO,
   SUCCESS_RESET_PASSWORD,
-  addNewLinesAfterPunctuation,
-} from "../../utils/textUtils";
+} from "../../constants/message";
+import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
 
 interface AccountInputProps {
   firstName?: string;

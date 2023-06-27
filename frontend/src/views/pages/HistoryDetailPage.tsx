@@ -23,7 +23,7 @@ import { getCategoryIcon } from "../../utils/categoryUtils";
 import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
-} from "../../utils/textUtils";
+} from "../../constants/message";
 
 interface Message {
   isError: boolean;
