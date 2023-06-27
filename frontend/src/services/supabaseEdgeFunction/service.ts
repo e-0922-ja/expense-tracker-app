@@ -1,3 +1,5 @@
+import { client } from "../supabase/client";
+
 class _supabaseEdgeFunctionService {
   private endpoint?: string;
 
@@ -9,12 +11,15 @@ class _supabaseEdgeFunctionService {
   }
 
   async sendEmail(toAddress: string, requestee: string) {
+    const {
+      data: { session },
+    } = await client.auth.getSession();
     const body = JSON.stringify({ toAddress, requestee });
     const response = await fetch(`${this.endpoint}/email`, {
       body,
       headers: {
         // Will implements JWT auth later
-        // Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${session?.access_token}`,
         "Content-Type": "application/json",
       },
       method: "POST",
