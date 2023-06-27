@@ -96,7 +96,7 @@ export const HistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { data, error } = await supabase.rpc("update_members_paid", {
+      const { error } = await supabase.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
