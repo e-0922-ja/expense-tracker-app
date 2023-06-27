@@ -6,7 +6,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-
+import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
@@ -14,7 +14,7 @@ import { selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { DarkModeButton } from "./DarkModeButton";
 import { LightModeButton } from "./LightModeButton";
-import styled from "styled-components";
+import { paths } from "../../constants/routePaths";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const Header = () => {
   const account = useSelector(selectUser);
 
   const handleNavigateHome = () => {
-    navigate("/");
+    navigate(paths.home);
   };
 
   const handleChangeMode = () => {

@@ -17,6 +17,7 @@ import { selectTheme } from "../../reducer/colorModeSlice";
 import { logout, selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { useState } from "react";
+import { paths } from "../../constants/routePaths";
 
 export const DrawerContents = () => {
   const navigate = useNavigate();
@@ -30,36 +31,36 @@ export const DrawerContents = () => {
     setSelectedId(num);
   };
 
-  const handleLogput = () => {
+  const handleLogout = () => {
     if (account.isLogin) {
       dispatch(logout());
-      navigate("/");
+      navigate(paths.home);
       setSelectedId(4);
     }
   };
 
   const toolbarItems = [
     {
-      onClick: () => navigatePage("/history", 1),
+      onClick: () => navigatePage(paths.history, 1),
       text: "History",
       icon: <HistoryIcon style={{ color: theme.palette.secondary.main }} />,
       id: 1,
     },
     {
-      onClick: () => navigatePage("/friends", 2),
+      onClick: () => navigatePage(paths.friendApprove, 2),
       text: "Friends List",
       icon: <GroupIcon style={{ color: theme.palette.secondary.main }} />,
       id: 2,
     },
     {
-      onClick: () => navigatePage("/account", 3),
+      onClick: () => navigatePage(paths.account, 3),
       text: "My Account",
       icon: <PortraitIcon style={{ color: theme.palette.secondary.main }} />,
       id: 3,
     },
 
     {
-      onClick: handleLogput,
+      onClick: handleLogout,
       text: "Logout",
       icon: <LogoutIcon style={{ color: theme.palette.secondary.main }} />,
       id: 4,
