@@ -11,3 +11,8 @@ export interface CreateUserRequest {
   firstName: string;
   lastName: string;
 }
+
+export interface UpdateFriendShipRequest {
+  friendId: string;
+  friendEmail: string;
+}

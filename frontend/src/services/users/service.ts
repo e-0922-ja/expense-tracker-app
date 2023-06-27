@@ -1,7 +1,7 @@
-import { client } from "./client";
+import { client } from "../supabase/client";
 import { CreateAuthUserRequest, CreateUserRequest } from "./type";
 
-class _supabaseService {
+class _userService {
   createAuthUser = async ({
     firstName,
     lastName,
@@ -19,7 +19,7 @@ class _supabaseService {
     return {
       isError: false,
       message: "Sucess!",
-      user: {
+      createdUser: {
         id: data.user?.id || "",
         firstName: `${data.user?.user_metadata.firstName || ""}`,
         lastName: `${data.user?.user_metadata.lastName || ""}`,
@@ -39,7 +39,6 @@ class _supabaseService {
       .from("Users")
       .select("*")
       .eq("email", email);
-    console.log(data);
     if (error) {
       console.log(error);
       throw new Error(error.message);
@@ -74,11 +73,10 @@ class _supabaseService {
       },
     ]);
     if (error) {
-      console.log(error);
       return { isError: true, message: error.message };
     }
     return { isError: false, message: "Success!" };
   };
 }
 
-export const SupabaseService = new _supabaseService();
+export const UserService = new _userService();
