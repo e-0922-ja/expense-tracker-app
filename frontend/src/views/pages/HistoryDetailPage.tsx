@@ -20,7 +20,15 @@ import { SubButton } from "../components/SubButton";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
-import { paths } from "../../constants/routePaths";
+import {
+  SUCCESS_DELETE_EXPENSE,
+  SUCCESS_UPDATE_EXPENSE,
+} from "../../constants/message";
+
+interface Message {
+  isError: boolean;
+  message: string;
+}
 
 const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -41,6 +49,14 @@ export const HistoryDetailPage = () => {
   const [checkedMembers, setCheckedMembers] = useState<CheckedMember[]>(
     initialCheckedMembers
   );
+  const [updateMessage, setUpdateMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+  const [deleteMessage, setDeleteMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
   const CategoryIcon = getCategoryIcon(expense.category);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,8 +76,7 @@ export const HistoryDetailPage = () => {
   };
 
   const handlesave = async () => {
-    const resultUpdateMembersPaidStatus = await updateMembersPaidStatus();
-    if (resultUpdateMembersPaidStatus) navigate(paths.history);
+    await updateMembersPaidStatus();
   };
 
   const handledelete = async () => {
@@ -79,39 +94,39 @@ export const HistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { data, error } = await supabase.rpc("update_members_paid", {
+      const { error } = await supabase.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
       });
       if (error) {
-        console.log(error);
+        setUpdateMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
+        setUpdateMessage({ isError: false, message: SUCCESS_UPDATE_EXPENSE });
         return true;
       }
     } catch (error: any) {
-      console.log(error);
+      setUpdateMessage({ isError: true, message: error.message });
       return false;
     }
   };
 
   const deleteExpense = async () => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("Expenses")
         .delete()
         .eq("id", expense.id);
       if (error) {
-        console.log(error);
+        setDeleteMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
+        setDeleteMessage({ isError: true, message: SUCCESS_DELETE_EXPENSE });
         return true;
       }
     } catch (error: any) {
-      console.log(error);
+      setDeleteMessage({ isError: true, message: error.message });
       return false;
     }
   };
@@ -128,7 +143,7 @@ export const HistoryDetailPage = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
         >
           <Toolbar />
@@ -137,14 +152,14 @@ export const HistoryDetailPage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <GobackButton onClick={handleGoBack} />
@@ -224,15 +239,27 @@ export const HistoryDetailPage = () => {
                         );
                       })}
                     </SplitterContainer>
-                    <ButtonContainer>
-                      <SubButton title={"save"} onClick={handlesave} />
-                    </ButtonContainer>
-                    <ButtonContainer>
-                      <SubButton title={"delete"} onClick={handledelete} />
-                    </ButtonContainer>
                   </SubInputsWrapper>
                 </InputsWrapper>
               </FormContainer>
+              <ButtonContainer>
+                <ButtonWrapper>
+                  <SubButton title={"delete"} onClick={handledelete} />
+                  {deleteMessage && (
+                    <ButtonMessage isError={deleteMessage.isError}>
+                      {deleteMessage.message}
+                    </ButtonMessage>
+                  )}
+                </ButtonWrapper>
+                <ButtonWrapper>
+                  <SubButton title={"save"} onClick={handlesave} />
+                  {updateMessage && (
+                    <ButtonMessage isError={updateMessage.isError}>
+                      {updateMessage.message}
+                    </ButtonMessage>
+                  )}
+                </ButtonWrapper>
+              </ButtonContainer>
             </Section>
           </DetailBox>
         </SubBox>
@@ -273,9 +300,17 @@ const MobileDrawer = styled(Drawer)`
     box-sizing: border-box;
     width: ${drawerWidth}px;
   }
-
   @media (min-width: 600px) {
     display: none;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
@@ -283,10 +318,11 @@ const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: calc(100% - ${drawerWidth}px);
-  overflow: auto;
+  height: 100vh;
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;
+    height: 100%;
   }
 `;
 
@@ -403,7 +439,18 @@ const IconCircle = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 30px;
+  width: 100%;
+  margin-top: 50px;
+  display: flex;
+  justyfy-content: space-between;
+  gap: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const SubBox = styled(Box)`
@@ -411,8 +458,20 @@ const SubBox = styled(Box)`
 `;
 
 const CheckboxWrapper = styled.div`
+  .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
   .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
     color: ${(props) => props.theme.palette.secondary.main};
   }
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;

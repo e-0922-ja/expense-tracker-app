@@ -2,15 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { Box, IconButton, InputAdornment, OutlinedInput } from "@mui/material";
 import { useForm } from "react-hook-form";
-import {
-  errPassword,
-  errPasswordConf,
-  passwordRegex,
-} from "../../constants/regexPattern";
+import { passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/message";
 import { paths } from "../../constants/routePaths";
 
 const supabase = createClient(
@@ -84,8 +81,8 @@ export const PassWordResetPage = () => {
               })}
               type={showPassword ? "text" : "password"}
               fullWidth
-              endAdornment={
-                <InputAdornment position="end">
+              startAdornment={
+                <InputAdornment position="start">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
@@ -102,7 +99,7 @@ export const PassWordResetPage = () => {
               }
             />
           </StyledBox>
-          {errors.password && <ErrorText>{errPassword}</ErrorText>}
+          {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           <InputTitle>Confirm Password</InputTitle>
           <StyledBox>
             <StyledOutlinedInput
@@ -112,8 +109,8 @@ export const PassWordResetPage = () => {
               })}
               type={showConfirmPassword ? "text" : "password"}
               fullWidth
-              endAdornment={
-                <InputAdornment position="end">
+              startAdornment={
+                <InputAdornment position="start">
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={handleClickShowConfirmPassword}
@@ -130,7 +127,7 @@ export const PassWordResetPage = () => {
               }
             />
           </StyledBox>
-          {errors.confPassword && <ErrorText>{errPasswordConf}</ErrorText>}
+          {errors.confPassword && <ErrorText>{ERROR_PASSWORDCONF}</ErrorText>}
           <ButtonWrapper>
             <FormButton title="Register" />
           </ButtonWrapper>
@@ -141,7 +138,7 @@ export const PassWordResetPage = () => {
 };
 
 const ComponentWrapper = styled.div`
-  height: calc(100% - 64px);
+  height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,9 +159,10 @@ const PassResetWrapper = styled.div`
 `;
 
 const FormWrapper = styled.form`
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const TitleWrapper = styled.div`

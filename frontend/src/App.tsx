@@ -1,9 +1,8 @@
-import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./views/pages/HomePage";
 import { Header } from "./views/components/Header";
 import { useSelector } from "react-redux";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { selectTheme } from "./reducer/colorModeSlice";
 import { SignUpPage } from "./views/pages/SignUpPage";
 import { LoginPage } from "./views/pages/LoginPage";
@@ -23,10 +22,10 @@ function App() {
   const theme = useSelector(selectTheme);
 
   return (
-    <div className="App">
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <div className="App">
         <Header />
-        <Toolbar />
+        <StyledToolbar />
         <Routes>
           <Route path={paths.home} element={<HomePage />} />
           <Route path={paths.signup} element={<SignUpPage />} />
@@ -61,9 +60,16 @@ function App() {
           />
           <Route path={paths.passwordReset} element={<PassWordResetPage />} />
         </Routes>
-      </ThemeProvider>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 
 export default App;
+
+const StyledToolbar = styled(Toolbar)`
+  padding: 0 70px !important;
+  @media (max-width: 600px) {
+    padding: 0 20px !important;
+  }
+`;

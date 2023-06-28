@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
 import { paths } from "../../constants/routePaths";
 
 interface TransactionProps {
@@ -10,15 +12,33 @@ interface TransactionProps {
 }
 
 export const TransactionCard = ({ expense }: TransactionProps) => {
+  const account = useSelector(selectUser);
   const navigate = useNavigate();
+
   const handleGoToDetail = () => {
     navigate(`${paths.history}/${expense.id}`, { state: { expense } });
   };
   const CategoryIcon = getCategoryIcon(expense.category);
+
+  const checkTransactionStyle = () => {
+    if (
+      expense.payer !== account.user?.id &&
+      expense.members.find(
+        (member) => member.id === account.user?.id && !member.paid
+      )
+    ) {
+      return { borderLeft: "3px solid #a196ee" };
+    } else if (expense.payer === account.user?.id && !expense.settled) {
+      return { borderLeft: "3px solid #ee9696" };
+    } else {
+      return {};
+    }
+  };
+
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={handleGoToDetail}>
-        <ContentWrapper>
+        <ContentWrapper style={checkTransactionStyle()}>
           <IconContainer>
             <IconCircle>
               <CategoryIcon />
@@ -32,11 +52,11 @@ export const TransactionCard = ({ expense }: TransactionProps) => {
               {expense.date.toLocaleString().substring(0, 10)}
             </Typography>
           </DiscriptionContainer>
-          <AnountContainer>
-            <Typography gutterBottom component="div">
+          <AmountContainer>
+            <AmountTypography gutterBottom>
               {expense.payment.toFixed(2).toLocaleString()}
-            </Typography>
-          </AnountContainer>
+            </AmountTypography>
+          </AmountContainer>
         </ContentWrapper>
       </CardActionArea>
     </TransactionCardWrapper>
@@ -75,13 +95,19 @@ const IconCircle = styled.div`
 `;
 
 const DiscriptionContainer = styled.div`
-  width: 65%;
+  width: 55%;
   padding: 10px;
 `;
 
-const AnountContainer = styled.div`
+const AmountContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20%;
+  width: 30%;
+`;
+
+const AmountTypography = styled(Typography)`
+  &.MuiTypography-root {
+    margin-bottom: 0;
+  }
 `;

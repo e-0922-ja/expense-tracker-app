@@ -3,6 +3,8 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../reducer/userSlice";
 import { paths } from "../../constants/routePaths";
 
 interface FriendsCardProps {
@@ -10,14 +12,29 @@ interface FriendsCardProps {
 }
 
 export const FriendsCard = ({ expense }: FriendsCardProps) => {
+  const account = useSelector(selectUser);
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
     navigate(`${paths.historyGroup}1`, { state: { expense } });
   };
+  const checkTransactionStyle = () => {
+    if (
+      expense.payer !== account.user?.id &&
+      expense.members.find(
+        (member) => member.id === account.user?.id && !member.paid
+      )
+    ) {
+      return { borderLeft: "3px solid #a196ee" };
+    } else if (expense.payer === account.user?.id && !expense.settled) {
+      return { borderLeft: "3px solid #ee9696" };
+    } else {
+      return {};
+    }
+  };
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={handleGoToFriendsHistory}>
-        <ContentWrapper>
+        <ContentWrapper style={checkTransactionStyle()}>
           <IconContainer>
             <IconCircle>
               <PeopleAltIcon />

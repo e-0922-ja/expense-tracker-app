@@ -6,12 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
 import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
+import { emailRegex } from "../../utils/regexPatternUtils";
 import {
-  emailRegex,
-  errEmail,
-  errFirstName,
-  errLastName,
-} from "../../constants/regexPattern";
+  ERROR_CHANGE_ACCOUNT_INFO,
+  ERROR_EMAIL,
+  ERROR_FIRSTNAME,
+  ERROR_LASTNAME,
+  ERROR_RESET_PASSWORD_EMAIL_NOTHING,
+  ERROR_RESET_PASSWORD_SEND_MAIL,
+  ERROR_SOMETHING,
+  SUCCESS_CHANGE_ACCOUNT_INFO,
+  SUCCESS_RESET_PASSWORD,
+} from "../../constants/message";
+import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
 
 interface AccountInputProps {
   firstName?: string;
@@ -25,10 +32,17 @@ interface FormData {
   email?: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
+
+const BASE_URI = process.env.REACT_APP_BASE_URI;
 
 export const AccountInput = ({
   firstName,
@@ -37,6 +51,15 @@ export const AccountInput = ({
 }: AccountInputProps) => {
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
+
+  const [updateUserInfoMessage, setUpdateUserInfoMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+  const [sendEmailMessage, setSendEmailMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
 
   const {
     register: registerUpdatedUser,
@@ -63,7 +86,10 @@ export const AccountInput = ({
       data: updatedMetaData,
     });
     if (error) {
-      console.error("Error updating user email and metadata:", error);
+      setUpdateUserInfoMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
+      });
     }
 
     if (data.user) {
@@ -74,28 +100,47 @@ export const AccountInput = ({
         email: data.user.email,
       };
       dispatch(update(fetchedUserInfoBySupabase));
+      setUpdateUserInfoMessage({
+        isError: false,
+        message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
+      });
     }
-
     setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
     const currentEmail = account.user?.email;
     if (!currentEmail) {
-      alert("Email not defined");
+      setSendEmailMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(
+          ERROR_RESET_PASSWORD_EMAIL_NOTHING
+        ),
+      });
       return;
     }
     try {
+      const redirectUrl = `${BASE_URI}/passwordReset`;
       const { error: sendEmailError } =
         await supabase.auth.resetPasswordForEmail(currentEmail, {
-          redirectTo: "http://localhost:3000/passwordReset",
+          redirectTo: redirectUrl,
         });
       if (sendEmailError) {
+        setSendEmailMessage({
+          isError: true,
+          message: ERROR_RESET_PASSWORD_SEND_MAIL,
+        });
         throw sendEmailError;
       }
-      alert("Please check your email");
+      setSendEmailMessage({
+        isError: false,
+        message: addNewLinesAfterPunctuation(SUCCESS_RESET_PASSWORD),
+      });
     } catch (error) {
-      alert("Something went wrong");
+      setSendEmailMessage({
+        isError: true,
+        message: addNewLinesAfterPunctuation(ERROR_SOMETHING),
+      });
     }
   };
 
@@ -103,7 +148,6 @@ export const AccountInput = ({
     <div>
       <Title>Account</Title>
       <SubTitle>Your information</SubTitle>
-
       <InfoContainer>
         <StyledFormBox
           component="form"
@@ -114,28 +158,32 @@ export const AccountInput = ({
             {editStatus ? (
               <StyledOutlinedInput
                 {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
-                defaultValue={firstName} // use defaultValue instead of value
+                defaultValue={firstName}
                 fullWidth
               />
             ) : (
               <Data>{account.user?.firstName}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.firstName && <ErrorText>{errFirstName}</ErrorText>}
+          {errorsUpdatedUser.firstName && (
+            <ErrorText>{ERROR_FIRSTNAME}</ErrorText>
+          )}
           <InputTitle>Last Name</InputTitle>
           <StyledBox>
             {editStatus ? (
               <StyledOutlinedInput
                 type="text"
-                {...registerUpdatedUser("lastName", { required: true })} // if firstName is required
-                defaultValue={lastName} // use defaultValue instead of value
+                {...registerUpdatedUser("lastName", { required: true })}
+                defaultValue={lastName}
                 fullWidth
               />
             ) : (
               <Data>{account.user?.lastName}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
+          {errorsUpdatedUser.lastName && (
+            <ErrorText>{ERROR_LASTNAME}</ErrorText>
+          )}
           <InputTitle>Email</InputTitle>
           <StyledBox>
             {editStatus ? (
@@ -151,7 +199,7 @@ export const AccountInput = ({
               <Data>{account.user?.email}</Data>
             )}
           </StyledBox>
-          {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}
+          {errorsUpdatedUser.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           <ButtonContainer>
             {editStatus ? (
               <StyledButton variant="contained" disableRipple type="submit">
@@ -161,10 +209,14 @@ export const AccountInput = ({
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
+          {updateUserInfoMessage && (
+            <ButtonMessage isError={updateUserInfoMessage.isError}>
+              {updateUserInfoMessage.message}
+            </ButtonMessage>
+          )}
         </StyledFormBox>
       </InfoContainer>
-      <SubTitle>Reset Password</SubTitle>
-
+      <SecondSubTitle>Reset Password</SecondSubTitle>
       <SubButtonWrapper>
         <StyledButton
           variant="contained"
@@ -173,6 +225,11 @@ export const AccountInput = ({
         >
           send
         </StyledButton>
+        {sendEmailMessage && (
+          <ButtonMessage isError={sendEmailMessage.isError}>
+            {sendEmailMessage.message}
+          </ButtonMessage>
+        )}
       </SubButtonWrapper>
     </div>
   );
@@ -205,7 +262,6 @@ const Data = styled.div`
 
 const ButtonContainer = styled.div`
   margin-top: 30px;
-  margin-bottom: 6rem;
 `;
 
 const StyledOutlinedInput = styled(OutlinedInput)`
@@ -244,11 +300,20 @@ const SubTitle = styled.h3`
   color: ${({ theme }) => theme.palette.info.light};
 `;
 
+const SecondSubTitle = styled.h3`
+  margin-top: 6rem;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.palette.info.light};
+`;
+
 const SubButtonWrapper = styled.div`
-  width: 100%;
+  width: 70%;
   display: flex;
   flex-direction: column;
   margin-top: 30px;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const StyledFormBox = styled(Box)`
@@ -273,4 +338,14 @@ const StyledButton = styled(Button)`
   fontsize: 1rem !important;
   padding: 0 30px !important;
   border-radius: 24px !important;
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  white-space: pre-wrap;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;

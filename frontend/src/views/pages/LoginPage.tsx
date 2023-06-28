@@ -8,15 +8,14 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
 import { useState } from "react";
-import {
-  emailRegex,
-  errEmail,
-  errPassword,
-  errUserNotFound,
-  passwordRegex,
-} from "../../constants/regexPattern";
+import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  ERROR_EMAIL,
+  ERROR_PASSWORD,
+  ERROR_USER_NOTFOUND,
+} from "../../constants/message";
 import { paths } from "../../constants/routePaths";
 
 const supabase = createClient(
@@ -31,10 +30,18 @@ interface CurrentUser {
   password: string;
 }
 
+interface Message {
+  isError: boolean;
+  message: string;
+}
+
 export const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [authError, setAuthError] = useState("");
+  const [authMessage, setAuthMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -50,11 +57,11 @@ export const LoginPage = () => {
       password,
     });
     if (error) {
-      setAuthError(error.message);
+      setAuthMessage({ isError: true, message: error.message });
       return;
     }
     if (!data?.user) {
-      setAuthError(errUserNotFound);
+      setAuthMessage({ isError: true, message: ERROR_USER_NOTFOUND });
       return;
     }
 
@@ -65,7 +72,6 @@ export const LoginPage = () => {
       lastName: user?.user_metadata.lastName,
       email: user?.email,
     };
-
     dispatch(login(userInfo));
 
     navigate(paths.history);
@@ -103,7 +109,7 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -124,12 +130,16 @@ export const LoginPage = () => {
                 })}
               />
             </InputPaper>
-            {errors.password && <ErrorText>{errPassword}</ErrorText>}
+            {errors.password && <ErrorText>{ERROR_PASSWORD}</ErrorText>}
           </InputWrapper>
           <ButtonWrapper>
             <FormButton title="login" />
           </ButtonWrapper>
-          {authError && <ErrorText>{authError}</ErrorText>}
+          {authMessage && (
+            <LoginMessage isError={authMessage.isError}>
+              {authMessage.message}
+            </LoginMessage>
+          )}
         </FormWrapper>
       </LoginWrapper>
     </ComponentWrapper>
@@ -199,6 +209,15 @@ const Text = styled.p`
 const ErrorText = styled.span`
   font-size: 0.7rem;
   color: #ff908d;
+`;
+
+const LoginMessage = styled.div<{ isError: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 70%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
 `;
 
 const ButtonWrapper = styled.div`
