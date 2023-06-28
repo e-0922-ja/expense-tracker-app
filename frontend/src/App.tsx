@@ -17,6 +17,7 @@ import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
 import { SignupPage } from "./views/pages/SignupPage";
 
+
 function App() {
   const theme = useSelector(selectTheme);
 
@@ -27,7 +28,7 @@ function App() {
         <StyledToolbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup" element={<SignupPage/>} />
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/expense/selectfriends"
