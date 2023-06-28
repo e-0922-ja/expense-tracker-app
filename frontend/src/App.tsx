@@ -50,7 +50,7 @@ function App() {
             element={<ProtectedRoute element={<FriendsHistoryDetailPage />} />}
           />
           <Route
-            path="/friends"
+            path="/friendsList"
             element={<ProtectedRoute element={<FriendsListPage />} />}
           />
           <Route
