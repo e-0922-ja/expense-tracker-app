@@ -51,8 +51,7 @@ const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
-export const PaymentPage = () => {
-  // const [error, setError] = useState("");
+export const RegisterExpenseDetail = () => {
   const [category, setCategory] = useState(categories[0].name);
   const [date, setDate] = useState<Dayjs | null>(dayjs());
   const navigate = useNavigate();

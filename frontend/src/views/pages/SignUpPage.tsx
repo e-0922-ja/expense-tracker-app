@@ -25,7 +25,7 @@ interface NewUser {
   confirmPassword: string;
 }
 
-export const SignUpPage = () => {
+export const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -253,6 +253,7 @@ const IconContainer = styled.div`
   color: rgba(0, 0, 0, 0.54);
 `;
 
+// Later will refactor
 // import { UseFormRegister, ValidationRule} from "react-hook-form";
 
 // interface FormInputItemProps {

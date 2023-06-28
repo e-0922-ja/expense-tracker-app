@@ -19,7 +19,7 @@ interface PasswordData {
   confPassword: string;
 }
 
-export const PassWordResetPage = () => {
+export const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

@@ -35,7 +35,7 @@ const supabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
-export const FriendHistoryDetailPage = () => {
+export const FriendsHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
