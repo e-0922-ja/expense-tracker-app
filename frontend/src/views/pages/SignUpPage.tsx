@@ -73,7 +73,7 @@ export const SignUpPage = () => {
         <TitleWrapper>
           <Title>SignUp</Title>
           <Text>Already have an account? </Text>
-          <Link to="/login">Login</Link>
+          <Link to={paths.login}>Login</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
