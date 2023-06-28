@@ -4,7 +4,7 @@ import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useForm } from "react-hook-form";
 import {
-  emailRegex,
+  // emailRegex,
   errEmail,
   errFirstName,
   errLastName,
@@ -121,7 +121,7 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
           {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
           <InputTitle>Email</InputTitle>
           <StyledBox>
-            {editStatus ? (
+            {/* {editStatus ? (
               <StyledOutlinedInput
                 {...registerUpdatedUser("email", {
                   required: true,
@@ -132,7 +132,8 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
               />
             ) : (
               <Data>{user.email}</Data>
-            )}
+            )} */}
+            <EmailData editStatus={editStatus}>{user.email}</EmailData>
           </StyledBox>
           {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}
           <ButtonContainer>
@@ -184,6 +185,14 @@ const Data = styled.div`
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
   border-radius: 10px;
+`;
+
+const EmailData = styled.div<{ editStatus: boolean }>`
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  background-color: ${({ theme }) => theme.palette.primary.light};
+  border-radius: 10px;
+  color: ${({ editStatus }) => (editStatus ? "grey" : "black")};
 `;
 
 const ButtonContainer = styled.div`
