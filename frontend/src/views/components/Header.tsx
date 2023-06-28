@@ -39,14 +39,13 @@ export const Header = () => {
       }}
     >
       <StyledToolbar>
-        <Typography
+        <StyledTypography
           sx={{ flexGrow: 1 }}
           onClick={handleNavigateHome}
           variant="h5"
-          component="div"
         >
           SpendShare
-        </Typography>
+        </StyledTypography>
         <AppBarNavWrapper>
           <StyledIconButton size="large" onClick={handleChangeMode}>
             {theme.palette.mode === "light" ? (
@@ -92,4 +91,8 @@ const StyledIconButton = styled(IconButton)`
   .MuiTouchRipple-root {
     color: #f8f9f9;
   }
+`;
+
+const StyledTypography = styled(Typography)`
+  font-family: "Roboto Mono", monospace !important;
 `;
