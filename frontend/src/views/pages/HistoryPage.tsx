@@ -14,7 +14,6 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createClient } from "@supabase/supabase-js";
 import { Database, Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
@@ -22,11 +21,7 @@ import { LendCalculateCard } from "../components/LendCalculateCard";
 import { FriendsCard } from "../components/FriendsCard";
 import { Expense } from "../../types";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 export type BorrowedAmountReturns =
   Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
@@ -44,7 +39,7 @@ export const HistoryPage = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   const { session } = useSupabaseSession();
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     if (session && session.user) {
@@ -59,7 +54,7 @@ export const HistoryPage = () => {
   const getTotalLentAmount = useCallback(async () => {
     try {
       if (userId) {
-        const { data, error } = await supabase.rpc("get_total_lent_amount", {
+        const { data, error } = await client.rpc("get_total_lent_amount", {
           user_id: userId,
         });
         if (error) {
@@ -77,12 +72,9 @@ export const HistoryPage = () => {
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
       if (userId) {
-        const { data, error } = await supabase.rpc(
-          "get_total_borrowed_amount",
-          {
-            user_id: userId,
-          }
-        );
+        const { data, error } = await client.rpc("get_total_borrowed_amount", {
+          user_id: userId,
+        });
         if (error) {
           console.log(error);
         } else {
@@ -98,7 +90,7 @@ export const HistoryPage = () => {
   const getExpenses = useCallback(async () => {
     try {
       if (userId) {
-        const { data, error } = await supabase.rpc("get_expenses", {
+        const { data, error } = await client.rpc("get_expenses", {
           user_id: userId,
         });
         if (error) {
@@ -149,14 +141,14 @@ export const HistoryPage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <TabContext value={value}>
@@ -177,13 +169,21 @@ export const HistoryPage = () => {
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {expenses.map((expense) => (
-                <TransactionCard key={expense?.id} expense={expense} />
+                <TransactionCard
+                  key={expense.id}
+                  userId={userId}
+                  expense={expense}
+                />
               ))}
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
               {expenses.map((expense) => (
-                <FriendsCard key={expense.id} expense={expense} />
+                <FriendsCard
+                  key={expense.id}
+                  userId={userId}
+                  expense={expense}
+                />
               ))}
             </TabPanel>
           </TabContext>
@@ -232,11 +232,20 @@ const MobileDrawer = styled(Drawer)`
   }
 `;
 
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+`;
+
 const MainBox = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: calc(100% - ${drawerWidth}px);
-  overflow: auto;
+  height: 100vh;
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;

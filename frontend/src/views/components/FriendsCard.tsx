@@ -5,18 +5,31 @@ import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
 
 interface FriendsCardProps {
+  userId: string;
   expense: Expense;
 }
 
-export const FriendsCard = ({ expense }: FriendsCardProps) => {
+export const FriendsCard = ({ userId, expense }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
     navigate("/history/group/1", { state: { expense } });
   };
+  const checkTransactionStyle = () => {
+    if (
+      expense.payer !== userId &&
+      expense.members.find((member) => member.id === userId && !member.paid)
+    ) {
+      return { borderLeft: "3px solid #a196ee" };
+    } else if (expense.payer === userId && !expense.settled) {
+      return { borderLeft: "3px solid #ee9696" };
+    } else {
+      return {};
+    }
+  };
   return (
     <TransactionCardWrapper elevation={0}>
       <CardActionArea onClick={handleGoToFriendsHistory}>
-        <ContentWrapper>
+        <ContentWrapper style={checkTransactionStyle()}>
           <IconContainer>
             <IconCircle>
               <PeopleAltIcon />

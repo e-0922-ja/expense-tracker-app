@@ -25,6 +25,7 @@ export const FriendsApprovePage = () => {
   const [userId, setUserId] = useState("");
 
   const { session } = useSupabaseSession();
+
   useEffect(() => {
     if (session && session.user) {
       setUserId(session.user.id);
@@ -59,8 +60,6 @@ export const FriendsApprovePage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  console.log(error);
-
   return (
     <Wrapper>
       <NavBox>
@@ -82,36 +81,42 @@ export const FriendsApprovePage = () => {
       </NavBox>
       <MainBox>
         {isMobile && (
-          <IconButton
+          <StyledIconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
-          </IconButton>
+          </StyledIconButton>
         )}
         <SubBox>
           <DetailBox>
             <Section>
               <Title>Your Friends List</Title>
-              <SubTitle>Friend Request</SubTitle>
-              <hr />
-              <UnorderedList>
-                {friends!.map((friend, index) =>
-                  !friend.sender && friend.statusId === 1 && friend.id ? (
-                    <FriendApproveCard
-                      userId={userId}
-                      id={friend.id}
-                      firstName={friend.firstName}
-                      lastName={friend.lastName}
-                      email={friend.email}
-                      key={index}
-                      getUserFriendsById={getUserFriendsById}
-                    />
-                  ) : null
-                )}
-              </UnorderedList>
+              {friends!.some(
+                (friend) => !friend.sender && friend.statusId === 1 && friend.id
+              ) ? (
+                <>
+                  <SubTitle>Friend Request</SubTitle>
+                  <hr />
+                  <UnorderedList>
+                    {friends!.map((friend, index) =>
+                      !friend.sender && friend.statusId === 1 && friend.id ? (
+                        <FriendApproveCard
+                          userId={userId}
+                          id={friend.id}
+                          firstName={friend.firstName}
+                          lastName={friend.lastName}
+                          email={friend.email}
+                          key={index}
+                          getUserFriendsById={getUserFriendsById}
+                        />
+                      ) : null
+                    )}
+                  </UnorderedList>
+                </>
+              ) : null}
               <SubTitle>All friends</SubTitle>
               <hr />
               <UnorderedList>
@@ -127,6 +132,7 @@ export const FriendsApprovePage = () => {
                   ) : null
                 )}
               </UnorderedList>
+              {error && <ErrorText>{error}</ErrorText>}
             </Section>
           </DetailBox>
         </SubBox>
@@ -168,9 +174,17 @@ const MobileDrawer = styled(Drawer)`
     box-sizing: border-box;
     width: ${drawerWidth}px;
   }
-
   @media (min-width: 600px) {
     display: none;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.info.light};
+  }
+  .MuiTouchRipple-root {
+    color: ${({ theme }) => theme.palette.info.light};
   }
 `;
 
@@ -178,7 +192,7 @@ const MainBox = styled.div`
   background-color: ${({ theme }) => theme.palette.primary.main};
   padding: 50px 120px;
   width: calc(100% - ${drawerWidth}px);
-  overflow: auto;
+  height: 100vh;
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 20px;
@@ -214,4 +228,13 @@ const SubTitle = styled.h3`
   margin-top: 1rem;
   margin-bottom: 1rem;
   color: ${({ theme }) => theme.palette.info.light};
+`;
+
+const ErrorText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: #ff908d;
 `;

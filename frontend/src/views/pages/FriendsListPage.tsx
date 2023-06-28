@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { emailRegex, errEmail } from "../../constants/regexPattern";
+import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -10,6 +10,14 @@ import { Friend, FriendWithStatus } from "../../types";
 import { SubButton } from "../components/SubButton";
 import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
+import {
+  ERROR_EMAIL,
+  ERROR_SELECT_FRIENDS,
+  ERROR_SEND_EXISTED_ADDRESS,
+  ERROR_SEND_FAILED,
+  ERROR_SEND_OWN_ADDRESS,
+} from "../../constants/message";
+import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
@@ -89,7 +97,7 @@ export const FriendsListPage = () => {
   const sendFriendRequest = async (email: string) => {
     const emailToLowerCase = email.toLowerCase();
     if (emailToLowerCase === user.email) {
-      setError("You cannot send a friend request to your email address.");
+      setError(ERROR_SEND_OWN_ADDRESS);
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(
         emailToLowerCase
@@ -98,7 +106,7 @@ export const FriendsListPage = () => {
         typeof resultCountFriendShipByEmail === "number" &&
         resultCountFriendShipByEmail > 0
       ) {
-        setError("You've already sent a friend request to this email.");
+        setError(ERROR_SEND_EXISTED_ADDRESS);
       } else {
         const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
@@ -113,7 +121,7 @@ export const FriendsListPage = () => {
             );
 
             if (!emailResponse.status) {
-              setError("Failed to send an email.");
+              setError(ERROR_SEND_FAILED);
             }
 
             // to retrieve the data to update the friend list
@@ -232,13 +240,20 @@ export const FriendsListPage = () => {
         state: { selectedFriends },
       });
     } else {
-      setSelectedError("select friends from your friends list");
+      setSelectedError(ERROR_SELECT_FRIENDS);
     }
+  };
+
+  const handleGoBack = () => {
+    navigate("/history");
   };
 
   return (
     <MainContainer>
       <SubContainer>
+        <GobackButtonWrapper>
+          <GobackButton onClick={handleGoBack} />
+        </GobackButtonWrapper>
         <Title>Add new friends</Title>
         <StyledBox component="form" onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
@@ -249,13 +264,14 @@ export const FriendsListPage = () => {
               <InputBase
                 placeholder="Email"
                 type="email"
+                fullWidth
                 {...register("email", {
                   required: true,
                   pattern: emailRegex,
                 })}
               />
             </InputPaper>
-            {errors.email && <ErrorText>{errEmail}</ErrorText>}
+            {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
             <SubButton title={"send"} onClick={handleSendEmail} />
@@ -267,7 +283,7 @@ export const FriendsListPage = () => {
           </SubButtonWrapper>
         </StyledBox>
       </SubContainer>
-      <SubContainer>
+      <FriendListSubContainer>
         <Title>Friendslist</Title>
         <UnorderedList>
           {/* statusId 1: pending, 2: approved */}
@@ -314,12 +330,11 @@ export const FriendsListPage = () => {
               );
             })}
         </UnorderedList>
-
         <ButtonContainer>
           <SubButton title={"create"} onClick={handleClick} />
         </ButtonContainer>
         {selectedFriends.length === 0 && <ErrorText>{selectedError}</ErrorText>}
-      </SubContainer>
+      </FriendListSubContainer>
     </MainContainer>
   );
 };
@@ -330,11 +345,28 @@ const MainContainer = styled.div`
   overflow: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
+  height: 100vh;
   @media (max-width: 600px) {
     flex-direction: column;
+    margin-top: 0;
+  }
+`;
+
+const FriendListSubContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 70%;
+  width: 35%;
+  padding: 2rem;
+  background: ${({ theme }) => theme.palette.primary.main};
+  margin-top: 70px;
+  @media (max-width: 600px) {
+    height: 100%;
+    width: 100%;
+    padding: 0;
   }
 `;
 
@@ -346,9 +378,11 @@ const SubContainer = styled(Box)`
   width: 35%;
   padding: 2rem;
   background: ${({ theme }) => theme.palette.primary.main};
+  margin-top: 30px;
   @media (max-width: 600px) {
     height: 100%;
     width: 100%;
+    padding: 0;
   }
 `;
 
@@ -418,18 +452,12 @@ const SuccessText = styled.div`
   color: #4caf50;
 `;
 
-// ==============================================================
-// commonized later
-// ==============================================================
 const InputWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-// ==============================================================
-// commonized later
-// ==============================================================
 const InputPaper = styled(Paper)`
   margin: 15px 0 0;
   padding: 7px;
@@ -450,4 +478,9 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   width: 70%;
   margintop: 2rem;
+`;
+
+const GobackButtonWrapper = styled.div`
+  width: 70%;
+  display: flex;
 `;

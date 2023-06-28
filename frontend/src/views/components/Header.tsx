@@ -80,7 +80,7 @@ const AppBarWrapper = styled(AppBar)<AppBarProps>`
 
 const StyledToolbar = styled(Toolbar)`
   padding: 0 70px !important;
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
     padding: 0 20px !important;
   }
 `;
