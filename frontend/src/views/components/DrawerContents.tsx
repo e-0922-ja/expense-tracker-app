@@ -46,7 +46,7 @@ export const DrawerContents = () => {
       id: 1,
     },
     {
-      onClick: () => navigatePage("/friends", 2),
+      onClick: () => navigatePage("/friendsList", 2),
       text: "Friends List",
       icon: <GroupIcon style={{ color: theme.palette.secondary.main }} />,
       id: 2,

@@ -10,7 +10,7 @@ export const MainButton = ({ title }: MainButtonProps) => {
   const navigate = useNavigate();
 
   const handleCreateExpense = () => {
-    navigate("/expenses/friendslist");
+    navigate("/expense/selectfriends");
   };
   return (
     <MyButton variant="contained" disableRipple onClick={handleCreateExpense}>

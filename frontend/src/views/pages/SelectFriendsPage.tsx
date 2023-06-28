@@ -229,7 +229,7 @@ export const SelectFriendsPage = () => {
   const handleClick = () => {
     if (selectedFriends.length > 0) {
       setSelectedError("");
-      navigate("/expenses/payment", {
+      navigate("/expense/registerdetail", {
         state: { selectedFriends },
       });
     } else {
