@@ -106,8 +106,6 @@ export const PaymentPage = () => {
     if (resultInsertExpense) navigate(paths.history);
   });
 
-  console.log(error);
-
   const insertExpense = async () => {
     const memberIds = memberExpense.map((member) => member.id.toString());
     const memberPaids = memberExpense.map((member) => member.paid);

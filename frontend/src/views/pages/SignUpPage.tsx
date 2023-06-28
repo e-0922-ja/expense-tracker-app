@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import {
@@ -59,8 +59,8 @@ export const SignUpPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (signupError.message === "Success!") navigate(paths.login);
-  }, [navigate]);
+    if (signupMessage.message === "Success!") navigate(paths.login);
+  }, [navigate, signupMessage.message]);
 
   const onSubmit = async (data: NewUser) => {
     const { firstName, lastName, email, password } = data;
