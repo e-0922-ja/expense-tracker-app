@@ -23,7 +23,7 @@ export const Header = () => {
   const account = useSelector(selectUser);
 
   const handleNavigateHome = () => {
-    navigate("/");
+    account.isLogin ? navigate("/history") : navigate("/");
   };
 
   const handleChangeMode = () => {
@@ -54,7 +54,6 @@ export const Header = () => {
               <LightModeButton />
             )}
           </StyledIconButton>
-
           {account.isLogin ? <Text>{account.user?.firstName}</Text> : ""}
         </AppBarNavWrapper>
       </StyledToolbar>
