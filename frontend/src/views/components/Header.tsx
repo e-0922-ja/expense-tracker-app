@@ -16,7 +16,7 @@ import { DarkModeButton } from "./DarkModeButton";
 import { LightModeButton } from "./LightModeButton";
 import styled from "styled-components";
 import { useEffect } from "react";
-import { UserService } from "../../services/supabase/users/service";
+import { UserService } from "../../services/users/service";
 export const Header = () => {
   const dispatch: AppDispatch = useDispatch();
   const theme = useSelector(selectTheme);

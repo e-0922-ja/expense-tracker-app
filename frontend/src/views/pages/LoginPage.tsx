@@ -17,7 +17,7 @@ import { client } from "../../services/supabase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { login } from "../../reducer/userSlice";
-import { UserService } from "../../services/supabase/users/service";
+import { UserService } from "../../services/users/service";
 
 interface CurrentUser {
   email: string;

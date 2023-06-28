@@ -43,7 +43,6 @@ export const HistoryPage = () => {
   const [lent, setLent] = useState<LentAmountReturns>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  // const navigate = useNavigate();
   const { session } = useSupabaseSession();
   const [userId, setUserId] = useState<string | null>(null);
 

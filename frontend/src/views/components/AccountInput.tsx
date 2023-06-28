@@ -3,14 +3,10 @@ import styled from "styled-components";
 import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useForm } from "react-hook-form";
-import {
-  // emailRegex,
-  errEmail,
-  errFirstName,
-  errLastName,
-} from "../../constants/regexPattern";
+import { errFirstName, errLastName } from "../../constants/regexPattern";
 import { client } from "../../services/supabase";
 import { Friend } from "../../types";
+import { UserService } from "../../services/users/service";
 
 interface AccountInputProps {
   user: Friend;
@@ -18,9 +14,8 @@ interface AccountInputProps {
 }
 
 interface FormData {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
+  firstName: string;
+  lastName: string;
 }
 
 export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
@@ -37,27 +32,20 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
   };
 
   const handleSave = async (formData: FormData) => {
-    const { firstName, lastName, email } = formData;
-
-    const updatedMetaData = {
-      firstName: firstName,
-      lastName: lastName,
-    };
-
-    const { data, error } = await client.auth.updateUser({
-      email: email,
-      data: updatedMetaData,
-    });
-
-    if (error) {
-      console.error("Error updating user email and metadata:", error);
+    const { isError, message, createdUser } = await UserService.updateAuthUser(
+      formData
+    );
+    if (isError) {
+      console.error(message);
+    } else {
+      const { isError, message } = await UserService.updateUser(createdUser!);
+      if (isError) {
+        console.error(message);
+      } else {
+        onGetSession();
+        setEditStatus(false);
+      }
     }
-
-    if (data.user) {
-      onGetSession();
-    }
-
-    setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
@@ -121,21 +109,8 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
           {errorsUpdatedUser.lastName && <ErrorText>{errLastName}</ErrorText>}
           <InputTitle>Email</InputTitle>
           <StyledBox>
-            {/* {editStatus ? (
-              <StyledOutlinedInput
-                {...registerUpdatedUser("email", {
-                  required: true,
-                  pattern: emailRegex,
-                })}
-                defaultValue={user.email}
-                fullWidth
-              />
-            ) : (
-              <Data>{user.email}</Data>
-            )} */}
             <EmailData editStatus={editStatus}>{user.email}</EmailData>
           </StyledBox>
-          {errorsUpdatedUser.email && <ErrorText>{errEmail}</ErrorText>}
           <ButtonContainer>
             {editStatus ? (
               <StyledButton variant="contained" disableRipple type="submit">

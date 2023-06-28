@@ -15,9 +15,9 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTheme } from "../../reducer/colorModeSlice";
 import { useState } from "react";
-import { client } from "../../services/supabase";
 import { logout } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
+import { UserService } from "../../services/users/service";
 
 export const DrawerContents = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -32,9 +32,9 @@ export const DrawerContents = () => {
 
   const handleLogout = async () => {
     setSelectedId(4);
-    const { error } = await client.auth.signOut();
-    if (error) {
-      console.error("Failed to logout: ", error.message);
+    const { isError, message } = await UserService.signOut();
+    if (isError) {
+      console.error("Failed to logout: ", message);
     } else {
       dispatch(logout());
       navigate("/");

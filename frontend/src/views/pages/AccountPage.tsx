@@ -13,7 +13,7 @@ import { DrawerContents } from "../components/DrawerContents";
 import { AccountInput } from "../components/AccountInput";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { Friend } from "../../types";
-import { UserService } from "../../services/supabase/users/service";
+import { UserService } from "../../services/users/service";
 import { update } from "../../reducer/userSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -94,7 +94,6 @@ export const AccountPage = () => {
           <DetailBox>
             <Section>
               <AccountInput user={user} onGetSession={handleGetSession} />
-              {/* <AccountInput user={user} /> */}
             </Section>
           </DetailBox>
         </SubBox>
