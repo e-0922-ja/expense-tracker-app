@@ -1,15 +1,14 @@
 import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-import { PropsFriendApproveCard } from "../../types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-import { createClient } from "@supabase/supabase-js";
+import { client } from "../../services/supabase";
+import { Friend } from "../../types";
 
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+export interface PropsFriendApproveCard extends Friend {
+  getUserFriendsById: () => void;
+}
 
 export const FriendApproveCard = ({
   id,
@@ -23,7 +22,7 @@ export const FriendApproveCard = ({
 
   const handleApprove = async () => {
     try {
-      const { data, error }: { data: any; error: any } = await supabase
+      const { data, error }: { data: any; error: any } = await client
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
@@ -36,7 +35,7 @@ export const FriendApproveCard = ({
         console.log(data, userId, id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { data: updatedData, error: updateError } = await supabase
+          const { data: updatedData, error: updateError } = await client
             .from("Friendships")
             .update({ statusId: 2, updatedAt: new Date() })
             .match({ id: data[0].id });
@@ -55,7 +54,7 @@ export const FriendApproveCard = ({
 
   const handleReject = async () => {
     try {
-      const { data, error }: { data: any; error: any } = await supabase
+      const { data, error }: { data: any; error: any } = await client
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
@@ -67,7 +66,7 @@ export const FriendApproveCard = ({
       } else {
         console.log(data, "aprovecard");
         if (data && data.length > 0) {
-          const { data: deletedData, error: updateError } = await supabase
+          const { data: deletedData, error: updateError } = await client
             .from("Friendships")
             .delete()
             .match({ id: data[0].id });

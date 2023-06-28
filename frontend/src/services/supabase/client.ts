@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { Database } from "../../../../supabase/schema";
 
 if (
   !process.env.REACT_APP_SUPABASE_URL ||
@@ -8,6 +9,11 @@ if (
 }
 
 export const client = createClient(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
+);
+
+export const clientDatabase = createClient<Database>(
   process.env.REACT_APP_SUPABASE_URL as string,
   process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );

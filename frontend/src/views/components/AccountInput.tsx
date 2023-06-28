@@ -4,7 +4,6 @@ import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, update } from "../../reducer/userSlice";
-import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import { emailRegex } from "../../utils/regexPatternUtils";
 import {
@@ -19,28 +18,14 @@ import {
   SUCCESS_RESET_PASSWORD,
 } from "../../constants/message";
 import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
+import { client } from "../../services/supabase";
+import { FormData, Message } from "../../types";
 
 interface AccountInputProps {
   firstName?: string;
   lastName?: string;
   email?: string;
 }
-
-interface FormData {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
 
 const BASE_URI = process.env.REACT_APP_BASE_URI;
 
@@ -81,7 +66,7 @@ export const AccountInput = ({
       lastName: lastName,
     };
 
-    const { data, error } = await supabase.auth.updateUser({
+    const { data, error } = await client.auth.updateUser({
       email: email,
       data: updatedMetaData,
     });
@@ -121,10 +106,12 @@ export const AccountInput = ({
     }
     try {
       const redirectUrl = `${BASE_URI}/passwordReset`;
-      const { error: sendEmailError } =
-        await supabase.auth.resetPasswordForEmail(currentEmail, {
+      const { error: sendEmailError } = await client.auth.resetPasswordForEmail(
+        currentEmail,
+        {
           redirectTo: redirectUrl,
-        });
+        }
+      );
       if (sendEmailError) {
         setSendEmailMessage({
           isError: true,

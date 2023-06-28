@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -9,9 +8,14 @@ import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
 import { InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Friend, FriendWithStatus } from "../../types";
+import {
+  Friend,
+  FriendEmail,
+  FriendShipsInsert,
+  FriendShipsReturns,
+  FriendWithStatus,
+} from "../../types";
 import { SubButton } from "../components/SubButton";
-import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
 import {
   ERROR_EMAIL,
@@ -22,22 +26,7 @@ import {
 } from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
-interface FriendEmail {
-  email: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export type FriendShipsReturns =
-  Database["public"]["Functions"]["get_user_friends"]["Returns"];
-export type FriendShipsArgs =
-  Database["public"]["Functions"]["get_user_friends"]["Args"];
-export type FriendShipsInsert =
-  Database["public"]["Tables"]["Friendships"]["Insert"];
+import { clientDatabase } from "../../services/supabase";
 
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
@@ -62,7 +51,7 @@ export const FriendsListPage = () => {
 
   const getUserFriendsById = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_user_friends", {
+      const { data, error } = await clientDatabase.rpc("get_user_friends", {
         user_id: userId,
       });
       if (error) {
@@ -165,7 +154,7 @@ export const FriendsListPage = () => {
   // check if a user has already sent a friend request to the input email address
   const countFriendShipByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase.rpc("check_friendship", {
+      const { data, error } = await clientDatabase.rpc("check_friendship", {
         user_id: userId,
         friend_email: email,
       });
@@ -183,7 +172,7 @@ export const FriendsListPage = () => {
 
   const getFriendByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await clientDatabase
         .from("Users")
         .select("*")
         .eq("email", email);
@@ -211,7 +200,7 @@ export const FriendsListPage = () => {
     };
 
     try {
-      const { error } = await supabase
+      const { error } = await clientDatabase
         .from("Friendships")
         .insert(friendshipsData);
       if (error) {

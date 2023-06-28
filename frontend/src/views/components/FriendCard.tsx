@@ -1,7 +1,6 @@
 import { Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-
 import { Friend } from "../../types";
 
 export const FriendCard = ({ firstName, lastName, email }: Friend) => {
