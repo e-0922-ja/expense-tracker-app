@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { client } from "../services/supabase";
 import { Session } from "@supabase/supabase-js";
-import { isSessionExpired } from "../utils/timeUtils";
+import { hasExceededOnNow } from "../utils/timeUtils";
 import { useNavigate } from "react-router-dom";
 import { UserService } from "../services/users/service";
 import { logout } from "../reducer/userSlice";
@@ -20,18 +20,17 @@ export function useSupabaseSession() {
       const expiredDate = result.data.session?.expires_at;
       if (!expiredDate) {
         console.error("No active session");
-      } else {
-        const sessionExpired = isSessionExpired(expiredDate);
+        return;
+      }
 
-        if (sessionExpired) {
-          const { isError, message } = await UserService.signOut();
+      if (hasExceededOnNow(expiredDate)) {
+        const { isError, message } = await UserService.signOut();
 
-          if (isError) {
-            console.error("Failed to logout: ", message);
-          } else {
-            dispatch(logout());
-            navigate("/login");
-          }
+        if (isError) {
+          console.error("Failed to logout: ", message);
+        } else {
+          dispatch(logout());
+          navigate("/login");
         }
       }
 
