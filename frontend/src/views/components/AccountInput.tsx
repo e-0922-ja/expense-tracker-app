@@ -60,27 +60,29 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
   const handleSave = async (formData: FormData) => {
     const { isError, createdUser } = await UserService.updateAuthUser(formData);
     if (isError) {
-      setUpdateUserInfoMessage({
+      return setUpdateUserInfoMessage({
         isError: true,
         message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
       });
-    } else {
-      const { isError } = await UserService.updateUser(createdUser!);
-      if (isError) {
-        setUpdateUserInfoMessage({
-          isError: isError,
-          message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
-        });
-      } else {
-        setUpdateUserInfoMessage({
-          isError: isError,
-          message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
-        });
-
-        onGetSession();
-        setEditStatus(false);
-      }
     }
+
+    const { isError: isErrorForUpdateUser } = await UserService.updateUser(
+      createdUser!
+    );
+    if (isErrorForUpdateUser) {
+      return setUpdateUserInfoMessage({
+        isError: isErrorForUpdateUser,
+        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
+      });
+    }
+
+    setUpdateUserInfoMessage({
+      isError: isErrorForUpdateUser,
+      message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
+    });
+
+    onGetSession();
+    setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
