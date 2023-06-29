@@ -18,10 +18,10 @@ export const TransactionCard = ({ userId, expense }: TransactionProps) => {
   const CategoryIcon = getCategoryIcon(expense.category);
 
   const checkTransactionStyle = () => {
-    if (
-      expense.payer !== userId &&
-      expense.members.find((member) => member.id === userId && !member.paid)
-    ) {
+    const hasPaid = expense.members.find(
+      (member) => member.id === userId && !member.paid
+    );
+    if (expense.payer !== userId && hasPaid) {
       return { borderLeft: "3px solid #a196ee" };
     } else if (expense.payer === userId && !expense.settled) {
       return { borderLeft: "3px solid #ee9696" };
