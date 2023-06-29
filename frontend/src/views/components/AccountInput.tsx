@@ -36,7 +36,6 @@ export const AccountInput = ({
 }: AccountInputProps) => {
   const dispatch = useDispatch();
   const [editStatus, setEditStatus] = useState(false);
-
   const [updateUserInfoMessage, setUpdateUserInfoMessage] = useState<Message>({
     isError: false,
     message: "",

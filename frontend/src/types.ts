@@ -65,8 +65,6 @@ export interface Users {
   updatedAt: string;
 }
 
-
-
 export interface FormData {
   firstName?: string;
   lastName?: string;

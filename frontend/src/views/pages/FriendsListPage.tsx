@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
-import { InputAdornment, InputBase, Paper } from "@mui/material";
+import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import {
   Friend,
@@ -14,6 +14,7 @@ import {
   FriendShipsInsert,
   FriendShipsReturns,
   FriendWithStatus,
+  Message,
 } from "../../types";
 import { SubButton } from "../components/SubButton";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
@@ -30,10 +31,13 @@ import { clientDatabase } from "../../services/supabase";
 
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
-  const [friends, setFriends] = useState<FriendShipsReturns>([]);
   const [selectedError, setSelectedError] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [friends, setFriends] = useState<FriendShipsReturns>([]);
+  const [selectFriendsMessage, setSelectFriendsMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+
   const {
     register,
     handleSubmit,
@@ -55,14 +59,20 @@ export const FriendsListPage = () => {
         user_id: userId,
       });
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         setFriends(data);
         return true;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   }, [userId]);
@@ -79,7 +89,10 @@ export const FriendsListPage = () => {
   const sendFriendRequest = async (email: string) => {
     const emailToLowerCase = email.toLowerCase();
     if (emailToLowerCase === userEmail) {
-      setError(ERROR_SEND_OWN_ADDRESS);
+      setSelectFriendsMessage({
+        isError: true,
+        message: ERROR_SEND_OWN_ADDRESS,
+      });
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(
         emailToLowerCase
@@ -88,7 +101,10 @@ export const FriendsListPage = () => {
         typeof resultCountFriendShipByEmail === "number" &&
         resultCountFriendShipByEmail > 0
       ) {
-        setError(ERROR_SEND_EXISTED_ADDRESS);
+        setSelectFriendsMessage({
+          isError: true,
+          message: ERROR_SEND_EXISTED_ADDRESS,
+        });
       } else {
         const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
@@ -103,26 +119,29 @@ export const FriendsListPage = () => {
             );
 
             if (!emailResponse.status) {
-              setError(ERROR_SEND_FAILED);
+              setSelectFriendsMessage({
+                isError: true,
+                message: ERROR_SEND_FAILED,
+              });
             }
 
             // to retrieve the data to update the friend list
             const resultGetUserFriendsById = await getUserFriendsById();
             if (resultGetUserFriendsById) {
               reset();
-              setError("");
+              setSelectFriendsMessage({
+                isError: false,
+                message: "",
+              });
             }
-            setSuccess(
-              `You have successfully sent a friend request to ${email}!`
-            );
+            setSelectFriendsMessage({
+              isError: false,
+              message: `You have successfully sent a friend request to ${email}!`,
+            });
           }
         }
       }
     }
-  };
-
-  const handleSendEmail = () => {
-    console.log("send mail");
   };
 
   // Check friends to add or not
@@ -159,13 +178,19 @@ export const FriendsListPage = () => {
         friend_email: email,
       });
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return data;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
@@ -177,13 +202,19 @@ export const FriendsListPage = () => {
         .select("*")
         .eq("email", email);
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return data;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
@@ -204,20 +235,29 @@ export const FriendsListPage = () => {
         .from("Friendships")
         .insert(friendshipsData);
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return true;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
-      setSelectedError("");
+      setSelectFriendsMessage({
+        isError: false,
+        message: "",
+      });
       navigate("/expenses/payment", {
         state: { selectedFriends },
       });
@@ -256,12 +296,14 @@ export const FriendsListPage = () => {
             {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
-            <SubButton title={"send"} onClick={handleSendEmail} />
-            {error ? (
-              <ErrorText>{error}</ErrorText>
-            ) : success ? (
-              <SuccessText>{success}</SuccessText>
-            ) : null}
+            <StyledButton variant="contained" disableRipple type="submit">
+              send
+            </StyledButton>
+            {selectFriendsMessage && (
+              <ButtonMessage isError={selectFriendsMessage.isError}>
+                {selectFriendsMessage.message}
+              </ButtonMessage>
+            )}
           </SubButtonWrapper>
         </StyledBox>
       </SubContainer>
@@ -428,12 +470,6 @@ const ErrorText = styled.div`
   color: #ff908d;
 `;
 
-const SuccessText = styled.div`
-  margin-top: 7px;
-  font-size: 1rem;
-  color: #4caf50;
-`;
-
 const InputWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -465,4 +501,25 @@ const StyledBox = styled(Box)`
 const GobackButtonWrapper = styled.div`
   width: 70%;
   display: flex;
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  white-space: pre-wrap;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
+`;
+
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.palette.secondary.main} !important;
+  border: 0;
+  color: white;
+  width: 100% !important;
+  height: 40px !important;
+  fontsize: 1rem !important;
+  padding: 0 30px !important;
+  border-radius: 24px !important;
 `;
