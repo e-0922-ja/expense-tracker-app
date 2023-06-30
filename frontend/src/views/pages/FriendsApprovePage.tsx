@@ -12,15 +12,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
-import { createClient } from "@supabase/supabase-js";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
-import { FriendShipsReturns } from "./FriendsListPage";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
+import { FriendShipsReturns } from "../../types";
 
 export const FriendsApprovePage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,7 +38,10 @@ export const FriendsApprovePage = () => {
 
   const getUserFriendsById = async () => {
     try {
-      const { data, error } = await supabase.rpc("get_user_friends", {
+      if (!userId) {
+        throw new Error();
+      }
+      const { data, error } = await client.rpc("get_user_friends", {
         user_id: userId,
       });
       if (error) {
@@ -102,10 +100,7 @@ export const FriendsApprovePage = () => {
                     {friends!.map((friend, index) =>
                       !friend.sender && friend.statusId === 1 && friend.id ? (
                         <FriendApproveCard
-                          id={friend.id}
-                          firstName={friend.firstName}
-                          lastName={friend.lastName}
-                          email={friend.email}
+                          friend={friend}
                           key={index}
                           getUserFriendsById={getUserFriendsById}
                         />

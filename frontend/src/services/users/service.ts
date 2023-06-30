@@ -68,8 +68,8 @@ class _userService {
         firstName,
         lastName,
         email,
-        registeredAt: new Date(new Date().toISOString()),
-        updatedAt: new Date(new Date().toISOString()),
+        registeredAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     ]);
     if (error) {

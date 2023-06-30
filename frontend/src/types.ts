@@ -1,5 +1,6 @@
 import { UUID } from "crypto";
 import { SvgIconProps } from "@mui/material/SvgIcon";
+import { Database } from "../../supabase/schema";
 
 export interface Friend {
   id: string;
@@ -64,6 +65,59 @@ export interface Users {
   updatedAt: string;
 }
 
-export interface PropsFriendApproveCard extends Friend {
-  getUserFriendsById: () => void;
+export interface FormData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+}
+
+export interface Message {
+  isError: boolean;
+  message: string;
+}
+
+export interface FriendEmail {
+  email: string;
+}
+
+export type FriendShipsReturns =
+  Database["public"]["Functions"]["get_user_friends"]["Returns"];
+export type FriendShipsArgs =
+  Database["public"]["Functions"]["get_user_friends"]["Args"];
+export type FriendShipsInsert =
+  Database["public"]["Tables"]["Friendships"]["Insert"];
+
+export type BorrowedAmountReturns =
+  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
+export type LentAmountReturns =
+  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
+export type ExpensesReturns =
+  Database["public"]["Functions"]["get_expenses"]["Returns"];
+
+export interface CurrentUser {
+  email: string;
+  password: string;
+}
+
+export interface PasswordData {
+  password: string;
+  confPassword: string;
+}
+
+export interface Expense {
+  amount: string;
+  description: string;
+}
+
+export interface EachAmount extends Friend {
+  amount: string;
+  paid: boolean;
+}
+
+export interface NewUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
