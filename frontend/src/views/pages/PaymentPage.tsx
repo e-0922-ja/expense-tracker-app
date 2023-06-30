@@ -28,7 +28,7 @@ import {
   ERROR_EMPTY_DESCRIPTION,
   SUCCESS_CREATE_EXPENSE,
 } from "../../constants/message";
-import { clientDatabase } from "../../services/supabase";
+import { client } from "../../services/supabase";
 
 export const PaymentPage = () => {
   const [category, setCategory] = useState(categories[0].name);
@@ -91,7 +91,7 @@ export const PaymentPage = () => {
     );
 
     try {
-      const { error } = await clientDatabase.rpc("insert_expense", {
+      const { error } = await client.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
         registered_by: account.user!.id,

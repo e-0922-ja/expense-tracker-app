@@ -22,7 +22,7 @@ import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
-import { clientDatabase } from "../../services/supabase";
+import { client } from "../../services/supabase";
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -85,7 +85,7 @@ export const HistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { error } = await clientDatabase.rpc("update_members_paid", {
+      const { error } = await client.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
@@ -105,7 +105,7 @@ export const HistoryDetailPage = () => {
 
   const deleteExpense = async () => {
     try {
-      const { error } = await clientDatabase
+      const { error } = await client
         .from("Expenses")
         .delete()
         .eq("id", expense.id);

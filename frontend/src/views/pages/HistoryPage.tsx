@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
 import { BorrowedAmountReturns, Expense, LentAmountReturns } from "../../types";
-import { clientDatabase } from "../../services/supabase";
+import { client } from "../../services/supabase";
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,12 +40,9 @@ export const HistoryPage = () => {
 
   const getTotalLentAmount = useCallback(async () => {
     try {
-      const { data, error } = await clientDatabase.rpc(
-        "get_total_lent_amount",
-        {
-          user_id: userId,
-        }
-      );
+      const { data, error } = await client.rpc("get_total_lent_amount", {
+        user_id: userId,
+      });
       if (error) {
         console.log(error);
       } else {
@@ -59,12 +56,9 @@ export const HistoryPage = () => {
 
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
-      const { data, error } = await clientDatabase.rpc(
-        "get_total_borrowed_amount",
-        {
-          user_id: userId,
-        }
-      );
+      const { data, error } = await client.rpc("get_total_borrowed_amount", {
+        user_id: userId,
+      });
       if (error) {
         console.log(error);
       } else {
@@ -78,7 +72,7 @@ export const HistoryPage = () => {
 
   const getExpenses = useCallback(async () => {
     try {
-      const { data, error } = await clientDatabase.rpc("get_expenses", {
+      const { data, error } = await client.rpc("get_expenses", {
         user_id: userId,
       });
       if (error) {

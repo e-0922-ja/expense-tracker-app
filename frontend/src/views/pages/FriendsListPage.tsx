@@ -27,7 +27,7 @@ import {
 } from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { clientDatabase } from "../../services/supabase";
+import { client } from "../../services/supabase";
 
 export const FriendsListPage = () => {
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
@@ -55,7 +55,7 @@ export const FriendsListPage = () => {
 
   const getUserFriendsById = useCallback(async () => {
     try {
-      const { data, error } = await clientDatabase.rpc("get_user_friends", {
+      const { data, error } = await client.rpc("get_user_friends", {
         user_id: userId,
       });
       if (error) {
@@ -173,7 +173,7 @@ export const FriendsListPage = () => {
   // check if a user has already sent a friend request to the input email address
   const countFriendShipByEmail = async (email: string) => {
     try {
-      const { data, error } = await clientDatabase.rpc("check_friendship", {
+      const { data, error } = await client.rpc("check_friendship", {
         user_id: userId,
         friend_email: email,
       });
@@ -197,7 +197,7 @@ export const FriendsListPage = () => {
 
   const getFriendByEmail = async (email: string) => {
     try {
-      const { data, error } = await clientDatabase
+      const { data, error } = await client
         .from("Users")
         .select("*")
         .eq("email", email);
@@ -231,7 +231,7 @@ export const FriendsListPage = () => {
     };
 
     try {
-      const { error } = await clientDatabase
+      const { error } = await client
         .from("Friendships")
         .insert(friendshipsData);
       if (error) {
