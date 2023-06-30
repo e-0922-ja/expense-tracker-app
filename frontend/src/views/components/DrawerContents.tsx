@@ -13,8 +13,34 @@ import { selectTheme } from "../../reducer/colorModeSlice";
 import { logout } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { UserService } from "../../services/users/service";
-import { toolbarItems } from "../../constants/toolbarItems";
+import HistoryIcon from "@mui/icons-material/History";
+import PortraitIcon from "@mui/icons-material/Portrait";
+import GroupIcon from "@mui/icons-material/Group";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { ToolbarItem } from "../../types";
+
+const toolbarItems: ToolbarItem[] = [
+  {
+    path: "/history",
+    name: "History",
+    icon: HistoryIcon,
+  },
+  {
+    path: "/friends",
+    name: "Friends List",
+    icon: GroupIcon,
+  },
+  {
+    path: "/account",
+    name: "My Account",
+    icon: PortraitIcon,
+  },
+  {
+    path: "/",
+    name: "Logout",
+    icon: LogoutIcon,
+  },
+];
 
 export const DrawerContents = () => {
   const dispatch: AppDispatch = useDispatch();
