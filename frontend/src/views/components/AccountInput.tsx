@@ -4,9 +4,11 @@ import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
 import { useForm } from "react-hook-form";
 import {
+  ERROR_BLANK_FIRSTNAME,
+  ERROR_BLANK_LASTNAME,
   ERROR_CHANGE_ACCOUNT_INFO,
-  ERROR_FIRSTNAME,
-  ERROR_LASTNAME,
+  ERROR_EMPTY_FIRSTNAME,
+  ERROR_EMPTY_LASTNAME,
   ERROR_RESET_PASSWORD_EMAIL_NOTHING,
   ERROR_RESET_PASSWORD_SEND_MAIL,
   ERROR_SOMETHING,
@@ -136,7 +138,16 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
           <StyledBox>
             {editStatus ? (
               <StyledOutlinedInput
-                {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
+                {...registerUpdatedUser("firstName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_FIRSTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_FIRSTNAME,
+                  },
+                })}
                 defaultValue={user.firstName}
                 fullWidth
               />
@@ -145,14 +156,23 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
             )}
           </StyledBox>
           {errorsUpdatedUser.firstName && (
-            <ErrorText>{ERROR_FIRSTNAME}</ErrorText>
+            <ErrorText>{errorsUpdatedUser.firstName.message}</ErrorText>
           )}
           <InputTitle>Last Name</InputTitle>
           <StyledBox>
             {editStatus ? (
               <StyledOutlinedInput
                 type="text"
-                {...registerUpdatedUser("lastName", { required: true })}
+                {...registerUpdatedUser("lastName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_LASTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_LASTNAME,
+                  },
+                })}
                 defaultValue={user.lastName}
                 fullWidth
               />
@@ -161,7 +181,7 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
             )}
           </StyledBox>
           {errorsUpdatedUser.lastName && (
-            <ErrorText>{ERROR_LASTNAME}</ErrorText>
+            <ErrorText>{errorsUpdatedUser.lastName.message}</ErrorText>
           )}
           <InputTitle>Email</InputTitle>
           <StyledBox>

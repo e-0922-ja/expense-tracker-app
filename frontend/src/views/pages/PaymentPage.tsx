@@ -24,6 +24,7 @@ import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
 import { GobackButton } from "../components/GobackButton";
 import {
+  ERROR_BLANK_DESCRIPTION,
   ERROR_EMPTY_AMOUNT,
   ERROR_EMPTY_DESCRIPTION,
   SUCCESS_CREATE_EXPENSE,
@@ -288,7 +289,7 @@ export const PaymentPage = () => {
                       },
                       validate: {
                         noWhitespaceOnly: (value) =>
-                          value.trim() !== "" || ERROR_EMPTY_DESCRIPTION,
+                          value.trim() !== "" || ERROR_BLANK_DESCRIPTION,
                       },
                     })}
                     onChange={handleChangeDescription}

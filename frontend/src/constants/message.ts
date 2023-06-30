@@ -5,9 +5,13 @@ export const ERROR_SOMETHING =
 export const SUCCESS_SIGNUP =
   "Email Sent! Please check your inbox for further instructions on starting this app.";
 
-export const ERROR_FIRSTNAME = "First name is required";
+export const ERROR_EMPTY_FIRSTNAME = "First name is required";
 
-export const ERROR_LASTNAME = "Last name is required";
+export const ERROR_EMPTY_LASTNAME = "Last name is required";
+
+export const ERROR_BLANK_FIRSTNAME = "First name cannot be blank";
+
+export const ERROR_BLANK_LASTNAME = "Last name cannot be blank";
 
 export const ERROR_EMAIL = "Please enter valid email format";
 
@@ -53,6 +57,8 @@ export const ERROR_SELECT_FRIENDS = "Select friends from your friends list.";
 export const ERROR_EMPTY_DESCRIPTION = "The Description is required";
 
 export const ERROR_EMPTY_AMOUNT = "The amount is required";
+
+export const ERROR_BLANK_DESCRIPTION = "The Description cannot be blank";
 
 export const SUCCESS_CREATE_EXPENSE = "Expense has been successfully created.";
 
