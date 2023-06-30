@@ -14,7 +14,7 @@ export const FriendsCard = ({ expense }: FriendsCardProps) => {
   const account = useSelector(selectUser);
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
-    navigate("/history/group/1", { state: { expense } });
+    navigate("/history/detail", { state: { expense } });
   };
   const checkTransactionStyle = () => {
     if (
