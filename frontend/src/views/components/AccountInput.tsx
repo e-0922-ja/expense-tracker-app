@@ -120,7 +120,7 @@ export const AccountInput = ({
       return;
     }
     try {
-      const redirectUrl = `${BASE_URI}/passwordReset`;
+      const redirectUrl = `${BASE_URI}/reset-password`;
       const { error: sendEmailError } =
         await supabase.auth.resetPasswordForEmail(currentEmail, {
           redirectTo: redirectUrl,

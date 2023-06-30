@@ -181,7 +181,7 @@ export const RegisterExpenseDetail = () => {
   };
 
   const handleGoBack = () => {
-    navigate("/expense/selectfriends");
+    navigate("/expense/select-friends");
   };
 
   return (

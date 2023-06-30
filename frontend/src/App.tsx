@@ -17,7 +17,6 @@ import { FriendsListPage } from "./views/pages/FriendsListPage";
 import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
 import { SignupPage } from "./views/pages/SignupPage";
 
-
 function App() {
   const theme = useSelector(selectTheme);
 
@@ -28,14 +27,14 @@ function App() {
         <StyledToolbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignupPage/>} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
-            path="/expense/selectfriends"
+            path="/expense/select-friends"
             element={<ProtectedRoute element={<SelectFriendsPage />} />}
           />
           <Route
-            path="/expense/registerdetail"
+            path="/expense/register-detail"
             element={<ProtectedRoute element={<RegisterExpenseDetail />} />}
           />
           <Route
@@ -47,18 +46,18 @@ function App() {
             element={<ProtectedRoute element={<HistoryDetailPage />} />}
           />
           <Route
-            path="/history/group/:id"
+            path="/history/detail"
             element={<ProtectedRoute element={<FriendsHistoryDetailPage />} />}
           />
           <Route
-            path="/friendsList"
+            path="/friends-list"
             element={<ProtectedRoute element={<FriendsListPage />} />}
           />
           <Route
             path="/account"
             element={<ProtectedRoute element={<AccountPage />} />}
           />
-          <Route path="/passwordReset" element={<ResetPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </div>
     </ThemeProvider>
