@@ -20,7 +20,7 @@ export function useSupabaseSession() {
       const expiredDate = result.data.session?.expires_at;
       if (!expiredDate) {
         console.error("No active session");
-        return;
+        return setLoading(false);
       }
 
       if (hasExceededOnNow(expiredDate)) {
