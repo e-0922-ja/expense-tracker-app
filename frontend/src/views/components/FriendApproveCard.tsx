@@ -6,15 +6,13 @@ import { selectUser } from "../../reducer/userSlice";
 import { client } from "../../services/supabase";
 import { Friend } from "../../types";
 
-export interface PropsFriendApproveCard extends Friend {
+export interface PropsFriendApproveCard {
+  friend: Friend;
   getUserFriendsById: () => void;
 }
 
 export const FriendApproveCard = ({
-  id,
-  firstName,
-  lastName,
-  email,
+  friend,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
   const { user } = useSelector(selectUser);
@@ -26,18 +24,18 @@ export const FriendApproveCard = ({
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, userId, id, "aprovecard");
+        console.log(data, userId, friend.id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await client
             .from("Friendships")
-            .update({ statusId: 2, updatedAt: new Date() })
+            .update({ statusId: 2, updatedAt: new Date().toISOString() })
             .match({ id: data[0].id });
           if (updateError) {
             console.error("Error updating statusId: ", updateError);
@@ -58,13 +56,12 @@ export const FriendApproveCard = ({
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, "aprovecard");
         if (data && data.length > 0) {
           const { data: deletedData, error: updateError } = await client
             .from("Friendships")
@@ -95,16 +92,16 @@ export const FriendApproveCard = ({
           </IconContainer>
           <InfoWrapper>
             <NameContainer>
-              {firstName ? (
+              {friend.firstName ? (
                 <>
-                  <Typography variant="body1">{firstName}</Typography>
-                  <Typography variant="body1">{lastName}</Typography>
+                  <Typography variant="body1">{friend.firstName}</Typography>
+                  <Typography variant="body1">{friend.lastName}</Typography>
                 </>
               ) : (
                 <Typography variant="body1">-</Typography>
               )}
             </NameContainer>
-            <Typography variant="body1">{email}</Typography>
+            <Typography variant="body1">{friend.email}</Typography>
           </InfoWrapper>
         </ContentWrapper>
       </FriendAproveCardWrapper>

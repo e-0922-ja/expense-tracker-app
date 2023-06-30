@@ -38,6 +38,9 @@ export const FriendsApprovePage = () => {
 
   const getUserFriendsById = async () => {
     try {
+      if (!userId) {
+        throw new Error();
+      }
       const { data, error } = await client.rpc("get_user_friends", {
         user_id: userId,
       });
@@ -97,10 +100,7 @@ export const FriendsApprovePage = () => {
                     {friends!.map((friend, index) =>
                       !friend.sender && friend.statusId === 1 && friend.id ? (
                         <FriendApproveCard
-                          id={friend.id}
-                          firstName={friend.firstName}
-                          lastName={friend.lastName}
-                          email={friend.email}
+                          friend={friend}
                           key={index}
                           getUserFriendsById={getUserFriendsById}
                         />
