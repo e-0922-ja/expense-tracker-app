@@ -23,6 +23,12 @@ export interface Category {
   icon: React.ComponentType<SvgIconProps>;
 }
 
+export interface ToolbarItem {
+  path: string;
+  name: string;
+  icon: React.ComponentType<SvgIconProps>;
+}
+
 export interface Member {
   id: string;
   firstName: string;
