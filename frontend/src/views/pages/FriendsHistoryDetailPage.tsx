@@ -11,9 +11,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { CheckedMember, Expense } from "../../types";
+import { CheckedMember, Expense, Message } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
@@ -24,16 +22,7 @@ import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 export const FriendsHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -96,7 +85,7 @@ export const FriendsHistoryDetailPage = () => {
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { error } = await supabase.rpc("update_members_paid", {
+      const { error } = await client.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
@@ -116,7 +105,7 @@ export const FriendsHistoryDetailPage = () => {
 
   const deleteExpense = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from("Expenses")
         .delete()
         .eq("id", expense.id);

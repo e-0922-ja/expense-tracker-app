@@ -14,27 +14,15 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createClient } from "@supabase/supabase-js";
-import { Database, Json } from "../../../../supabase/schema";
+import { Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
-import { Expense } from "../../types";
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export type BorrowedAmountReturns =
-  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
-export type LentAmountReturns =
-  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
-export type ExpensesReturns =
-  Database["public"]["Functions"]["get_expenses"]["Returns"];
+import { BorrowedAmountReturns, Expense, LentAmountReturns } from "../../types";
+import { client } from "../../services/supabase";
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -52,7 +40,7 @@ export const HistoryPage = () => {
 
   const getTotalLentAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_lent_amount", {
+      const { data, error } = await client.rpc("get_total_lent_amount", {
         user_id: userId,
       });
       if (error) {
@@ -68,7 +56,7 @@ export const HistoryPage = () => {
 
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
+      const { data, error } = await client.rpc("get_total_borrowed_amount", {
         user_id: userId,
       });
       if (error) {
@@ -84,7 +72,7 @@ export const HistoryPage = () => {
 
   const getExpenses = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_expenses", {
+      const { data, error } = await client.rpc("get_expenses", {
         user_id: userId,
       });
       if (error) {

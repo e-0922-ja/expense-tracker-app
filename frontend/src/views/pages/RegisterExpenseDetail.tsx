@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
 import { ChangeEvent, useState } from "react";
 import {
@@ -18,9 +17,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Friend } from "../../types";
+import { EachAmount, Expense, Friend, Message } from "../../types";
 import { selectUser } from "../../reducer/userSlice";
-import { Database } from "../../../../supabase/schema";
 import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
@@ -30,26 +28,7 @@ import {
   ERROR_EMPTY_DESCRIPTION,
   SUCCESS_CREATE_EXPENSE,
 } from "../../constants/message";
-
-interface EachAmount extends Friend {
-  amount: string;
-  paid: boolean;
-}
-
-interface Expense {
-  amount: string;
-  description: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 export const RegisterExpenseDetail = () => {
   const [category, setCategory] = useState(categories[0].name);
@@ -112,7 +91,7 @@ export const RegisterExpenseDetail = () => {
     );
 
     try {
-      const { error } = await supabase.rpc("insert_expense", {
+      const { error } = await client.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
         registered_by: account.user!.id,

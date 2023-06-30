@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -16,21 +15,8 @@ import {
   ERROR_PASSWORD,
   ERROR_USER_NOTFOUND,
 } from "../../constants/message";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-interface CurrentUser {
-  email: string;
-  password: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
+import { client } from "../../services/supabase";
+import { CurrentUser, Message } from "../../types";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -49,7 +35,7 @@ export const LoginPage = () => {
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
-    const { error, data } = await supabase.auth.signInWithPassword({
+    const { error, data } = await client.auth.signInWithPassword({
       email,
       password,
     });

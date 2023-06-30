@@ -16,14 +16,7 @@ import {
   ERROR_PASSWORDCONF,
 } from "../../constants/message";
 import { useSignup } from "../../hooks/useSignup";
-
-interface NewUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { NewUser } from "../../types";
 
 export const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
