@@ -6,19 +6,17 @@ import { useForm } from "react-hook-form";
 import {
   ERROR_BLANK_FIRSTNAME,
   ERROR_BLANK_LASTNAME,
-  ERROR_CHANGE_ACCOUNT_INFO,
   ERROR_EMPTY_FIRSTNAME,
   ERROR_EMPTY_LASTNAME,
   ERROR_RESET_PASSWORD_EMAIL_NOTHING,
   ERROR_RESET_PASSWORD_SEND_MAIL,
   ERROR_SOMETHING,
-  SUCCESS_CHANGE_ACCOUNT_INFO,
   SUCCESS_RESET_PASSWORD,
 } from "../../constants/message";
 import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
 import { Friend } from "../../types";
-import { UserService } from "../../services/users/service";
 import { client } from "../../services/supabase";
+import { useUpdateAccount } from "../../hooks/useUpdateAccount";
 
 interface AccountInputProps {
   user: Friend;
@@ -39,11 +37,6 @@ const BASE_URI = process.env.REACT_APP_BASE_URI;
 
 export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
   const [editStatus, setEditStatus] = useState(false);
-
-  const [updateUserInfoMessage, setUpdateUserInfoMessage] = useState<Message>({
-    isError: false,
-    message: "",
-  });
   const [sendEmailMessage, setSendEmailMessage] = useState<Message>({
     isError: false,
     message: "",
@@ -59,30 +52,10 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
     setEditStatus(true);
   };
 
+  const { updateAccountMessage, updateAccount } = useUpdateAccount();
+
   const handleSave = async (formData: FormData) => {
-    const { isError, createdUser } = await UserService.updateAuthUser(formData);
-    if (isError) {
-      return setUpdateUserInfoMessage({
-        isError: true,
-        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
-      });
-    }
-
-    const { isError: isErrorForUpdateUser } = await UserService.updateUser(
-      createdUser!
-    );
-    if (isErrorForUpdateUser) {
-      return setUpdateUserInfoMessage({
-        isError: isErrorForUpdateUser,
-        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
-      });
-    }
-
-    setUpdateUserInfoMessage({
-      isError: isErrorForUpdateUser,
-      message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
-    });
-
+    await updateAccount(formData);
     onGetSession();
     setEditStatus(false);
   };
@@ -196,9 +169,14 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
-          {updateUserInfoMessage && (
+          {/* {updateUserInfoMessage && (
             <ButtonMessage isError={updateUserInfoMessage.isError}>
               {updateUserInfoMessage.message}
+            </ButtonMessage>
+          )} */}
+          {updateAccountMessage.message && (
+            <ButtonMessage isError={updateAccountMessage.isError}>
+              {updateAccountMessage.message}
             </ButtonMessage>
           )}
         </StyledFormBox>

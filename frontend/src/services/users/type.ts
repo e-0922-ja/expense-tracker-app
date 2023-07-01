@@ -5,6 +5,13 @@ export interface CreateAuthUserRequest {
   password: string;
 }
 
+export interface CreateAuthUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
 export interface CreateUserRequest {
   id: string;
   email: string;

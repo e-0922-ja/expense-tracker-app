@@ -1,6 +1,11 @@
 import { client } from "../supabase/client";
-import { CreateAuthUserRequest, CreateUserRequest } from "./type";
-import { UpdateAuthUserRequest, UpdateUserRequest } from "./type";
+import {
+  CreateAuthUserRequest,
+  CreateUserRequest,
+  UpdateAuthUserRequest,
+  UpdateUserRequest,
+} from "./type";
+import { validateName } from "./validations";
 
 class _userService {
   getUserInfoFromSession = async () => {
@@ -18,17 +23,21 @@ class _userService {
     email,
     password,
   }: CreateAuthUserRequest) => {
+    try {
+      validateName(firstName, lastName);
+    } catch (error: any) {
+      throw error;
+    }
+
     const { error, data } = await client.auth.signUp({
       email,
       password,
       options: { data: { firstName, lastName } },
     });
     if (error) {
-      return { isError: true, message: error.message, user: null };
+      throw error;
     }
     return {
-      isError: false,
-      message: "Sucess!",
       createdUser: {
         id: data.user?.id || "",
         firstName: `${data.user?.user_metadata.firstName || ""}`,
@@ -50,8 +59,7 @@ class _userService {
       .select("*")
       .eq("email", email);
     if (error) {
-      console.log(error);
-      throw new Error(error.message);
+      throw error;
     }
     if (!data.length) {
       return null;
@@ -72,6 +80,11 @@ class _userService {
     firstName,
     lastName,
   }: CreateUserRequest) => {
+    try {
+      validateName(firstName, lastName);
+    } catch (error: any) {
+      throw error;
+    }
     const { error } = await client.from("Users").insert([
       {
         id,
@@ -83,12 +96,17 @@ class _userService {
       },
     ]);
     if (error) {
-      return { isError: true, message: error.message };
+      throw error;
     }
-    return { isError: false, message: "Success!" };
+    return;
   };
 
   updateAuthUser = async ({ firstName, lastName }: UpdateAuthUserRequest) => {
+    try {
+      validateName(firstName, lastName);
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
     const { data, error } = await client.auth.updateUser({
       data: {
         firstName: firstName,
@@ -97,15 +115,10 @@ class _userService {
     });
 
     if (error) {
-      return {
-        isError: true,
-        message: "Error updating a user account",
-      };
+      throw error;
     }
     return {
-      isError: false,
-      message: "Sucess!",
-      createdUser: {
+      updatedUser: {
         id: data.user.id || "",
         firstName: `${data.user.user_metadata.firstName || ""}`,
         lastName: `${data.user.user_metadata.lastName || ""}`,
@@ -114,6 +127,11 @@ class _userService {
   };
 
   updateUser = async ({ id, firstName, lastName }: UpdateUserRequest) => {
+    try {
+      validateName(firstName, lastName);
+    } catch (error: any) {
+      throw error;
+    }
     const { error } = await client
       .from("Users")
       .update({
@@ -123,9 +141,9 @@ class _userService {
       })
       .eq("id", id);
     if (error) {
-      return { isError: true, message: error.message };
+      throw error;
     }
-    return { isError: false, message: "Success!" };
+    return;
   };
 
   signOut = async () => {
