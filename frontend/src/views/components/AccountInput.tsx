@@ -169,11 +169,6 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
-          {/* {updateUserInfoMessage && (
-            <ButtonMessage isError={updateUserInfoMessage.isError}>
-              {updateUserInfoMessage.message}
-            </ButtonMessage>
-          )} */}
           {updateAccountMessage.message && (
             <ButtonMessage isError={updateAccountMessage.isError}>
               {updateAccountMessage.message}
