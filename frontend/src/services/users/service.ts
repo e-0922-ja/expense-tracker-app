@@ -105,7 +105,7 @@ class _userService {
     try {
       validateName(firstName, lastName);
     } catch (error: any) {
-      throw new Error(error.message);
+      throw error;
     }
     const { data, error } = await client.auth.updateUser({
       data: {
