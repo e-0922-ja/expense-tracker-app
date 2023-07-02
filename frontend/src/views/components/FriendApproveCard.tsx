@@ -1,15 +1,18 @@
 import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-import { PropsFriendApproveCard } from "../../types";
 import { client } from "../../services/supabase";
+import { Friend } from "../../types";
+
+export interface PropsFriendApproveCard {
+  userId: string;
+  friend: Friend;
+  getUserFriendsById: () => void;
+}
 
 export const FriendApproveCard = ({
   userId,
-  id,
-  firstName,
-  lastName,
-  email,
+  friend,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
   const handleApprove = async () => {
@@ -18,7 +21,7 @@ export const FriendApproveCard = ({
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
@@ -49,13 +52,12 @@ export const FriendApproveCard = ({
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, "aprovecard");
         if (data && data.length > 0) {
           const { data: deletedData, error: updateError } = await client
             .from("Friendships")
@@ -86,16 +88,16 @@ export const FriendApproveCard = ({
           </IconContainer>
           <InfoWrapper>
             <NameContainer>
-              {firstName ? (
+              {friend.firstName ? (
                 <>
-                  <Typography variant="body1">{firstName}</Typography>
-                  <Typography variant="body1">{lastName}</Typography>
+                  <Typography variant="body1">{friend.firstName}</Typography>
+                  <Typography variant="body1">{friend.lastName}</Typography>
                 </>
               ) : (
                 <Typography variant="body1">-</Typography>
               )}
             </NameContainer>
-            <Typography variant="body1">{email}</Typography>
+            <Typography variant="body1">{friend.email}</Typography>
           </InfoWrapper>
         </ContentWrapper>
       </FriendAproveCardWrapper>

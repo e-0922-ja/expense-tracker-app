@@ -1,7 +1,7 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
-import { LentAmountReturns } from "../pages/HistoryPage";
 import { calculateTotalAmount } from "../../utils/calculateUtils";
+import { LentAmountReturns } from "../../types";
 
 interface LendCalculateCardProps {
   lent: LentAmountReturns;

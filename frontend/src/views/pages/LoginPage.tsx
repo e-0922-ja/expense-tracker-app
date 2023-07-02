@@ -17,16 +17,7 @@ import { AppDispatch } from "../../store/store";
 import { client } from "../../services/supabase";
 import { UserService } from "../../services/users";
 import { login } from "../../reducer/userSlice";
-
-interface CurrentUser {
-  email: string;
-  password: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
+import { CurrentUser, Message } from "../../types";
 
 export const LoginPage = () => {
   const dispatch: AppDispatch = useDispatch();

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
 import { ChangeEvent, useEffect, useState } from "react";
 import {
@@ -17,8 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { EachAmount, Friend } from "../../types";
-import { Database } from "../../../../supabase/schema";
+import { EachAmount, Expense, Friend, Message } from "../../types";
 import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
@@ -30,21 +28,7 @@ import {
   SUCCESS_CREATE_EXPENSE,
 } from "../../constants/message";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
-
-interface Expense {
-  amount: string;
-  description: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+import { client } from "../../services/supabase";
 
 export const PaymentPage = () => {
   const [category, setCategory] = useState(categories[0].name);
@@ -126,7 +110,7 @@ export const PaymentPage = () => {
     );
 
     try {
-      const { error } = await supabase.rpc("insert_expense", {
+      const { error } = await client.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
         registered_by: user.id,

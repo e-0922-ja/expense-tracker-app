@@ -12,9 +12,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
-import { FriendShipsReturns } from "./FriendsListPage";
 import { client } from "../../services/supabase";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { FriendShipsReturns } from "../../types";
 
 export const FriendsApprovePage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -34,17 +34,17 @@ export const FriendsApprovePage = () => {
 
   const getUserFriendsById = useCallback(async () => {
     try {
-      if (userId) {
-        const { data, error } = await client.rpc("get_user_friends", {
-          user_id: userId,
-        });
-        if (error) {
-          setError(error.message);
-          return false;
-        } else {
-          setFriends(data);
-          return true;
-        }
+      if (!userId) {
+        throw new Error();
+      }
+      const { data, error } = await client.rpc("get_user_friends", {
+        user_id: userId,
+      });
+      if (error) {
+        setError(error.message);
+        return false;
+      } else {
+        setFriends(data);
       }
     } catch (error: any) {
       setError(error.message);
@@ -105,10 +105,7 @@ export const FriendsApprovePage = () => {
                       !friend.sender && friend.statusId === 1 && friend.id ? (
                         <FriendApproveCard
                           userId={userId}
-                          id={friend.id}
-                          firstName={friend.firstName}
-                          lastName={friend.lastName}
-                          email={friend.email}
+                          friend={friend}
                           key={index}
                           getUserFriendsById={getUserFriendsById}
                         />

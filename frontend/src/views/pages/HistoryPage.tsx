@@ -14,21 +14,14 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { Database, Json } from "../../../../supabase/schema";
+import { Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
 import { FriendsCard } from "../components/FriendsCard";
-import { Expense } from "../../types";
+import { BorrowedAmountReturns, Expense, LentAmountReturns } from "../../types";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
-
-export type BorrowedAmountReturns =
-  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
-export type LentAmountReturns =
-  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
-export type ExpensesReturns =
-  Database["public"]["Functions"]["get_expenses"]["Returns"];
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -60,7 +53,6 @@ export const HistoryPage = () => {
         if (error) {
           console.log(error);
         } else {
-          console.log("lent", data);
           setLent(data);
         }
       }
@@ -78,7 +70,6 @@ export const HistoryPage = () => {
         if (error) {
           console.log(error);
         } else {
-          console.log("borrowed", data);
           setBorrowed(data);
         }
       }
@@ -96,7 +87,6 @@ export const HistoryPage = () => {
         if (error) {
           console.log(error);
         } else {
-          console.log("histories", data);
           const parsedExpenses: Expense[] = data.map((expense: Json) =>
             JSON.parse(JSON.stringify(expense))
           );

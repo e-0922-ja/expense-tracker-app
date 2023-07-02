@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { CheckedMember, Expense } from "../../types";
+import { CheckedMember, Expense, Message } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
@@ -22,11 +22,6 @@ import {
 } from "../../constants/message";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { CheckedMember, Expense } from "../../types";
+import { CheckedMember, Expense, Message } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
@@ -22,11 +22,6 @@ import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
 
 export const FriendHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -115,7 +110,7 @@ export const FriendHistoryDetailPage = () => {
 
   const deleteExpense = async () => {
     try {
-      const { data, error } = await client
+      const { error } = await client
         .from("Expenses")
         .delete()
         .eq("id", expense.id);
@@ -123,9 +118,7 @@ export const FriendHistoryDetailPage = () => {
         setDeleteMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
         setDeleteMessage({ isError: true, message: SUCCESS_DELETE_EXPENSE });
-
         return true;
       }
     } catch (error: any) {

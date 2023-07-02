@@ -8,11 +8,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/message";
 import { client } from "../../services/supabase";
-
-interface PasswordData {
-  password: string;
-  confPassword: string;
-}
+import { PasswordData } from "../../types";
 
 export const PassWordResetPage = () => {
   const [showPassword, setShowPassword] = useState(false);

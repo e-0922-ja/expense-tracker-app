@@ -17,20 +17,11 @@ import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
 import { Friend } from "../../types";
 import { client } from "../../services/supabase";
 import { useUpdateAccount } from "../../hooks/useUpdateAccount";
+import { FormData, Message } from "../../types";
 
 interface AccountInputProps {
   user: Friend;
   onGetSession: () => void;
-}
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
 }
 
 const BASE_URI = process.env.REACT_APP_BASE_URI;
