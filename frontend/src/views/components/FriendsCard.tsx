@@ -3,28 +3,24 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 
 interface FriendsCardProps {
+  userId: string;
   expense: Expense;
 }
 
-export const FriendsCard = ({ expense }: FriendsCardProps) => {
-  const account = useSelector(selectUser);
+export const FriendsCard = ({ userId, expense }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
     navigate("/history/group/1", { state: { expense } });
   };
   const checkTransactionStyle = () => {
-    if (
-      expense.payer !== account.user?.id &&
-      expense.members.find(
-        (member) => member.id === account.user?.id && !member.paid
-      )
-    ) {
+    const hasPaid = expense.members.find(
+      (member) => member.id === userId && !member.paid
+    );
+    if (expense.payer !== userId && hasPaid) {
       return { borderLeft: "3px solid #a196ee" };
-    } else if (expense.payer === account.user?.id && !expense.settled) {
+    } else if (expense.payer === userId && !expense.settled) {
       return { borderLeft: "3px solid #ee9696" };
     } else {
       return {};

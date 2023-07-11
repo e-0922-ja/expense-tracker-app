@@ -1,4 +1,3 @@
-import { UUID } from "crypto";
 import { SvgIconProps } from "@mui/material/SvgIcon";
 import { Database } from "../../supabase/schema";
 
@@ -14,7 +13,18 @@ export interface FriendWithStatus extends Friend {
   sender: boolean;
 }
 
+export interface EachAmount extends Friend {
+  amount: string;
+  paid: boolean;
+}
+
 export interface Category {
+  name: string;
+  icon: React.ComponentType<SvgIconProps>;
+}
+
+export interface ToolbarItem {
+  path: string;
   name: string;
   icon: React.ComponentType<SvgIconProps>;
 }
@@ -47,18 +57,18 @@ export interface CheckedMember {
 
 export interface Friendship {
   friendEmail: string;
-  friendId: UUID;
-  id: UUID;
+  friendId: string;
+  id: string;
   registeredAt: string;
   statusId: number;
   updatedAt: string;
-  userId: UUID;
+  userId: string;
 }
 
 export interface Users {
   email: string;
   firstName: string;
-  id: UUID;
+  id: string;
   lastName: string;
   password: string;
   registeredAt: string;
@@ -66,9 +76,9 @@ export interface Users {
 }
 
 export interface FormData {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export interface Message {

@@ -3,9 +3,6 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { login } from "../../reducer/userSlice";
 import { useState } from "react";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
@@ -15,11 +12,14 @@ import {
   ERROR_PASSWORD,
   ERROR_USER_NOTFOUND,
 } from "../../constants/message";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 import { client } from "../../services/supabase";
+import { UserService } from "../../services/users";
+import { login } from "../../reducer/userSlice";
 import { CurrentUser, Message } from "../../types";
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [authMessage, setAuthMessage] = useState<Message>({
     isError: false,
@@ -32,6 +32,8 @@ export const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CurrentUser>();
+
+  const navigate = useNavigate();
 
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
@@ -48,15 +50,11 @@ export const LoginPage = () => {
       return;
     }
 
-    let user = data.user;
-    let userInfo = {
-      id: user?.id,
-      firstName: user?.user_metadata.firstName,
-      lastName: user?.user_metadata.lastName,
-      email: user?.email,
-    };
-    dispatch(login(userInfo));
-    navigate("/history");
+    const userInfo = await UserService.getUserInfoFromSession();
+    if (userInfo) {
+      dispatch(login(userInfo.user_metadata.firstName));
+      navigate("/history");
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);

@@ -2,8 +2,6 @@ import Box from "@mui/material/Box";
 import styled from "styled-components";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
 import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
@@ -27,15 +25,23 @@ import {
 } from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
 
 export const FriendsListPage = () => {
+  const navigate = useNavigate();
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [selectedError, setSelectedError] = useState("");
   const [friends, setFriends] = useState<FriendShipsReturns>([]);
   const [selectFriendsMessage, setSelectFriendsMessage] = useState<Message>({
     isError: false,
     message: "",
+  });
+  const [user, setUser] = useState<Friend>({
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
   });
 
   const {
@@ -45,28 +51,34 @@ export const FriendsListPage = () => {
     reset,
   } = useForm<FriendEmail>();
 
-  const userState = useSelector((state: RootState) => state.user);
-  const userId = userState.user?.id!;
-  const userEmail = userState.user?.email;
-  const userFirstName = userState.user?.firstName;
-  const userLastName = userState.user?.lastName;
-
-  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  useEffect(() => {
+    if (session && session.user) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email!,
+        firstName: session.user.user_metadata.firstName,
+        lastName: session.user.user_metadata.lastName,
+      });
+    }
+  }, [session]);
 
   const getUserFriendsById = useCallback(async () => {
     try {
-      const { data, error } = await client.rpc("get_user_friends", {
-        user_id: userId,
-      });
-      if (error) {
-        setSelectFriendsMessage({
-          isError: true,
-          message: error.message,
+      if (user.id) {
+        const { data, error } = await client.rpc("get_user_friends", {
+          user_id: user.id,
         });
-        return false;
-      } else {
-        setFriends(data);
-        return true;
+        if (error) {
+          setSelectFriendsMessage({
+            isError: true,
+            message: error.message,
+          });
+          return false;
+        } else {
+          setFriends(data);
+          return true;
+        }
       }
     } catch (error: any) {
       setSelectFriendsMessage({
@@ -75,7 +87,7 @@ export const FriendsListPage = () => {
       });
       return false;
     }
-  }, [userId]);
+  }, [user.id]);
 
   useEffect(() => {
     getUserFriendsById();
@@ -88,7 +100,7 @@ export const FriendsListPage = () => {
 
   const sendFriendRequest = async (email: string) => {
     const emailToLowerCase = email.toLowerCase();
-    if (emailToLowerCase === userEmail) {
+    if (emailToLowerCase === user.email) {
       setSelectFriendsMessage({
         isError: true,
         message: ERROR_SEND_OWN_ADDRESS,
@@ -115,7 +127,7 @@ export const FriendsListPage = () => {
           if (resultInsertFriendship) {
             const emailResponse = await SupabaseEdgeFunctionService.sendEmail(
               email,
-              `${userFirstName} ${userLastName}`
+              `${user.firstName} ${user.lastName}`
             );
 
             if (!emailResponse.status) {
@@ -174,7 +186,7 @@ export const FriendsListPage = () => {
   const countFriendShipByEmail = async (email: string) => {
     try {
       const { data, error } = await client.rpc("check_friendship", {
-        user_id: userId,
+        user_id: user.id,
         friend_email: email,
       });
       if (error) {
@@ -222,7 +234,7 @@ export const FriendsListPage = () => {
   // register the input email address to friendships table for a friend request
   const insertFriendship = async (data: any, email: string) => {
     const friendshipsData: FriendShipsInsert = {
-      userId: userId,
+      userId: user.id,
       friendId: data.length > 0 ? data[0].id : null,
       friendEmail: data.length > 0 ? data[0].email : email,
       statusId: 1, // status: pending

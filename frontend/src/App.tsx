@@ -13,7 +13,7 @@ import { PaymentPage } from "./views/pages/PaymentPage";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
 import { PassWordResetPage } from "./views/pages/PassWordResetPage";
-import ProtectedRoute from "./constants/ProtectedRoute";
+import ProtectedRoute from "./routes/ProtectedRoute";
 import { FriendsApprovePage } from "./views/pages/FriendsApprovePage";
 import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
 

@@ -40,22 +40,24 @@ export const useSignup = () => {
     firstName,
     lastName,
   }: CreateUserRequest) => {
-    const { isError, message, createdUser } = await UserService.createAuthUser({
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    if (isError) {
-      setSignupMessage({ isError, message });
+    try {
+      const { createdUser } = await UserService.createAuthUser({
+        email,
+        password,
+        firstName,
+        lastName,
+      });
+      return createdUser;
+    } catch (error: any) {
+      throw error;
     }
-    return createdUser;
   };
 
   const createUser = async (createdUser: CreatedUser) => {
-    const { isError, message } = await UserService.createUser(createdUser);
-    if (isError) {
-      return setSignupMessage({ isError, message });
+    try {
+      await UserService.createUser(createdUser);
+    } catch (error: any) {
+      throw error;
     }
   };
 
@@ -63,12 +65,14 @@ export const useSignup = () => {
     id,
     email,
   }: UpdateFriendIdRequest) => {
-    const { isError, message } =
+    try {
       await FriendshipService.updateFriendshipIdByFriendemail({
         friendEmail: email,
         friendId: id,
       });
-    return setSignupMessage({ isError, message });
+    } catch (error: any) {
+      throw error;
+    }
   };
 
   const signup = async ({
@@ -77,34 +81,42 @@ export const useSignup = () => {
     firstName,
     lastName,
   }: CreateUserRequest) => {
-    const createdUser = await createAuthUser({
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    const isUser = createdUser
-      ? await UserService.findUserByEmail(createdUser?.email)
-      : false;
-    if (isUser) {
-      setSignupMessage({
+    try {
+      const createdUser = await createAuthUser({
+        email,
+        password,
+        firstName,
+        lastName,
+      });
+      const isUser = createdUser
+        ? await UserService.findUserByEmail(createdUser?.email)
+        : false;
+
+      if (isUser) {
+        return setSignupMessage({
+          isError: true,
+          message: addNewLinesAfterPunctuation(ERROR_USER_EXIST),
+        });
+      }
+
+      if (createdUser) {
+        await createUser(createdUser);
+        await updateFriendIdByEmail({
+          id: createdUser.id,
+          email: createdUser.email,
+        });
+
+        return setSignupMessage({
+          isError: false,
+          message: addNewLinesAfterPunctuation(SUCCESS_SIGNUP),
+        });
+      }
+    } catch (error: any) {
+      return setSignupMessage({
         isError: true,
-        message: addNewLinesAfterPunctuation(ERROR_USER_EXIST),
-      });
-      return;
-    }
-    if (createdUser) {
-      await createUser(createdUser);
-      await updateFriendIdByEmail({
-        id: createdUser.id,
-        email: createdUser.email,
-      });
-      setSignupMessage({
-        isError: false,
-        message: addNewLinesAfterPunctuation(SUCCESS_SIGNUP),
+        message: error.message,
       });
     }
   };
-
   return { signupMessage, signup };
 };

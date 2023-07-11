@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -10,11 +10,10 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { FriendCard } from "../components/FriendCard";
 import { FriendApproveCard } from "../components/FriendApproveCard";
 import { client } from "../../services/supabase";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { FriendShipsReturns } from "../../types";
 
 export const FriendsApprovePage = () => {
@@ -23,20 +22,17 @@ export const FriendsApprovePage = () => {
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
   const [error, setError] = useState("");
   const [friends, setFriends] = useState<FriendShipsReturns>([]);
+  const [userId, setUserId] = useState("");
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const { user } = useSelector(selectUser);
-  const userId = user?.id;
+  const { session } = useSupabaseSession();
 
   useEffect(() => {
-    getUserFriendsById();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
-  const getUserFriendsById = async () => {
+  const getUserFriendsById = useCallback(async () => {
     try {
       if (!userId) {
         throw new Error();
@@ -54,6 +50,14 @@ export const FriendsApprovePage = () => {
       setError(error.message);
       return false;
     }
+  }, [userId]);
+
+  useEffect(() => {
+    getUserFriendsById();
+  }, [getUserFriendsById]);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   return (
@@ -100,6 +104,7 @@ export const FriendsApprovePage = () => {
                     {friends!.map((friend, index) =>
                       !friend.sender && friend.statusId === 1 && friend.id ? (
                         <FriendApproveCard
+                          userId={userId}
                           friend={friend}
                           key={index}
                           getUserFriendsById={getUserFriendsById}

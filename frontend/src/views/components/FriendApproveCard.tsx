@@ -1,23 +1,20 @@
 import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { client } from "../../services/supabase";
 import { Friend } from "../../types";
 
 export interface PropsFriendApproveCard {
+  userId: string;
   friend: Friend;
   getUserFriendsById: () => void;
 }
 
 export const FriendApproveCard = ({
+  userId,
   friend,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
-  const { user } = useSelector(selectUser);
-  const userId = user?.id;
-
   const handleApprove = async () => {
     try {
       const { data, error }: { data: any; error: any } = await client
@@ -30,7 +27,6 @@ export const FriendApproveCard = ({
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, userId, friend.id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { data: updatedData, error: updateError } = await client
