@@ -1,17 +1,20 @@
 import Box from "@mui/material/Box";
 import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import { emailRegex } from "../../utils/regexPatternUtils";
 import { useNavigate } from "react-router-dom";
-import { InputAdornment, InputBase, Paper } from "@mui/material";
+import { Button, InputAdornment, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Friend, FriendWithStatus } from "../../types";
+import {
+  Friend,
+  FriendEmail,
+  FriendShipsInsert,
+  FriendShipsReturns,
+  FriendWithStatus,
+  Message,
+} from "../../types";
 import { SubButton } from "../components/SubButton";
-import { Database } from "../../../../supabase/schema";
 import { SupabaseEdgeFunctionService } from "../../services/supabaseEdgeFunction";
 import {
   ERROR_EMAIL,
@@ -22,29 +25,25 @@ import {
 } from "../../constants/message";
 import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
-interface FriendEmail {
-  email: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export type FriendShipsReturns =
-  Database["public"]["Functions"]["get_user_friends"]["Returns"];
-export type FriendShipsArgs =
-  Database["public"]["Functions"]["get_user_friends"]["Args"];
-export type FriendShipsInsert =
-  Database["public"]["Tables"]["Friendships"]["Insert"];
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { client } from "../../services/supabase";
 
 export const SelectFriendsPage = () => {
+  const navigate = useNavigate();
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
-  const [friends, setFriends] = useState<FriendShipsReturns>([]);
   const [selectedError, setSelectedError] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [friends, setFriends] = useState<FriendShipsReturns>([]);
+  const [selectFriendsMessage, setSelectFriendsMessage] = useState<Message>({
+    isError: false,
+    message: "",
+  });
+  const [user, setUser] = useState<Friend>({
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+  });
+
   const {
     register,
     handleSubmit,
@@ -52,31 +51,43 @@ export const SelectFriendsPage = () => {
     reset,
   } = useForm<FriendEmail>();
 
-  const userState = useSelector((state: RootState) => state.user);
-  const userId = userState.user?.id!;
-  const userEmail = userState.user?.email;
-  const userFirstName = userState.user?.firstName;
-  const userLastName = userState.user?.lastName;
-
-  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  useEffect(() => {
+    if (session && session.user) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email!,
+        firstName: session.user.user_metadata.firstName,
+        lastName: session.user.user_metadata.lastName,
+      });
+    }
+  }, [session]);
 
   const getUserFriendsById = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_user_friends", {
-        user_id: userId,
-      });
-      if (error) {
-        setError(error.message);
-        return false;
-      } else {
-        setFriends(data);
-        return true;
+      if (user.id) {
+        const { data, error } = await client.rpc("get_user_friends", {
+          user_id: user.id,
+        });
+        if (error) {
+          setSelectFriendsMessage({
+            isError: true,
+            message: error.message,
+          });
+          return false;
+        } else {
+          setFriends(data);
+          return true;
+        }
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
-  }, [userId]);
+  }, [user.id]);
 
   useEffect(() => {
     getUserFriendsById();
@@ -89,8 +100,11 @@ export const SelectFriendsPage = () => {
 
   const sendFriendRequest = async (email: string) => {
     const emailToLowerCase = email.toLowerCase();
-    if (emailToLowerCase === userEmail) {
-      setError(ERROR_SEND_OWN_ADDRESS);
+    if (emailToLowerCase === user.email) {
+      setSelectFriendsMessage({
+        isError: true,
+        message: ERROR_SEND_OWN_ADDRESS,
+      });
     } else {
       const resultCountFriendShipByEmail = await countFriendShipByEmail(
         emailToLowerCase
@@ -99,7 +113,10 @@ export const SelectFriendsPage = () => {
         typeof resultCountFriendShipByEmail === "number" &&
         resultCountFriendShipByEmail > 0
       ) {
-        setError(ERROR_SEND_EXISTED_ADDRESS);
+        setSelectFriendsMessage({
+          isError: true,
+          message: ERROR_SEND_EXISTED_ADDRESS,
+        });
       } else {
         const resultGetFriendByEmail = await getFriendByEmail(emailToLowerCase);
         if (resultGetFriendByEmail) {
@@ -110,30 +127,33 @@ export const SelectFriendsPage = () => {
           if (resultInsertFriendship) {
             const emailResponse = await SupabaseEdgeFunctionService.sendEmail(
               email,
-              `${userFirstName} ${userLastName}`
+              `${user.firstName} ${user.lastName}`
             );
 
             if (!emailResponse.status) {
-              setError(ERROR_SEND_FAILED);
+              setSelectFriendsMessage({
+                isError: true,
+                message: ERROR_SEND_FAILED,
+              });
             }
 
             // to retrieve the data to update the friend list
             const resultGetUserFriendsById = await getUserFriendsById();
             if (resultGetUserFriendsById) {
               reset();
-              setError("");
+              setSelectFriendsMessage({
+                isError: false,
+                message: "",
+              });
             }
-            setSuccess(
-              `You have successfully sent a friend request to ${email}!`
-            );
+            setSelectFriendsMessage({
+              isError: false,
+              message: `You have successfully sent a friend request to ${email}!`,
+            });
           }
         }
       }
     }
-  };
-
-  const handleSendEmail = () => {
-    console.log("send mail");
   };
 
   // Check friends to add or not
@@ -165,36 +185,48 @@ export const SelectFriendsPage = () => {
   // check if a user has already sent a friend request to the input email address
   const countFriendShipByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase.rpc("check_friendship", {
-        user_id: userId,
+      const { data, error } = await client.rpc("check_friendship", {
+        user_id: user.id,
         friend_email: email,
       });
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return data;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
 
   const getFriendByEmail = async (email: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from("Users")
         .select("*")
         .eq("email", email);
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return data;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
@@ -202,7 +234,7 @@ export const SelectFriendsPage = () => {
   // register the input email address to friendships table for a friend request
   const insertFriendship = async (data: any, email: string) => {
     const friendshipsData: FriendShipsInsert = {
-      userId: userId,
+      userId: user.id,
       friendId: data.length > 0 ? data[0].id : null,
       friendEmail: data.length > 0 ? data[0].email : email,
       statusId: 1, // status: pending
@@ -211,24 +243,33 @@ export const SelectFriendsPage = () => {
     };
 
     try {
-      const { error } = await supabase
+      const { error } = await client
         .from("Friendships")
         .insert(friendshipsData);
       if (error) {
-        setError(error.message);
+        setSelectFriendsMessage({
+          isError: true,
+          message: error.message,
+        });
         return false;
       } else {
         return true;
       }
     } catch (error: any) {
-      setError(error.message);
+      setSelectFriendsMessage({
+        isError: true,
+        message: error.message,
+      });
       return false;
     }
   };
 
   const handleClick = () => {
     if (selectedFriends.length > 0) {
-      setSelectedError("");
+      setSelectFriendsMessage({
+        isError: false,
+        message: "",
+      });
       navigate("/expense/register-detail", {
         state: { selectedFriends },
       });
@@ -267,12 +308,14 @@ export const SelectFriendsPage = () => {
             {errors.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           </InputWrapper>
           <SubButtonWrapper>
-            <SubButton title={"send"} onClick={handleSendEmail} />
-            {error ? (
-              <ErrorText>{error}</ErrorText>
-            ) : success ? (
-              <SuccessText>{success}</SuccessText>
-            ) : null}
+            <StyledButton variant="contained" disableRipple type="submit">
+              send
+            </StyledButton>
+            {selectFriendsMessage && (
+              <ButtonMessage isError={selectFriendsMessage.isError}>
+                {selectFriendsMessage.message}
+              </ButtonMessage>
+            )}
           </SubButtonWrapper>
         </StyledBox>
       </SubContainer>
@@ -439,12 +482,6 @@ const ErrorText = styled.div`
   color: #ff908d;
 `;
 
-const SuccessText = styled.div`
-  margin-top: 7px;
-  font-size: 1rem;
-  color: #4caf50;
-`;
-
 const InputWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -476,4 +513,25 @@ const StyledBox = styled(Box)`
 const GobackButtonWrapper = styled.div`
   width: 70%;
   display: flex;
+`;
+
+const ButtonMessage = styled.div<{ isError: boolean }>`
+  white-space: pre-wrap;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 1rem;
+  color: ${({ isError }) => (isError ? "#ff908d" : "#4caf50")};
+`;
+
+const StyledButton = styled(Button)`
+  background: ${({ theme }) => theme.palette.secondary.main} !important;
+  border: 0;
+  color: white;
+  width: 100% !important;
+  height: 40px !important;
+  fontsize: 1rem !important;
+  padding: 0 30px !important;
+  border-radius: 24px !important;
 `;
