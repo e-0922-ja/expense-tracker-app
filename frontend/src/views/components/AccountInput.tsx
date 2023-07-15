@@ -2,44 +2,32 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Box, Button, OutlinedInput } from "@mui/material";
 import { SubButton } from "./SubButton";
-import { useDispatch, useSelector } from "react-redux";
-import { selectUser, update } from "../../reducer/userSlice";
 import { useForm } from "react-hook-form";
-import { emailRegex } from "../../utils/regexPatternUtils";
 import {
-  ERROR_CHANGE_ACCOUNT_INFO,
-  ERROR_EMAIL,
-  ERROR_FIRSTNAME,
-  ERROR_LASTNAME,
+  ERROR_BLANK_FIRSTNAME,
+  ERROR_BLANK_LASTNAME,
+  ERROR_EMPTY_FIRSTNAME,
+  ERROR_EMPTY_LASTNAME,
   ERROR_RESET_PASSWORD_EMAIL_NOTHING,
   ERROR_RESET_PASSWORD_SEND_MAIL,
   ERROR_SOMETHING,
-  SUCCESS_CHANGE_ACCOUNT_INFO,
   SUCCESS_RESET_PASSWORD,
 } from "../../constants/message";
 import { addNewLinesAfterPunctuation } from "../../utils/textUtils";
+import { Friend } from "../../types";
 import { client } from "../../services/supabase";
+import { useUpdateAccount } from "../../hooks/useUpdateAccount";
 import { FormData, Message } from "../../types";
 
 interface AccountInputProps {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
+  user: Friend;
+  onGetSession: () => void;
 }
 
 const BASE_URI = process.env.REACT_APP_BASE_URI;
 
-export const AccountInput = ({
-  firstName,
-  lastName,
-  email,
-}: AccountInputProps) => {
-  const dispatch = useDispatch();
+export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
   const [editStatus, setEditStatus] = useState(false);
-  const [updateUserInfoMessage, setUpdateUserInfoMessage] = useState<Message>({
-    isError: false,
-    message: "",
-  });
   const [sendEmailMessage, setSendEmailMessage] = useState<Message>({
     isError: false,
     message: "",
@@ -51,49 +39,20 @@ export const AccountInput = ({
     formState: { errors: errorsUpdatedUser },
   } = useForm<FormData>();
 
-  const account = useSelector(selectUser);
-
   const handleEdit = () => {
     setEditStatus(true);
   };
 
+  const { updateAccountMessage, updateAccount } = useUpdateAccount();
+
   const handleSave = async (formData: FormData) => {
-    const { firstName, lastName, email } = formData;
-
-    const updatedMetaData = {
-      firstName: firstName,
-      lastName: lastName,
-    };
-
-    const { data, error } = await client.auth.updateUser({
-      email: email,
-      data: updatedMetaData,
-    });
-    if (error) {
-      setUpdateUserInfoMessage({
-        isError: true,
-        message: addNewLinesAfterPunctuation(ERROR_CHANGE_ACCOUNT_INFO),
-      });
-    }
-
-    if (data.user) {
-      const fetchedUserInfoBySupabase = {
-        id: data.user.id,
-        firstName: data.user.user_metadata.firstName,
-        lastName: data.user.user_metadata.lastName,
-        email: data.user.email,
-      };
-      dispatch(update(fetchedUserInfoBySupabase));
-      setUpdateUserInfoMessage({
-        isError: false,
-        message: addNewLinesAfterPunctuation(SUCCESS_CHANGE_ACCOUNT_INFO),
-      });
-    }
+    await updateAccount(formData);
+    onGetSession();
     setEditStatus(false);
   };
 
   const handleSendEmail = async () => {
-    const currentEmail = account.user?.email;
+    const currentEmail = user.email;
     if (!currentEmail) {
       setSendEmailMessage({
         isError: true,
@@ -143,49 +102,55 @@ export const AccountInput = ({
           <StyledBox>
             {editStatus ? (
               <StyledOutlinedInput
-                {...registerUpdatedUser("firstName", { required: true })} // if firstName is required
-                defaultValue={firstName}
+                {...registerUpdatedUser("firstName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_FIRSTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_FIRSTNAME,
+                  },
+                })}
+                defaultValue={user.firstName}
                 fullWidth
               />
             ) : (
-              <Data>{account.user?.firstName}</Data>
+              <Data>{user.firstName}</Data>
             )}
           </StyledBox>
           {errorsUpdatedUser.firstName && (
-            <ErrorText>{ERROR_FIRSTNAME}</ErrorText>
+            <ErrorText>{errorsUpdatedUser.firstName.message}</ErrorText>
           )}
           <InputTitle>Last Name</InputTitle>
           <StyledBox>
             {editStatus ? (
               <StyledOutlinedInput
                 type="text"
-                {...registerUpdatedUser("lastName", { required: true })}
-                defaultValue={lastName}
+                {...registerUpdatedUser("lastName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_LASTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_LASTNAME,
+                  },
+                })}
+                defaultValue={user.lastName}
                 fullWidth
               />
             ) : (
-              <Data>{account.user?.lastName}</Data>
+              <Data>{user.lastName}</Data>
             )}
           </StyledBox>
           {errorsUpdatedUser.lastName && (
-            <ErrorText>{ERROR_LASTNAME}</ErrorText>
+            <ErrorText>{errorsUpdatedUser.lastName.message}</ErrorText>
           )}
           <InputTitle>Email</InputTitle>
           <StyledBox>
-            {editStatus ? (
-              <StyledOutlinedInput
-                {...registerUpdatedUser("email", {
-                  required: true,
-                  pattern: emailRegex,
-                })}
-                defaultValue={email}
-                fullWidth
-              />
-            ) : (
-              <Data>{account.user?.email}</Data>
-            )}
+            <EmailData editStatus={editStatus}>{user.email}</EmailData>
           </StyledBox>
-          {errorsUpdatedUser.email && <ErrorText>{ERROR_EMAIL}</ErrorText>}
           <ButtonContainer>
             {editStatus ? (
               <StyledButton variant="contained" disableRipple type="submit">
@@ -195,9 +160,9 @@ export const AccountInput = ({
               <SubButton title={"edit"} onClick={handleEdit} />
             )}
           </ButtonContainer>
-          {updateUserInfoMessage && (
-            <ButtonMessage isError={updateUserInfoMessage.isError}>
-              {updateUserInfoMessage.message}
+          {updateAccountMessage.message && (
+            <ButtonMessage isError={updateAccountMessage.isError}>
+              {updateAccountMessage.message}
             </ButtonMessage>
           )}
         </StyledFormBox>
@@ -244,6 +209,14 @@ const Data = styled.div`
   margin-bottom: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.light};
   border-radius: 10px;
+`;
+
+const EmailData = styled.div<{ editStatus: boolean }>`
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  background-color: ${({ theme }) => theme.palette.primary.light};
+  border-radius: 10px;
+  color: ${({ editStatus }) => (editStatus ? "grey" : "black")};
 `;
 
 const ButtonContainer = styled.div`

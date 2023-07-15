@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -15,21 +15,19 @@ import { CheckedMember, Expense, Message } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
 import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userId, setUserId] = useState("");
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
   const initialCheckedMembers = expense.members.map((member) => {
@@ -47,6 +45,15 @@ export const HistoryDetailPage = () => {
     message: "",
   });
   const CategoryIcon = getCategoryIcon(expense.category);
+
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const targetId = event.target.id;
@@ -76,8 +83,6 @@ export const HistoryDetailPage = () => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const navigate = useNavigate();
 
   const handleGoBack = () => {
     navigate("/history");

@@ -9,9 +9,11 @@ import { Link } from "react-router-dom";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import {
+  ERROR_BLANK_FIRSTNAME,
+  ERROR_BLANK_LASTNAME,
   ERROR_EMAIL,
-  ERROR_FIRSTNAME,
-  ERROR_LASTNAME,
+  ERROR_EMPTY_FIRSTNAME,
+  ERROR_EMPTY_LASTNAME,
   ERROR_PASSWORD,
   ERROR_PASSWORDCONF,
 } from "../../constants/message";
@@ -71,10 +73,21 @@ export const SignupPage = () => {
                 fullWidth
                 placeholder="First Name"
                 type="text"
-                {...register("firstName", { required: true })}
+                {...register("firstName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_FIRSTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_FIRSTNAME,
+                  },
+                })}
               />
             </InputPaper>
-            {errors.firstName && <ErrorText>{ERROR_FIRSTNAME}</ErrorText>}
+            {errors.firstName && (
+              <ErrorText>{errors.firstName.message}</ErrorText>
+            )}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -85,10 +98,21 @@ export const SignupPage = () => {
                 fullWidth
                 placeholder="Last Name"
                 type="text"
-                {...register("lastName", { required: true })}
+                {...register("lastName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_LASTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_LASTNAME,
+                  },
+                })}
               />
             </InputPaper>
-            {errors.lastName && <ErrorText>{ERROR_LASTNAME}</ErrorText>}
+            {errors.lastName && (
+              <ErrorText>{errors.lastName.message}</ErrorText>
+            )}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>

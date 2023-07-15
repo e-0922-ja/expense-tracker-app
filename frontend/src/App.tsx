@@ -11,11 +11,14 @@ import { HistoryPage } from "./views/pages/HistoryPage";
 import { RegisterExpenseDetail } from "./views/pages/RegisterExpenseDetail";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
-import { ResetPasswordPage } from "./views/pages/ResetPasswordPage";
-import ProtectedRoute from "./constants/ProtectedRoute";
-import { FriendsListPage } from "./views/pages/FriendsListPage";
-import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
 import { SignupPage } from "./views/pages/SignupPage";
+
+import { ResetPasswordPage } from "./views/pages/ResetPasswordPage";
+import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
+import { FriendsListPage } from "./views/pages/FriendsListPage";
+
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -43,21 +46,21 @@ function App() {
           />
           <Route
             path="/history/:id"
-            element={<ProtectedRoute element={<HistoryDetailPage />} />}
-          />
-          <Route
-            path="/history/detail"
             element={<ProtectedRoute element={<FriendsHistoryDetailPage />} />}
           />
           <Route
+            path="/history/detail"
+            element={<ProtectedRoute element={<HistoryDetailPage />} />}
+          />
+          <Route
             path="/friends-list"
-            element={<ProtectedRoute element={<FriendsListPage />} />}
+            element={<ProtectedRoute element={<FriendsListPage/>} />}
           />
           <Route
             path="/account"
             element={<ProtectedRoute element={<AccountPage />} />}
           />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage/>} />
         </Routes>
       </div>
     </ThemeProvider>

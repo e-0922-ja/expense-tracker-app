@@ -16,3 +16,14 @@ export interface UpdateFriendShipRequest {
   friendId: string;
   friendEmail: string;
 }
+
+export interface UpdateAuthUserRequest {
+  firstName: string;
+  lastName: string;
+}
+
+export interface UpdateUserRequest {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
