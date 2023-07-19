@@ -104,6 +104,5 @@ const StyledIconButton = styled(IconButton)`
 `;
 
 const StyledTypography = styled(Typography)`
-  font-family: "Roboto Mono", monospace !important;
   cursor: pointer;
 `;
