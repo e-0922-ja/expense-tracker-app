@@ -443,6 +443,13 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const ButtonContainer = styled.div`

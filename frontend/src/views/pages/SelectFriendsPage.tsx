@@ -383,10 +383,11 @@ const MainContainer = styled.div`
   justify-content: center;
   gap: 20px;
   background: ${({ theme }) => theme.palette.primary.main};
-  height: 100vh;
+
   @media (max-width: 600px) {
     flex-direction: column;
     margin-top: 0;
+    gap: 0px;
   }
 `;
 
