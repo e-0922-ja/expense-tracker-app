@@ -89,8 +89,3 @@ const NameContainer = styled.div`
   gap: 5px;
 `;
 
-const StyledTypography = styled(Typography)`
-  @media (max-width: 600px) {
-    font-size: 1rem;
-  }
-`;
