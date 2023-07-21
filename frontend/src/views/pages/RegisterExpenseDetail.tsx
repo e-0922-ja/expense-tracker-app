@@ -30,7 +30,7 @@ import {
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
 
-export const PaymentPage = () => {
+export const RegisterExpenseDetail = () => {
   const [category, setCategory] = useState(categories[0].name);
   const [date, setDate] = useState<Dayjs | null>(dayjs());
   const location = useLocation();
@@ -178,7 +178,7 @@ export const PaymentPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate("/expenses/friendslist");
+    navigate("/expense/select-friends");
   };
 
   return (

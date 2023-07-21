@@ -63,7 +63,7 @@ export const AccountInput = ({ user, onGetSession }: AccountInputProps) => {
       return;
     }
     try {
-      const redirectUrl = `${BASE_URI}/passwordReset`;
+      const redirectUrl = `${BASE_URI}/reset-password`;
       const { error: sendEmailError } = await client.auth.resetPasswordForEmail(
         currentEmail,
         {

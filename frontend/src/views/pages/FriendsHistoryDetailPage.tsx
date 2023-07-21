@@ -23,7 +23,7 @@ import {
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
 
-export const FriendHistoryDetailPage = () => {
+export const FriendsHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
@@ -443,6 +443,13 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const ButtonContainer = styled.div`

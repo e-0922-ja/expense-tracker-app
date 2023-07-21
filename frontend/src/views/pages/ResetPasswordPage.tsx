@@ -10,7 +10,7 @@ import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/message";
 import { client } from "../../services/supabase";
 import { PasswordData } from "../../types";
 
-export const PassWordResetPage = () => {
+export const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

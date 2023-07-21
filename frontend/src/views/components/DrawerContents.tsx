@@ -26,7 +26,7 @@ const toolbarItems: ToolbarItem[] = [
     icon: HistoryIcon,
   },
   {
-    path: "/friends",
+    path: "/friends-list",
     name: "Friends List",
     icon: GroupIcon,
   },

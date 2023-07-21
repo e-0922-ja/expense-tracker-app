@@ -20,7 +20,7 @@ import {
 import { useSignup } from "../../hooks/useSignup";
 import { NewUser } from "../../types";
 
-export const SignUpPage = () => {
+export const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -195,16 +195,22 @@ const ComponentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const SignUpWrapper = styled.div`
   padding: 20px 0;
-  width: 30%;
+  width: 35%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 600px) {
+    width: 80%;
+  }
 `;
 
 const FormWrapper = styled.form`
@@ -215,14 +221,13 @@ const FormWrapper = styled.form`
 `;
 
 const InputWrapper = styled.div`
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-direction: column;
 `;
 
 const InputPaper = styled(Paper)`
   margin: 15px 0 7px;
-  padding: 7px;
   display: flex;
   align-items: center;
 `;
@@ -270,6 +275,7 @@ const IconContainer = styled.div`
   color: rgba(0, 0, 0, 0.54);
 `;
 
+// Later will Change to the following code
 // import { UseFormRegister, ValidationRule} from "react-hook-form";
 
 // interface FormInputItemProps {

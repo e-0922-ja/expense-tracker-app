@@ -132,6 +132,9 @@ const ComponentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const LoginWrapper = styled.div`
@@ -143,7 +146,7 @@ const LoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   @media (max-width: 600px) {
-    width: 70%;
+    width: 80%;
   }
 `;
 
@@ -155,14 +158,13 @@ const FormWrapper = styled.form`
 `;
 
 const InputWrapper = styled.div`
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-direction: column;
 `;
 
 const InputPaper = styled(Paper)`
   margin: 15px 0 7px;
-  padding: 7px;
   display: flex;
   align-items: center;
 `;

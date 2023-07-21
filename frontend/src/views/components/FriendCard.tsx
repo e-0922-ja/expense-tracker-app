@@ -36,6 +36,9 @@ const FriendAproveCardWrapper = styled(Card)`
   border-radius: 10px !important;
   background: ${({ theme }) => theme.palette.primary.light} !important;
   color: ${({ theme }) => theme.palette.info.light} !important;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -59,6 +62,13 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const InfoWrapper = styled.div`
@@ -67,6 +77,10 @@ const InfoWrapper = styled.div`
   align-items: center;
   width: 85%;
   padding: 20px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const NameContainer = styled.div`
@@ -74,3 +88,4 @@ const NameContainer = styled.div`
   align-items: center;
   gap: 5px;
 `;
+
