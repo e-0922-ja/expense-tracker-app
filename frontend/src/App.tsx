@@ -19,7 +19,6 @@ import { ResetPasswordPage } from "./views/pages/ResetPasswordPage";
 import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
 import { FriendsListPage } from "./views/pages/FriendsListPage";
 
-
 function App() {
   const theme = useSelector(selectTheme);
 
@@ -54,13 +53,13 @@ function App() {
           />
           <Route
             path="/friends-list"
-            element={<ProtectedRoute element={<FriendsListPage/>} />}
+            element={<ProtectedRoute element={<FriendsListPage />} />}
           />
           <Route
             path="/account"
             element={<ProtectedRoute element={<AccountPage />} />}
           />
-          <Route path="/reset-password" element={<ResetPasswordPage/>} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </div>
     </ThemeProvider>
