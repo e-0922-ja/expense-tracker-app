@@ -3,29 +3,26 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../../types";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { paths } from "../../constants/routePaths";
 
 interface FriendsCardProps {
+  userId: string;
   expense: Expense;
 }
 
-export const FriendsCard = ({ expense }: FriendsCardProps) => {
-  const account = useSelector(selectUser);
+export const FriendsCard = ({ userId, expense }: FriendsCardProps) => {
   const navigate = useNavigate();
   const handleGoToFriendsHistory = () => {
-    navigate(`${paths.historyGroup}1`, { state: { expense } });
+    // navigate(`${paths.historyGroup}1`, { state: { expense } });
+    navigate("/history/detail", { state: { expense } });
   };
   const checkTransactionStyle = () => {
-    if (
-      expense.payer !== account.user?.id &&
-      expense.members.find(
-        (member) => member.id === account.user?.id && !member.paid
-      )
-    ) {
+    const hasPaid = expense.members.find(
+      (member) => member.id === userId && !member.paid
+    );
+    if (expense.payer !== userId && hasPaid) {
       return { borderLeft: "3px solid #a196ee" };
-    } else if (expense.payer === account.user?.id && !expense.settled) {
+    } else if (expense.payer === userId && !expense.settled) {
       return { borderLeft: "3px solid #ee9696" };
     } else {
       return {};
@@ -60,9 +57,9 @@ const TransactionCardWrapper = styled(Card)`
 `;
 
 const NameWrapper = styled.div`
+  width: 85%;
   display: flex;
   align-items: center;
-  width: 100%;
   padding: 20px;
 `;
 
@@ -87,4 +84,11 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;

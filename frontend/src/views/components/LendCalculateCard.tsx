@@ -1,7 +1,7 @@
 import { Card } from "@mui/material";
 import styled from "styled-components";
-import { LentAmountReturns } from "../pages/HistoryPage";
 import { calculateTotalAmount } from "../../utils/calculateUtils";
+import { LentAmountReturns } from "../../types";
 
 interface LendCalculateCardProps {
   lent: LentAmountReturns;
@@ -62,17 +62,16 @@ const BorrowTitle = styled.h3`
 
 const CalculateContainer = styled.div`
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
 `;
 
 const CalculateName = styled.div`
-  width: 50%;
+  width: 70%;
   margin-bottom: 0.3rem;
 `;
 
 const CalculateAmount = styled.div`
-  width: 50%;
+  width: 30%;
 `;
 
 const BorrowTotal = styled.div`

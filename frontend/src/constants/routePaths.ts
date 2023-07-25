@@ -13,10 +13,10 @@ const login =
     ? "/expense-tracker-app/login"
     : "/login";
 
-const friendList =
+const selectFriends =
   process.env.REACT_APP_ENVIRONMENT === "production"
-    ? "/expense-tracker-app/expenses/friendslist"
-    : "/expenses/friendslist";
+    ? "/expense-tracker-app/expenses/select-friends"
+    : "/expenses/select-friends";
 
 const payment =
   process.env.REACT_APP_ENVIRONMENT === "production"
@@ -57,7 +57,7 @@ export const paths = {
   home,
   signup,
   login,
-  friendList,
+  selectFriends,
   payment,
   history,
   historyDetail,

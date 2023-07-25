@@ -9,7 +9,11 @@ interface MainButtonProps {
 
 export const MainButton = ({ title }: MainButtonProps) => {
   const navigate = useNavigate();
-  const handleCreateExpense = () => navigate(paths.friendList);
+
+  const handleCreateExpense = () => {
+    navigate(paths.SelectFriends);
+    navigate("/expense/select-friends");
+  };
   return (
     <MyButton variant="contained" disableRipple onClick={handleCreateExpense}>
       {title}

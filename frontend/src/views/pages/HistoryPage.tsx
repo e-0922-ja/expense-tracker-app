@@ -14,37 +14,31 @@ import { DrawerContents } from "../components/DrawerContents";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { createClient } from "@supabase/supabase-js";
-import { Database, Json } from "../../../../supabase/schema";
+import { Json } from "../../../../supabase/schema";
 import { TransactionCard } from "../components/TransactionCard";
 import { BorrowCalculateCard } from "../components/BorrowCalculateCard";
 import { LendCalculateCard } from "../components/LendCalculateCard";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { FriendsCard } from "../components/FriendsCard";
-import { Expense } from "../../types";
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export type BorrowedAmountReturns =
-  Database["public"]["Functions"]["get_total_borrowed_amount"]["Returns"];
-export type LentAmountReturns =
-  Database["public"]["Functions"]["get_total_lent_amount"]["Returns"];
-export type ExpensesReturns =
-  Database["public"]["Functions"]["get_expenses"]["Returns"];
+import { BorrowedAmountReturns, Expense, LentAmountReturns } from "../../types";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { client } from "../../services/supabase";
 
 export const HistoryPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const [borrowed, setBorrowed] = useState<BorrowedAmountReturns>([]);
   const [lent, setLent] = useState<LentAmountReturns>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  const { session } = useSupabaseSession();
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -52,14 +46,15 @@ export const HistoryPage = () => {
 
   const getTotalLentAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_lent_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("lent", data);
-        setLent(data);
+      if (userId) {
+        const { data, error } = await client.rpc("get_total_lent_amount", {
+          user_id: userId,
+        });
+        if (error) {
+          console.log(error);
+        } else {
+          setLent(data);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -68,14 +63,15 @@ export const HistoryPage = () => {
 
   const getTotalBorrowedAmount = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_total_borrowed_amount", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("borrowed", data);
-        setBorrowed(data);
+      if (userId) {
+        const { data, error } = await client.rpc("get_total_borrowed_amount", {
+          user_id: userId,
+        });
+        if (error) {
+          console.log(error);
+        } else {
+          setBorrowed(data);
+        }
       }
     } catch (error: any) {
       console.log(error);
@@ -84,17 +80,18 @@ export const HistoryPage = () => {
 
   const getExpenses = useCallback(async () => {
     try {
-      const { data, error } = await supabase.rpc("get_expenses", {
-        user_id: userId,
-      });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("histories", data);
-        const parsedExpenses: Expense[] = data.map((expense: Json) =>
-          JSON.parse(JSON.stringify(expense))
-        );
-        setExpenses(parsedExpenses);
+      if (userId) {
+        const { data, error } = await client.rpc("get_expenses", {
+          user_id: userId,
+        });
+        if (error) {
+          console.log(error);
+        } else {
+          const parsedExpenses: Expense[] = data.map((expense: Json) =>
+            JSON.parse(JSON.stringify(expense))
+          );
+          setExpenses(parsedExpenses);
+        }
       }
     } catch (error: any) {
       console.log(error);
@@ -162,13 +159,21 @@ export const HistoryPage = () => {
               </CalculateCardContainer>
               <Title>All Expenses</Title>
               {expenses.map((expense) => (
-                <TransactionCard key={expense?.id} expense={expense} />
+                <TransactionCard
+                  key={expense.id}
+                  userId={userId}
+                  expense={expense}
+                />
               ))}
             </TabPanel>
             <TabPanel value="2">
               <Title>Previous groups</Title>
               {expenses.map((expense) => (
-                <FriendsCard key={expense.id} expense={expense} />
+                <FriendsCard
+                  key={expense.id}
+                  userId={userId}
+                  expense={expense}
+                />
               ))}
             </TabPanel>
           </TabContext>
@@ -241,6 +246,10 @@ const CalculateCardContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
 `;
 
 const Title = styled.h3`

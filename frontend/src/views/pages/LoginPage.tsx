@@ -1,12 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import styled from "styled-components";
 import { IconButton, InputBase, Paper } from "@mui/material";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { login } from "../../reducer/userSlice";
 import { useState } from "react";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
@@ -17,26 +13,14 @@ import {
   ERROR_USER_NOTFOUND,
 } from "../../constants/message";
 import { paths } from "../../constants/routePaths";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-console.log(process.env.REACT_APP_ENVIRONMENT === "production");
-
-interface CurrentUser {
-  email: string;
-  password: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { client } from "../../services/supabase";
+import { UserService } from "../../services/users";
+import { login } from "../../reducer/userSlice";
+import { CurrentUser, Message } from "../../types";
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [authMessage, setAuthMessage] = useState<Message>({
     isError: false,
@@ -50,9 +34,11 @@ export const LoginPage = () => {
     formState: { errors },
   } = useForm<CurrentUser>();
 
+  const navigate = useNavigate();
+
   const handleloginWithEmail = async (currentUser: CurrentUser) => {
     const { email, password } = currentUser;
-    const { error, data } = await supabase.auth.signInWithPassword({
+    const { error, data } = await client.auth.signInWithPassword({
       email,
       password,
     });
@@ -65,16 +51,11 @@ export const LoginPage = () => {
       return;
     }
 
-    let user = data.user;
-    let userInfo = {
-      id: user?.id,
-      firstName: user?.user_metadata.firstName,
-      lastName: user?.user_metadata.lastName,
-      email: user?.email,
-    };
-    dispatch(login(userInfo));
-
-    navigate(paths.history);
+    const userInfo = await UserService.getUserInfoFromSession();
+    if (userInfo) {
+      dispatch(login(userInfo.user_metadata.firstName));
+      navigate(paths.history);
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -152,6 +133,9 @@ const ComponentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const LoginWrapper = styled.div`
@@ -163,7 +147,7 @@ const LoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   @media (max-width: 600px) {
-    width: 70%;
+    width: 80%;
   }
 `;
 
@@ -175,14 +159,13 @@ const FormWrapper = styled.form`
 `;
 
 const InputWrapper = styled.div`
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-direction: column;
 `;
 
 const InputPaper = styled(Paper)`
   margin: 15px 0 7px;
-  padding: 7px;
   display: flex;
   align-items: center;
 `;

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import Chip from "@mui/material/Chip";
-import { Friend } from "../../types";
+import { EachAmount } from "../../types";
 
 interface FriendIconProps {
-  friends: Friend[];
+  friends: EachAmount[];
 }
 
 export const FriendIcon = ({ friends }: FriendIconProps) => {

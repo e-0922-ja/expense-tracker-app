@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { createClient } from "@supabase/supabase-js";
 import { FriendIcon } from "../components/FriendIcon";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -13,53 +12,38 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { useSelector } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Dayjs } from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Friend } from "../../types";
-import { selectUser } from "../../reducer/userSlice";
-import { Database } from "../../../../supabase/schema";
+import { EachAmount, Expense, Friend, Message } from "../../types";
 import { categories } from "../../constants/categoryIcons";
 import { FormButton } from "../components/FormButton";
 import { useForm } from "react-hook-form";
 import { GobackButton } from "../components/GobackButton";
 import {
+  ERROR_BLANK_DESCRIPTION,
   ERROR_EMPTY_AMOUNT,
   ERROR_EMPTY_DESCRIPTION,
   SUCCESS_CREATE_EXPENSE,
 } from "../../constants/message";
 import { paths } from "../../constants/routePaths";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { client } from "../../services/supabase";
 
-interface EachAmount extends Friend {
-  amount: string;
-  paid: boolean;
-}
-
-interface Expense {
-  amount: string;
-  description: string;
-}
-
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export const PaymentPage = () => {
-  // const [error, setError] = useState("");
+export const RegisterExpenseDetail = () => {
   const [category, setCategory] = useState(categories[0].name);
   const [date, setDate] = useState<Dayjs | null>(dayjs());
-  const navigate = useNavigate();
   const location = useLocation();
   const selectedFriends: Friend[] = location.state.selectedFriends;
-  const account = useSelector(selectUser);
+  const [payer, setPayer] = useState("");
+  const [memberExpense, setMemberExpense] = useState<EachAmount[]>([]);
+  const [user, setUser] = useState<Friend>({
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
   const [createExpenseMessage, setCreateExpenseMessage] = useState<Message>({
     isError: false,
     message: "",
@@ -73,20 +57,33 @@ export const PaymentPage = () => {
     watch,
   } = useForm<Expense>();
 
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+
   const amount = watch("amount");
   const description = watch("description");
 
-  const splitters =
-    account.isLogin && account.user ? [account.user, ...selectedFriends] : [];
+  useEffect(() => {
+    if (session && session.user) {
+      setUser({
+        id: session.user.id,
+        email: session.user.email!,
+        firstName: session.user.user_metadata.firstName,
+        lastName: session.user.user_metadata.lastName,
+      });
+    }
+  }, [session]);
 
-  const memberWithAmount = splitters.map((member) => ({
-    ...member,
-    amount: "",
-    paid: member.id === account.user?.id,
-  }));
-  const [memberExpense, setMemberExpense] =
-    useState<EachAmount[]>(memberWithAmount);
-  const [payer, setPayer] = useState(splitters[0].id.toString());
+  useEffect(() => {
+    const splitters = [user, ...selectedFriends];
+    const memberWithAmount = splitters.map((member) => ({
+      ...member,
+      amount: "",
+      paid: member.id === user.id,
+    }));
+    setMemberExpense(memberWithAmount);
+    setPayer(user.id);
+  }, [user, selectedFriends]);
 
   const handleChangeCategory = (event: SelectChangeEvent<unknown>) => {
     setCategory(event.target.value as string);
@@ -114,10 +111,10 @@ export const PaymentPage = () => {
     );
 
     try {
-      const { error } = await supabase.rpc("insert_expense", {
+      const { error } = await client.rpc("insert_expense", {
         group_name: "",
         date: date?.toISOString()!,
-        registered_by: account.user!.id,
+        registered_by: user.id,
         member_ids: memberIds,
         member_paids: memberPaids,
         member_amounts: memberAmounts,
@@ -144,10 +141,9 @@ export const PaymentPage = () => {
 
   const handleChangeAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const newAmount = event.target.value;
-
     setValue("amount", newAmount);
     const eachAmount = newAmount
-      ? Math.floor((parseFloat(newAmount) / splitters.length) * 100) / 100
+      ? Math.floor((parseFloat(newAmount) / memberExpense.length) * 100) / 100
       : 0;
 
     const updatedEachAmount = memberExpense.map((member) => {
@@ -183,7 +179,7 @@ export const PaymentPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate("/expenses/friendslist");
+    navigate("/expense/select-friends");
   };
 
   return (
@@ -195,7 +191,7 @@ export const PaymentPage = () => {
           </GobackButtonWrapper>
           <Title>Create Expense</Title>
           <PeopleSectionContainer>
-            <FriendIcon friends={splitters} />
+            <FriendIcon friends={memberExpense} />
           </PeopleSectionContainer>
         </Section>
         <Section>
@@ -234,7 +230,7 @@ export const PaymentPage = () => {
                   fullWidth
                   variant="outlined"
                 >
-                  {splitters.map((member, index) => {
+                  {memberExpense.map((member, index) => {
                     return (
                       <MenuItem value={member.id} key={index}>
                         {member.id
@@ -278,7 +274,7 @@ export const PaymentPage = () => {
                       },
                       validate: {
                         noWhitespaceOnly: (value) =>
-                          value.trim() !== "" || ERROR_EMPTY_DESCRIPTION,
+                          value.trim() !== "" || ERROR_BLANK_DESCRIPTION,
                       },
                     })}
                     onChange={handleChangeDescription}

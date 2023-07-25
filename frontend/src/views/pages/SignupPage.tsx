@@ -9,24 +9,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { emailRegex, passwordRegex } from "../../utils/regexPatternUtils";
 import { FormButton } from "../components/FormButton";
 import {
+  ERROR_BLANK_FIRSTNAME,
+  ERROR_BLANK_LASTNAME,
   ERROR_EMAIL,
-  ERROR_FIRSTNAME,
-  ERROR_LASTNAME,
+  ERROR_EMPTY_FIRSTNAME,
+  ERROR_EMPTY_LASTNAME,
   ERROR_PASSWORD,
   ERROR_PASSWORDCONF,
 } from "../../constants/message";
 import { useSignup } from "../../hooks/useSignup";
+import { NewUser } from "../../types";
 import { paths } from "../../constants/routePaths";
 
-interface NewUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export const SignUpPage = () => {
+export const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -85,10 +80,21 @@ export const SignUpPage = () => {
                 fullWidth
                 placeholder="First Name"
                 type="text"
-                {...register("firstName", { required: true })}
+                {...register("firstName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_FIRSTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_FIRSTNAME,
+                  },
+                })}
               />
             </InputPaper>
-            {errors.firstName && <ErrorText>{ERROR_FIRSTNAME}</ErrorText>}
+            {errors.firstName && (
+              <ErrorText>{errors.firstName.message}</ErrorText>
+            )}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -99,10 +105,21 @@ export const SignUpPage = () => {
                 fullWidth
                 placeholder="Last Name"
                 type="text"
-                {...register("lastName", { required: true })}
+                {...register("lastName", {
+                  required: {
+                    value: true,
+                    message: ERROR_EMPTY_LASTNAME,
+                  },
+                  validate: {
+                    noWhitespaceOnly: (value) =>
+                      value.trim() !== "" || ERROR_BLANK_LASTNAME,
+                  },
+                })}
               />
             </InputPaper>
-            {errors.lastName && <ErrorText>{ERROR_LASTNAME}</ErrorText>}
+            {errors.lastName && (
+              <ErrorText>{errors.lastName.message}</ErrorText>
+            )}
           </InputWrapper>
           <InputWrapper>
             <InputPaper elevation={0}>
@@ -185,16 +202,22 @@ const ComponentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: ${({ theme }) => theme.palette.primary.main};
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const SignUpWrapper = styled.div`
   padding: 20px 0;
-  width: 30%;
+  width: 35%;
   background: ${({ theme }) => theme.palette.primary.light};
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 600px) {
+    width: 80%;
+  }
 `;
 
 const FormWrapper = styled.form`
@@ -205,14 +228,13 @@ const FormWrapper = styled.form`
 `;
 
 const InputWrapper = styled.div`
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-direction: column;
 `;
 
 const InputPaper = styled(Paper)`
   margin: 15px 0 7px;
-  padding: 7px;
   display: flex;
   align-items: center;
 `;
@@ -260,6 +282,7 @@ const IconContainer = styled.div`
   color: rgba(0, 0, 0, 0.54);
 `;
 
+// Later will Change to the following code
 // import { UseFormRegister, ValidationRule} from "react-hook-form";
 
 // interface FormInputItemProps {

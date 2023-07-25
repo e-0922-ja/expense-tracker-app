@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   IconButton,
@@ -11,37 +11,23 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { DrawerContents } from "../components/DrawerContents";
-import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../../../supabase/schema";
-import { CheckedMember, Expense } from "../../types";
+import { CheckedMember, Expense, Message } from "../../types";
 import { GobackButton } from "../components/GobackButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SubButton } from "../components/SubButton";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { useSupabaseSession } from "../../hooks/useSupabaseSession";
+import { client } from "../../services/supabase";
 import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
 import { paths } from "../../constants/routePaths";
 
-interface Message {
-  isError: boolean;
-  message: string;
-}
-
-const supabase = createClient<Database>(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
-
-export const FriendHistoryDetailPage = () => {
+export const FriendsHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const materialTheme = useTheme();
   const isMobile = useMediaQuery(materialTheme.breakpoints.down("sm"));
-  const account = useSelector(selectUser);
-  const userId = account.user?.id!;
   const location = useLocation();
   const expense: Expense = location.state.expense;
   const initialCheckedMembers = expense.members.map((member) => {
@@ -59,6 +45,16 @@ export const FriendHistoryDetailPage = () => {
     message: "",
   });
   const CategoryIcon = getCategoryIcon(expense.category);
+
+  const navigate = useNavigate();
+  const { session } = useSupabaseSession();
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserId(session.user.id);
+    }
+  }, [session]);
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const targetId = event.target.id;
@@ -89,13 +85,11 @@ export const FriendHistoryDetailPage = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const navigate = useNavigate();
-
   const handleGoBack = () => navigate(`${paths.history}`);
 
   const updateMembersPaidStatus = async () => {
     try {
-      const { error } = await supabase.rpc("update_members_paid", {
+      const { error } = await client.rpc("update_members_paid", {
         expense_id: expense.id,
         checked_members: JSON.stringify(checkedMembers),
         update_by: userId,
@@ -115,7 +109,7 @@ export const FriendHistoryDetailPage = () => {
 
   const deleteExpense = async () => {
     try {
-      const { data, error } = await supabase
+      const { error } = await client
         .from("Expenses")
         .delete()
         .eq("id", expense.id);
@@ -123,9 +117,7 @@ export const FriendHistoryDetailPage = () => {
         setDeleteMessage({ isError: true, message: error.message });
         return false;
       } else {
-        console.log(data);
         setDeleteMessage({ isError: true, message: SUCCESS_DELETE_EXPENSE });
-
         return true;
       }
     } catch (error: any) {
@@ -450,6 +442,13 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const ButtonContainer = styled.div`

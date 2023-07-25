@@ -4,19 +4,21 @@ import { Header } from "./views/components/Header";
 import { useSelector } from "react-redux";
 import styled, { ThemeProvider } from "styled-components";
 import { selectTheme } from "./reducer/colorModeSlice";
-import { SignUpPage } from "./views/pages/SignUpPage";
 import { LoginPage } from "./views/pages/LoginPage";
-import { FriendsListPage } from "./views/pages/FriendsListPage";
+import { SelectFriendsPage } from "./views/pages/SelectFriendsPage";
 import { Toolbar } from "@mui/material";
 import { HistoryPage } from "./views/pages/HistoryPage";
-import { PaymentPage } from "./views/pages/PaymentPage";
+import { RegisterExpenseDetail } from "./views/pages/RegisterExpenseDetail";
 import { HistoryDetailPage } from "./views/pages/HistoryDetailPage";
 import { AccountPage } from "./views/pages/AccountPage";
-import { PassWordResetPage } from "./views/pages/PassWordResetPage";
-import ProtectedRoute from "./constants/ProtectedRoute";
-import { FriendsApprovePage } from "./views/pages/FriendsApprovePage";
-import { FriendHistoryDetailPage } from "./views/pages/FriendHistoryDetailPage";
 import { paths } from "./constants/routePaths";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
+import { SignupPage } from "./views/pages/SignupPage";
+
+import { ResetPasswordPage } from "./views/pages/ResetPasswordPage";
+import { FriendsHistoryDetailPage } from "./views/pages/FriendsHistoryDetailPage";
+import { FriendsListPage } from "./views/pages/FriendsListPage";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -28,37 +30,39 @@ function App() {
         <StyledToolbar />
         <Routes>
           <Route path={paths.home} element={<HomePage />} />
-          <Route path={paths.signup} element={<SignUpPage />} />
+          <Route path={paths.signup} element={<SignupPage />} />
           <Route path={paths.login} element={<LoginPage />} />
           <Route
-            path={paths.friendList}
-            element={<ProtectedRoute element={<FriendsListPage />} />}
+            path="/expense/select-friends"
+            element={<ProtectedRoute element={<SelectFriendsPage />} />}
           />
+          path={paths.friendList}
+          element={<ProtectedRoute element={<FriendsListPage />} />}
           <Route
-            path={paths.payment}
-            element={<ProtectedRoute element={<PaymentPage />} />}
+            path="/expense/register-detail"
+            element={<ProtectedRoute element={<RegisterExpenseDetail />} />}
           />
           <Route
             path={paths.history}
             element={<ProtectedRoute element={<HistoryPage />} />}
           />
           <Route
-            path={paths.historyDetail}
+            path="/history/:id"
+            element={<ProtectedRoute element={<FriendsHistoryDetailPage />} />}
+          />
+          <Route
+            path="/history/detail"
             element={<ProtectedRoute element={<HistoryDetailPage />} />}
           />
           <Route
-            path={paths.historyGroup}
-            element={<ProtectedRoute element={<FriendHistoryDetailPage />} />}
+            path="/friends-list"
+            element={<ProtectedRoute element={<FriendsListPage />} />}
           />
           <Route
             path={paths.account}
             element={<ProtectedRoute element={<AccountPage />} />}
           />
-          <Route
-            path={paths.friendApprove}
-            element={<ProtectedRoute element={<FriendsApprovePage />} />}
-          />
-          <Route path={paths.passwordReset} element={<PassWordResetPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </div>
     </ThemeProvider>

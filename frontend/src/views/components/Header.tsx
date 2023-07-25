@@ -10,25 +10,34 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectTheme, toggleTheme } from "../../reducer/colorModeSlice";
-import { selectUser } from "../../reducer/userSlice";
+import { login, selectUser } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
 import { DarkModeButton } from "./DarkModeButton";
 import { LightModeButton } from "./LightModeButton";
 import { paths } from "../../constants/routePaths";
 
 export const Header = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const theme = useSelector(selectTheme);
   const account = useSelector(selectUser);
 
+  const navigate = useNavigate();
+
   const handleNavigateHome = () => {
-    navigate(paths.home);
+    account.firstName === "" ? navigate(paths.home) : navigate(path.history);
   };
 
   const handleChangeMode = () => {
     dispatch(toggleTheme());
   };
+
+  useEffect(() => {
+    const fetchFirstName = async () => {
+      const userInfo = await UserService.getUserInfoFromSession();
+      if (userInfo) dispatch(login(userInfo.user_metadata.firstName));
+    };
+    fetchFirstName();
+  }, [dispatch]);
 
   return (
     <AppBarWrapper
@@ -39,14 +48,13 @@ export const Header = () => {
       }}
     >
       <StyledToolbar>
-        <Typography
+        <StyledTypography
           sx={{ flexGrow: 1 }}
           onClick={handleNavigateHome}
           variant="h5"
-          component="div"
         >
           SpendShare
-        </Typography>
+        </StyledTypography>
         <AppBarNavWrapper>
           <StyledIconButton size="large" onClick={handleChangeMode}>
             {theme.palette.mode === "light" ? (
@@ -56,7 +64,7 @@ export const Header = () => {
             )}
           </StyledIconButton>
 
-          {account.isLogin ? <Text>{account.user?.firstName}</Text> : ""}
+          {account.firstName && <Text>{account.firstName}</Text>}
         </AppBarNavWrapper>
       </StyledToolbar>
     </AppBarWrapper>
@@ -92,4 +100,8 @@ const StyledIconButton = styled(IconButton)`
   .MuiTouchRipple-root {
     color: #f8f9f9;
   }
+`;
+
+const StyledTypography = styled(Typography)`
+  cursor: pointer;
 `;

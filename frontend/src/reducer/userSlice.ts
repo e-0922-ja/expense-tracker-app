@@ -1,22 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
-import { UUID } from "crypto";
 
 interface UserInfo {
-  id: UUID;
   firstName: string;
-  lastName: string;
-  email: string;
 }
 
-interface UserState {
-  user: UserInfo | null;
-  isLogin: boolean;
-}
-
-const initialState: UserState = {
-  user: null,
-  isLogin: false,
+const initialState: UserInfo = {
+  firstName: "",
 };
 
 export const userSlice = createSlice({
@@ -24,21 +14,13 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.user = {
-        id: action.payload.id,
-        firstName: action.payload.firstName,
-        lastName: action.payload.lastName,
-        email: action.payload.email,
-      };
-      state.isLogin = true;
+      state.firstName = action.payload;
     },
     logout: (state) => {
-      state.user = null;
-      state.isLogin = false;
+      state.firstName = "";
     },
     update: (state, action) => {
-      state.user = action.payload;
-      state.isLogin = true;
+      state.firstName = action.payload;
     },
   },
 });

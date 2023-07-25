@@ -1,44 +1,37 @@
 import { Button, Card, Typography } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import styled from "styled-components";
-import { PropsFriendApproveCard } from "../../types";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../reducer/userSlice";
-import { createClient } from "@supabase/supabase-js";
+import { client } from "../../services/supabase";
+import { Friend } from "../../types";
 
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL as string,
-  process.env.REACT_APP_SUPABASE_ANON_KEY as string
-);
+export interface PropsFriendApproveCard {
+  userId: string;
+  friend: Friend;
+  getUserFriendsById: () => void;
+}
 
 export const FriendApproveCard = ({
-  id,
-  firstName,
-  lastName,
-  email,
+  userId,
+  friend,
   getUserFriendsById,
 }: PropsFriendApproveCard) => {
-  const { user } = useSelector(selectUser);
-  const userId = user?.id;
-
   const handleApprove = async () => {
     try {
-      const { data, error }: { data: any; error: any } = await supabase
+      const { data, error }: { data: any; error: any } = await client
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, userId, id, "aprovecard");
         if (data && data.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { data: updatedData, error: updateError } = await supabase
+          const { data: updatedData, error: updateError } = await client
             .from("Friendships")
-            .update({ statusId: 2, updatedAt: new Date() })
+            .update({ statusId: 2, updatedAt: new Date().toISOString() })
             .match({ id: data[0].id });
           if (updateError) {
             console.error("Error updating statusId: ", updateError);
@@ -55,19 +48,18 @@ export const FriendApproveCard = ({
 
   const handleReject = async () => {
     try {
-      const { data, error }: { data: any; error: any } = await supabase
+      const { data, error }: { data: any; error: any } = await client
         .from("Friendships")
         .select("*")
         .eq("friendId", userId)
-        .eq("userId", id)
+        .eq("userId", friend.id)
         .eq("statusId", 1);
 
       if (error) {
         console.log("Error: ", error);
       } else {
-        console.log(data, "aprovecard");
         if (data && data.length > 0) {
-          const { data: deletedData, error: updateError } = await supabase
+          const { data: deletedData, error: updateError } = await client
             .from("Friendships")
             .delete()
             .match({ id: data[0].id });
@@ -96,16 +88,16 @@ export const FriendApproveCard = ({
           </IconContainer>
           <InfoWrapper>
             <NameContainer>
-              {firstName ? (
+              {friend.firstName ? (
                 <>
-                  <Typography variant="body1">{firstName}</Typography>
-                  <Typography variant="body1">{lastName}</Typography>
+                  <Typography variant="body1">{friend.firstName}</Typography>
+                  <Typography variant="body1">{friend.lastName}</Typography>
                 </>
               ) : (
                 <Typography variant="body1">-</Typography>
               )}
             </NameContainer>
-            <Typography variant="body1">{email}</Typography>
+            <Typography variant="body1">{friend.email}</Typography>
           </InfoWrapper>
         </ContentWrapper>
       </FriendAproveCardWrapper>
@@ -126,6 +118,9 @@ const Wrapper = styled.div`
   gap: 10px;
   width: 100%;
   margin-bottom: 20px;
+  @media (max-width: 600px) {
+    gap: 0;
+  }
 `;
 
 const FriendAproveCardWrapper = styled(Card)`
@@ -133,6 +128,9 @@ const FriendAproveCardWrapper = styled(Card)`
   border-radius: 10px !important;
   background: ${({ theme }) => theme.palette.primary.light} !important;
   color: ${({ theme }) => theme.palette.info.light} !important;
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -157,6 +155,13 @@ const IconCircle = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.palette.secondary.light};
   color: #fff;
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+    svg {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const InfoWrapper = styled.div`
@@ -165,6 +170,10 @@ const InfoWrapper = styled.div`
   align-items: center;
   width: 85%;
   padding: 20px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const NameContainer = styled.div`
@@ -178,6 +187,10 @@ const ButtonsContainer = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
 
 const ButtonWrapper = styled.div`

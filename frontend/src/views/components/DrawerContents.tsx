@@ -5,34 +5,30 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import HistoryIcon from "@mui/icons-material/History";
-import PortraitIcon from "@mui/icons-material/Portrait";
-import GroupIcon from "@mui/icons-material/Group";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { MainButton } from "./MainButton";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTheme } from "../../reducer/colorModeSlice";
-import { logout, selectUser } from "../../reducer/userSlice";
+import { logout } from "../../reducer/userSlice";
 import { AppDispatch } from "../../store/store";
-import { useState } from "react";
+import { UserService } from "../../services/users/service";
+import HistoryIcon from "@mui/icons-material/History";
+import PortraitIcon from "@mui/icons-material/Portrait";
+import GroupIcon from "@mui/icons-material/Group";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { paths } from "../../constants/routePaths";
 
 export const DrawerContents = () => {
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useSelector(selectTheme);
-  const account = useSelector(selectUser);
-  const dispatch: AppDispatch = useDispatch();
-  const [selectedId, setSelectedId] = useState(0);
 
-  const navigatePage = (link: string, num: number) => {
-    navigate(link);
-    setSelectedId(num);
-  };
-
-  const handleLogout = () => {
-    if (account.isLogin) {
+  const handleLogout = async (path: string) => {
+    const { isError, message } = await UserService.signOut();
+    if (isError) {
+      console.error("Failed to logout: ", message);
+    } else {
       dispatch(logout());
       navigate(paths.home);
       setSelectedId(4);
@@ -73,15 +69,16 @@ export const DrawerContents = () => {
         <MainButton title={"create"} />
       </ButtonContainer>
       <StyledList>
-        {toolbarItems.map((item) => (
-          <ListItem key={item.id} disablePadding>
+        {toolbarItems.map((item, index) => (
+          <ListItem key={index} disablePadding>
             <StyledListItemButton
-              onClick={item.onClick}
-              selected={item.id === selectedId}
+              onClick={() => handleClick(item)}
               disableRipple
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemIcon>
+                <item.icon style={{ color: theme.palette.secondary.main }} />
+              </ListItemIcon>
+              <ListItemText primary={item.name} />
             </StyledListItemButton>
           </ListItem>
         ))}
@@ -108,9 +105,8 @@ const StyledList = styled(List)`
   padding-top: 1rem !important;
 `;
 
-const StyledListItemButton = styled(ListItemButton)<{ selected: boolean }>`
+const StyledListItemButton = styled(ListItemButton)`
   padding: 0.5rem 3.5rem !important;
-
   &:hover {
     background-color: ${({ theme }) => theme.palette.primary.main} !important;
   }
