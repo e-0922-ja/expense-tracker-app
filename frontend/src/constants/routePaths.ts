@@ -67,6 +67,7 @@ export const paths = {
   history,
   historyById,
   historyDetail,
+  friendList,
   account,
   friendApprove,
   passwordReset,
