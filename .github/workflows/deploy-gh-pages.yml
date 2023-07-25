@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
 
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
@@ -45,10 +45,11 @@ jobs:
           REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
           REACT_APP_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.REACT_APP_SUPABASE_SERVICE_ROLE_KEY }}
           REACT_APP_SUPABASE_ENDPOINT: ${{ secrets.REACT_APP_SUPABASE_ENDPOINT }}
+          REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'frontend/build'
+          path: "frontend/build"
 
   deploy:
     environment:
