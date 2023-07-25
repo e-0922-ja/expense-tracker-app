@@ -27,6 +27,7 @@ import { GobackButton } from "../components/GobackButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
+import { paths } from "../../constants/routePaths";
 
 export const SelectFriendsPage = () => {
   const navigate = useNavigate();
@@ -270,7 +271,7 @@ export const SelectFriendsPage = () => {
         isError: false,
         message: "",
       });
-      navigate("/expense/register-detail", {
+      navigate(paths.registerDetail, {
         state: { selectedFriends },
       });
     } else {
@@ -278,9 +279,7 @@ export const SelectFriendsPage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate("/history");
-  };
+  const handleGoBack = () => navigate(paths.history);
 
   return (
     <MainContainer>

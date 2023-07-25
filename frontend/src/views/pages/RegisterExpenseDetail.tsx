@@ -29,6 +29,7 @@ import {
 } from "../../constants/message";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
+import { paths } from "../../constants/routePaths";
 
 export const RegisterExpenseDetail = () => {
   const [category, setCategory] = useState(categories[0].name);
@@ -99,7 +100,7 @@ export const RegisterExpenseDetail = () => {
 
   const createExpense = handleSubmit(async (data: Expense) => {
     const resultInsertExpense = await insertExpense();
-    if (resultInsertExpense) navigate("/history");
+    if (resultInsertExpense) navigate(paths.history);
   });
 
   const insertExpense = async () => {
@@ -177,9 +178,7 @@ export const RegisterExpenseDetail = () => {
     setValue("description", newAmount);
   };
 
-  const handleGoBack = () => {
-    navigate("/expense/select-friends");
-  };
+  const handleGoBack = () => navigate(paths.selectFriends);
 
   return (
     <MainContainer>

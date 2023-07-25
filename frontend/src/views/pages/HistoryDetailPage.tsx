@@ -22,6 +22,7 @@ import {
 } from "../../constants/message";
 import { useSupabaseSession } from "../../hooks/useSupabaseSession";
 import { client } from "../../services/supabase";
+import { paths } from "../../constants/routePaths";
 
 export const HistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -77,16 +78,14 @@ export const HistoryDetailPage = () => {
 
   const handledelete = async () => {
     const resultDeleteExpense = await deleteExpense();
-    if (resultDeleteExpense) navigate("/history");
+    if (resultDeleteExpense) navigate(paths.history);
   };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleGoBack = () => {
-    navigate("/history");
-  };
+  const handleGoBack = () => navigate(paths.history);
 
   const updateMembersPaidStatus = async () => {
     try {

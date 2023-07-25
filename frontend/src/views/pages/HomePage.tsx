@@ -2,12 +2,13 @@ import styled from "styled-components";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import TopImage from "../../images/topimage.png";
+import { paths } from "../../constants/routePaths";
 
 export const HomePage = () => {
   const navigate = useNavigate();
 
   const handleNavigateLogin = () => {
-    navigate("/login");
+    navigate(paths.login);
   };
 
   return (

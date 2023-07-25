@@ -18,25 +18,26 @@ import PortraitIcon from "@mui/icons-material/Portrait";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { ToolbarItem } from "../../types";
+import { paths } from "../../constants/routePaths";
 
 const toolbarItems: ToolbarItem[] = [
   {
-    path: "/history",
+    path: paths.history,
     name: "History",
     icon: HistoryIcon,
   },
   {
-    path: "/friends-list",
+    path: paths.friendList,
     name: "Friends List",
     icon: GroupIcon,
   },
   {
-    path: "/account",
+    path: paths.account,
     name: "My Account",
     icon: PortraitIcon,
   },
   {
-    path: "/",
+    path: paths.home,
     name: "Logout",
     icon: LogoutIcon,
   },

@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useSupabaseSession } from "../hooks/useSupabaseSession";
+import { paths } from "../constants/routePaths";
 
 interface ProtectedRouteProps {
   element: React.ReactNode;
@@ -14,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   return session ? (
     <>{element}</>
   ) : (
-    <Navigate to="/login" state={{ from: location.pathname }} replace />
+    <Navigate to={paths.login} state={{ from: location.pathname }} replace />
   );
 };
 

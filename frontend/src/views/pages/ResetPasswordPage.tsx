@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ERROR_PASSWORD, ERROR_PASSWORDCONF } from "../../constants/message";
 import { client } from "../../services/supabase";
 import { PasswordData } from "../../types";
+import { paths } from "../../constants/routePaths";
 
 export const ResetPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +32,7 @@ export const ResetPasswordPage = () => {
       if (passwordResetError) {
         throw passwordResetError;
       }
-      navigate("/account");
+      navigate(paths.account);
     } catch (error) {
       alert("The error has occured");
     }
