@@ -88,4 +88,3 @@ const NameContainer = styled.div`
   align-items: center;
   gap: 5px;
 `;
-
