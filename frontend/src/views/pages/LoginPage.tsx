@@ -18,6 +18,7 @@ import { client } from "../../services/supabase";
 import { UserService } from "../../services/users";
 import { login } from "../../reducer/userSlice";
 import { CurrentUser, Message } from "../../types";
+import { paths } from "../../constants/routePaths";
 
 export const LoginPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -53,7 +54,7 @@ export const LoginPage = () => {
     const userInfo = await UserService.getUserInfoFromSession();
     if (userInfo) {
       dispatch(login(userInfo.user_metadata.firstName));
-      navigate("/history");
+      navigate(paths.history);
     }
   };
 
@@ -71,7 +72,7 @@ export const LoginPage = () => {
         <TitleWrapper>
           <Title>Login</Title>
           <Text>New to Expense tracker? </Text>
-          <Link to="/signup">Signup</Link>
+          <Link to={paths.signup}>Signup</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(handleloginWithEmail)}>
           <InputWrapper>

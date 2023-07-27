@@ -17,6 +17,7 @@ import { LightModeButton } from "./LightModeButton";
 import styled from "styled-components";
 import { useEffect } from "react";
 import { UserService } from "../../services/users/service";
+import { paths } from "../../constants/routePaths";
 export const Header = () => {
   const dispatch: AppDispatch = useDispatch();
   const theme = useSelector(selectTheme);
@@ -24,13 +25,10 @@ export const Header = () => {
 
   const navigate = useNavigate();
 
-  const handleNavigateHome = () => {
-    account.firstName === "" ? navigate("/") : navigate("/history");
-  };
+  const handleNavigateHome = () =>
+    navigate(account.firstName.length <= 0 ? paths.home : paths.history);
 
-  const handleChangeMode = () => {
-    dispatch(toggleTheme());
-  };
+  const handleChangeMode = () => dispatch(toggleTheme());
 
   useEffect(() => {
     const fetchFirstName = async () => {

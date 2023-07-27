@@ -22,6 +22,7 @@ import {
   SUCCESS_DELETE_EXPENSE,
   SUCCESS_UPDATE_EXPENSE,
 } from "../../constants/message";
+import { paths } from "../../constants/routePaths";
 
 export const FriendsHistoryDetailPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -77,7 +78,7 @@ export const FriendsHistoryDetailPage = () => {
 
   const handledelete = async () => {
     const resultDeleteExpense = await deleteExpense();
-    if (resultDeleteExpense) navigate("/history");
+    if (resultDeleteExpense) navigate(paths.history);
   };
 
   const handleDrawerToggle = () => {
@@ -85,7 +86,7 @@ export const FriendsHistoryDetailPage = () => {
   };
 
   const handleGoBack = () => {
-    navigate("/history");
+    navigate(paths.history);
   };
 
   const updateMembersPaidStatus = async () => {

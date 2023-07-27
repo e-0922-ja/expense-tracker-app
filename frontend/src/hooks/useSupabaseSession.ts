@@ -7,6 +7,7 @@ import { UserService } from "../services/users/service";
 import { logout } from "../reducer/userSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
+import { paths } from "../constants/routePaths";
 
 export function useSupabaseSession() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export function useSupabaseSession() {
           console.error("Failed to logout: ", message);
         } else {
           dispatch(logout());
-          navigate("/login");
+          navigate(paths.login);
         }
       }
 
