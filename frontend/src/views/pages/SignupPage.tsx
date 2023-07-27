@@ -17,6 +17,7 @@ import {
   ERROR_PASSWORD,
   ERROR_PASSWORDCONF,
 } from "../../constants/message";
+import { paths } from "../../constants/routePaths";
 import { useSignup } from "../../hooks/useSignup";
 import { NewUser } from "../../types";
 
@@ -61,7 +62,7 @@ export const SignupPage = () => {
         <TitleWrapper>
           <Title>SignUp</Title>
           <Text>Already have an account? </Text>
-          <Link to="/login">Login</Link>
+          <Link to={paths.login}>Login</Link>
         </TitleWrapper>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <InputWrapper>
@@ -71,8 +72,8 @@ export const SignupPage = () => {
               </IconContainer>
               <InputBase
                 fullWidth
-                placeholder="First Name"
-                type="text"
+                placeholder='First Name'
+                type='text'
                 {...register("firstName", {
                   required: {
                     value: true,
@@ -96,8 +97,8 @@ export const SignupPage = () => {
               </IconContainer>
               <InputBase
                 fullWidth
-                placeholder="Last Name"
-                type="text"
+                placeholder='Last Name'
+                type='text'
                 {...register("lastName", {
                   required: {
                     value: true,
@@ -121,8 +122,8 @@ export const SignupPage = () => {
               </IconContainer>
               <InputBase
                 fullWidth
-                placeholder="Email"
-                type="email"
+                placeholder='Email'
+                type='email'
                 {...register("email", {
                   required: true,
                   pattern: emailRegex,
@@ -134,7 +135,7 @@ export const SignupPage = () => {
           <InputWrapper>
             <InputPaper elevation={0}>
               <IconButton
-                aria-label="toggle password visibility"
+                aria-label='toggle password visibility'
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
               >
@@ -142,7 +143,7 @@ export const SignupPage = () => {
               </IconButton>
               <InputBase
                 fullWidth
-                placeholder="Password"
+                placeholder='Password'
                 type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: true,
@@ -155,7 +156,7 @@ export const SignupPage = () => {
           <InputWrapper>
             <InputPaper elevation={0}>
               <IconButton
-                aria-label="toggle password visibility"
+                aria-label='toggle password visibility'
                 onClick={handleClickShowConfirmPassword}
                 onMouseDown={handleMouseDownConfirmPassword}
               >
@@ -163,7 +164,7 @@ export const SignupPage = () => {
               </IconButton>
               <InputBase
                 fullWidth
-                placeholder="Confirm Password"
+                placeholder='Confirm Password'
                 type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword", {
                   required: true,
@@ -176,7 +177,7 @@ export const SignupPage = () => {
             )}
           </InputWrapper>
           <ButtonWrapper>
-            <FormButton title="submit" />
+            <FormButton title='submit' />
           </ButtonWrapper>
           {signupMessage.message && (
             <SignupMessage isError={signupMessage.isError}>
